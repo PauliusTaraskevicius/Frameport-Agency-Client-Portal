@@ -4,6 +4,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Remove Clerk component shadows */
+.cl-card,
+.cl-cardBox,
+.cl-rootBox,
+.cl-signIn-root,
+.cl-signUp-root {
+  box-shadow: none !important;
+  border: none !important;
+  background-color: transparent !important;
+  width: 100% !important;
+  max-width: 600px !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
