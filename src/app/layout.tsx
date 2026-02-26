@@ -25,11 +25,76 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          card: {
+            boxShadow: "none",
+            border: "none",
+            backgroundColor: "transparent",
+            width: "100%",
+            maxWidth: "600px",
+          },
+          cardBox: {
+            boxShadow: "none",
+            border: "none",
+            backgroundColor: "transparent",
+            width: "100%",
+            maxWidth: "600px",
+          },
+          rootBox: {
+            boxShadow: "none",
+            backgroundColor: "transparent",
+            width: "100%",
+            maxWidth: "600px",
+          },
+          modalContent: {
+            boxShadow: "none",
+            border: "none",
+            backgroundColor: "transparent",
+          },
+          socialButtonsBlockButton: {
+            boxShadow: "none",
+          },
+          formFieldInput: {
+            boxShadow: "none",
+          },
+          footer: {
+            boxShadow: "none",
+            backgroundColor: "transparent",
+          },
+          headerTitle: {
+            boxShadow: "none",
+          },
+          identityPreview: {
+            boxShadow: "none",
+          },
+          formButtonPrimary: {
+            boxShadow: "none",
+          },
+          navbar: {
+            boxShadow: "none",
+            backgroundColor: "transparent",
+          },
+          navbarButton: {
+            boxShadow: "none",
+          },
+          pageScrollBox: {
+            boxShadow: "none",
+            backgroundColor: "transparent",
+          },
+          page: {
+            boxShadow: "none",
+            backgroundColor: "transparent",
+          },
+        },
+      }}
+    >
       <TRPCReactProvider>
         <html lang="en" suppressHydrationWarning>
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            suppressHydrationWarning
           >
             {children}
           </body>
