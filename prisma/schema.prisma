@@ -23,3 +23,26 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+enum Plan {
+  STARTER
+  PRO
+  STUDIO
+}
+
+model Workspace {
+  id                   String   @id @default(uuid())
+  name                 String
+  slug                 String   @unique
+  plan                 Plan     @default(STARTER)
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  //   members      WorkspaceMember[]
+  //   clients      Client[]
+  //   projects     Project[]
+  //   invitations  Invitation[]
+  //   activityLogs ActivityLog[]
+}
