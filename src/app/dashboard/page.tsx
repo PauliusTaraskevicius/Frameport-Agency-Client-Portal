@@ -1,4 +1,3 @@
-import { CreateWorkspaceForm } from "@/modules/workspaces/ui/components/CreateWorkspaceForm";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -9,11 +8,7 @@ const Page = async () => {
     redirect("/sign-in");
   }
 
-  return (
-    <div>
-      <CreateWorkspaceForm />
-    </div>
-  );
+  return <div>This is a home page</div>;
 };
 
 export default Page;

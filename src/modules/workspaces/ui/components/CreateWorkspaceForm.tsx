@@ -22,15 +22,17 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCreateWorkspaceModal } from "../../hooks/use-create-workspace-modal";
 
 interface CreateWorkspaceFormProps {
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+  const { close } = useCreateWorkspaceModal();
 
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -44,6 +46,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       onSuccess: () => {
         form.reset();
         queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
+        close();
       },
       onError: (error) => {
         toast.error(
@@ -60,7 +63,6 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   );
 
   const isPending = createWorkspace.isPending;
-  const isDisabled = isPending || !form.formState.isValid;
 
   const onSubmit = async (values: z.infer<typeof createWorkspaceSchema>) => {
     await createWorkspace.mutateAsync(values);
