@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { createWorkspaceSchema } from "../schema";
+import { z } from "zod";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -51,4 +52,25 @@ export const workspaceRouter = createTRPCRouter({
       });
     }
   }),
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1, "ID is required"),
+      }),
+    )
+    .query(async ({ input }) => {
+      const existingWorkspace = await prisma.workspace.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!existingWorkspace) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found",
+        });
+      }
+      return existingWorkspace;
+    }),
 });
