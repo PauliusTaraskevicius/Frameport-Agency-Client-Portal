@@ -89,6 +89,7 @@ export const WorkspaceScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  userId: 'userId',
   plan: 'plan',
   stripeCustomerId: 'stripeCustomerId',
   stripeSubscriptionId: 'stripeSubscriptionId',

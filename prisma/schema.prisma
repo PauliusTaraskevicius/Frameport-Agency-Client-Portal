@@ -22,6 +22,8 @@ model User {
   imageUrl    String?  @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  workspaces Workspace[]
 }
 
 enum Plan {
@@ -34,6 +36,8 @@ model Workspace {
   id                   String   @id @default(uuid())
   name                 String
   slug                 String   @unique
+  userId               String
+  user                 User     @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
   plan                 Plan     @default(STARTER)
   stripeCustomerId     String?  @unique
   stripeSubscriptionId String?  @unique

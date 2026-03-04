@@ -28,6 +28,7 @@ export type WorkspaceMinAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
+  userId: string | null
   plan: $Enums.Plan | null
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
@@ -39,6 +40,7 @@ export type WorkspaceMaxAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
+  userId: string | null
   plan: $Enums.Plan | null
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
@@ -50,6 +52,7 @@ export type WorkspaceCountAggregateOutputType = {
   id: number
   name: number
   slug: number
+  userId: number
   plan: number
   stripeCustomerId: number
   stripeSubscriptionId: number
@@ -63,6 +66,7 @@ export type WorkspaceMinAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  userId?: true
   plan?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
@@ -74,6 +78,7 @@ export type WorkspaceMaxAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  userId?: true
   plan?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
@@ -85,6 +90,7 @@ export type WorkspaceCountAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  userId?: true
   plan?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
@@ -169,6 +175,7 @@ export type WorkspaceGroupByOutputType = {
   id: string
   name: string
   slug: string
+  userId: string
   plan: $Enums.Plan
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
@@ -201,22 +208,26 @@ export type WorkspaceWhereInput = {
   id?: Prisma.StringFilter<"Workspace"> | string
   name?: Prisma.StringFilter<"Workspace"> | string
   slug?: Prisma.StringFilter<"Workspace"> | string
+  userId?: Prisma.StringFilter<"Workspace"> | string
   plan?: Prisma.EnumPlanFilter<"Workspace"> | $Enums.Plan
   stripeCustomerId?: Prisma.StringNullableFilter<"Workspace"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"Workspace"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type WorkspaceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -228,15 +239,18 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.WorkspaceWhereInput[]
   NOT?: Prisma.WorkspaceWhereInput | Prisma.WorkspaceWhereInput[]
   name?: Prisma.StringFilter<"Workspace"> | string
+  userId?: Prisma.StringFilter<"Workspace"> | string
   plan?: Prisma.EnumPlanFilter<"Workspace"> | $Enums.Plan
   createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "slug" | "stripeCustomerId" | "stripeSubscriptionId">
 
 export type WorkspaceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -254,6 +268,7 @@ export type WorkspaceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   name?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
+  userId?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   plan?: Prisma.EnumPlanWithAggregatesFilter<"Workspace"> | $Enums.Plan
   stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
@@ -270,12 +285,14 @@ export type WorkspaceCreateInput = {
   stripeSubscriptionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutWorkspacesInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
   id?: string
   name: string
   slug: string
+  userId: string
   plan?: $Enums.Plan
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
@@ -292,12 +309,14 @@ export type WorkspaceUpdateInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutWorkspacesNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -309,6 +328,7 @@ export type WorkspaceCreateManyInput = {
   id?: string
   name: string
   slug: string
+  userId: string
   plan?: $Enums.Plan
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
@@ -331,6 +351,7 @@ export type WorkspaceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -338,10 +359,21 @@ export type WorkspaceUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type WorkspaceListRelationFilter = {
+  every?: Prisma.WorkspaceWhereInput
+  some?: Prisma.WorkspaceWhereInput
+  none?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type WorkspaceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
@@ -353,6 +385,7 @@ export type WorkspaceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
@@ -364,6 +397,7 @@ export type WorkspaceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
@@ -371,8 +405,157 @@ export type WorkspaceMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type WorkspaceCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput> | Prisma.WorkspaceCreateWithoutUserInput[] | Prisma.WorkspaceUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserInput | Prisma.WorkspaceCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.WorkspaceCreateManyUserInputEnvelope
+  connect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+}
+
+export type WorkspaceUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput> | Prisma.WorkspaceCreateWithoutUserInput[] | Prisma.WorkspaceUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserInput | Prisma.WorkspaceCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.WorkspaceCreateManyUserInputEnvelope
+  connect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+}
+
+export type WorkspaceUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput> | Prisma.WorkspaceCreateWithoutUserInput[] | Prisma.WorkspaceUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserInput | Prisma.WorkspaceCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.WorkspaceUpsertWithWhereUniqueWithoutUserInput | Prisma.WorkspaceUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.WorkspaceCreateManyUserInputEnvelope
+  set?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  disconnect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  delete?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  connect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  update?: Prisma.WorkspaceUpdateWithWhereUniqueWithoutUserInput | Prisma.WorkspaceUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.WorkspaceUpdateManyWithWhereWithoutUserInput | Prisma.WorkspaceUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.WorkspaceScalarWhereInput | Prisma.WorkspaceScalarWhereInput[]
+}
+
+export type WorkspaceUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput> | Prisma.WorkspaceCreateWithoutUserInput[] | Prisma.WorkspaceUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserInput | Prisma.WorkspaceCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.WorkspaceUpsertWithWhereUniqueWithoutUserInput | Prisma.WorkspaceUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.WorkspaceCreateManyUserInputEnvelope
+  set?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  disconnect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  delete?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  connect?: Prisma.WorkspaceWhereUniqueInput | Prisma.WorkspaceWhereUniqueInput[]
+  update?: Prisma.WorkspaceUpdateWithWhereUniqueWithoutUserInput | Prisma.WorkspaceUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.WorkspaceUpdateManyWithWhereWithoutUserInput | Prisma.WorkspaceUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.WorkspaceScalarWhereInput | Prisma.WorkspaceScalarWhereInput[]
+}
+
 export type EnumPlanFieldUpdateOperationsInput = {
   set?: $Enums.Plan
+}
+
+export type WorkspaceCreateWithoutUserInput = {
+  id?: string
+  name: string
+  slug: string
+  plan?: $Enums.Plan
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WorkspaceUncheckedCreateWithoutUserInput = {
+  id?: string
+  name: string
+  slug: string
+  plan?: $Enums.Plan
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WorkspaceCreateOrConnectWithoutUserInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput>
+}
+
+export type WorkspaceCreateManyUserInputEnvelope = {
+  data: Prisma.WorkspaceCreateManyUserInput | Prisma.WorkspaceCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type WorkspaceUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserInput, Prisma.WorkspaceUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput>
+}
+
+export type WorkspaceUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserInput, Prisma.WorkspaceUncheckedUpdateWithoutUserInput>
+}
+
+export type WorkspaceUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.WorkspaceScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateManyMutationInput, Prisma.WorkspaceUncheckedUpdateManyWithoutUserInput>
+}
+
+export type WorkspaceScalarWhereInput = {
+  AND?: Prisma.WorkspaceScalarWhereInput | Prisma.WorkspaceScalarWhereInput[]
+  OR?: Prisma.WorkspaceScalarWhereInput[]
+  NOT?: Prisma.WorkspaceScalarWhereInput | Prisma.WorkspaceScalarWhereInput[]
+  id?: Prisma.StringFilter<"Workspace"> | string
+  name?: Prisma.StringFilter<"Workspace"> | string
+  slug?: Prisma.StringFilter<"Workspace"> | string
+  userId?: Prisma.StringFilter<"Workspace"> | string
+  plan?: Prisma.EnumPlanFilter<"Workspace"> | $Enums.Plan
+  stripeCustomerId?: Prisma.StringNullableFilter<"Workspace"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"Workspace"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
+}
+
+export type WorkspaceCreateManyUserInput = {
+  id?: string
+  name: string
+  slug: string
+  plan?: $Enums.Plan
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type WorkspaceUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WorkspaceUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WorkspaceUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -381,39 +564,46 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   name?: boolean
   slug?: boolean
+  userId?: boolean
   plan?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
 export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   slug?: boolean
+  userId?: boolean
   plan?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
 export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   slug?: boolean
+  userId?: boolean
   plan?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
 export type WorkspaceSelectScalar = {
   id?: boolean
   name?: boolean
   slug?: boolean
+  userId?: boolean
   plan?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
@@ -421,15 +611,27 @@ export type WorkspaceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "plan" | "stripeCustomerId" | "stripeSubscriptionId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "userId" | "plan" | "stripeCustomerId" | "stripeSubscriptionId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type WorkspaceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Workspace"
-  objects: {}
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     slug: string
+    userId: string
     plan: $Enums.Plan
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
@@ -829,6 +1031,7 @@ readonly fields: WorkspaceFieldRefs;
  */
 export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -861,6 +1064,7 @@ export interface WorkspaceFieldRefs {
   readonly id: Prisma.FieldRef<"Workspace", 'String'>
   readonly name: Prisma.FieldRef<"Workspace", 'String'>
   readonly slug: Prisma.FieldRef<"Workspace", 'String'>
+  readonly userId: Prisma.FieldRef<"Workspace", 'String'>
   readonly plan: Prisma.FieldRef<"Workspace", 'Plan'>
   readonly stripeCustomerId: Prisma.FieldRef<"Workspace", 'String'>
   readonly stripeSubscriptionId: Prisma.FieldRef<"Workspace", 'String'>
@@ -883,6 +1087,10 @@ export type WorkspaceFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  /**
    * Filter, which Workspace to fetch.
    */
   where: Prisma.WorkspaceWhereUniqueInput
@@ -901,6 +1109,10 @@ export type WorkspaceFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  /**
    * Filter, which Workspace to fetch.
    */
   where: Prisma.WorkspaceWhereUniqueInput
@@ -918,6 +1130,10 @@ export type WorkspaceFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Workspace
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
   /**
    * Filter, which Workspace to fetch.
    */
@@ -967,6 +1183,10 @@ export type WorkspaceFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  /**
    * Filter, which Workspace to fetch.
    */
   where?: Prisma.WorkspaceWhereInput
@@ -1015,6 +1235,10 @@ export type WorkspaceFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  /**
    * Filter, which Workspaces to fetch.
    */
   where?: Prisma.WorkspaceWhereInput
@@ -1058,6 +1282,10 @@ export type WorkspaceCreateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  /**
    * The data needed to create a Workspace.
    */
   data: Prisma.XOR<Prisma.WorkspaceCreateInput, Prisma.WorkspaceUncheckedCreateInput>
@@ -1091,6 +1319,10 @@ export type WorkspaceCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    */
   data: Prisma.WorkspaceCreateManyInput | Prisma.WorkspaceCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1105,6 +1337,10 @@ export type WorkspaceUpdateArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Workspace
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
   /**
    * The data needed to update a Workspace.
    */
@@ -1157,6 +1393,10 @@ export type WorkspaceUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many Workspaces to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1171,6 +1411,10 @@ export type WorkspaceUpsertArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Workspace
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
   /**
    * The filter to search for the Workspace to update in case it exists.
    */
@@ -1197,6 +1441,10 @@ export type WorkspaceDeleteArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Workspace
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
   /**
    * Filter which Workspace to delete.
    */
@@ -1229,4 +1477,8 @@ export type WorkspaceDefaultArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Workspace
    */
   omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
 }

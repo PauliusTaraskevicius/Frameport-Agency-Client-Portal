@@ -31,9 +31,14 @@ const isAuthed = t.middleware(({ next, ctx }) => {
     });
   }
 
+  const userId = ctx.auth.userId;
+
   return next({
     ctx: {
-      ...ctx,
+      auth: {
+        ...ctx.auth,
+        userId,
+      },
     },
   });
 });
