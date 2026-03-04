@@ -7,10 +7,11 @@ import { z } from "zod";
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createWorkspaceSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
         const workspace = await prisma.workspace.create({
           data: {
+            userId: ctx.auth.userId,
             name: input.name,
             slug: input.name.toLowerCase().replace(/\s+/g, "-"),
           },
@@ -37,9 +38,12 @@ export const workspaceRouter = createTRPCRouter({
         }
       }
     }),
-  getMany: protectedProcedure.query(async () => {
+  getMany: protectedProcedure.query(async ({ ctx }) => {
     try {
       const workspaces = await prisma.workspace.findMany({
+        where: {
+          userId: ctx.auth.userId,
+        },
         orderBy: {
           updatedAt: "desc",
         },
@@ -58,10 +62,11 @@ export const workspaceRouter = createTRPCRouter({
         id: z.string().min(1, "ID is required"),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const existingWorkspace = await prisma.workspace.findUnique({
         where: {
           id: input.id,
+          userId: ctx.auth.userId,
         },
       });
 
