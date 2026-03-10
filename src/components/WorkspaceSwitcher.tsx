@@ -24,7 +24,7 @@ export const WorkspaceSwitcher = () => {
   const { open } = useCreateWorkspaceModal();
 
   const onSelect = (id: string) => {
-    router.push(`/workspaces/${id}`);
+    router.push(`/dashboard/workspaces/${id}`);
   };
 
   return (
@@ -44,10 +44,9 @@ export const WorkspaceSwitcher = () => {
           {workspaces?.map((workspace) => (
             <SelectItem key={workspace.id} value={workspace.id}>
               <div className="flex items-center justify-start gap-3 font-medium">
-                <h1 className="text-2xl font-bold">
-                  {workspace.name.charAt(0)}
-                </h1>
-                <span className="truncate">{workspace.name}</span>
+                <span className="truncate pl-2 font-semibold">
+                  {workspace.name}
+                </span>
               </div>
             </SelectItem>
           ))}
