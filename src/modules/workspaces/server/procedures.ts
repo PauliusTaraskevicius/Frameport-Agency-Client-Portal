@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { createWorkspaceSchema } from "../schema";
 import { z } from "zod";
+import { MemberRole } from "../types";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -14,6 +15,14 @@ export const workspaceRouter = createTRPCRouter({
             userId: ctx.auth.userId,
             name: input.name,
             slug: input.name.toLowerCase().replace(/\s+/g, "-"),
+          },
+        });
+
+        await prisma.workspaceMember.create({
+          data: {
+            userId: ctx.auth.userId,
+            workspaceId: workspace.id,
+            role: MemberRole.OWNER,
           },
         });
 
@@ -40,6 +49,16 @@ export const workspaceRouter = createTRPCRouter({
     }),
   getMany: protectedProcedure.query(async ({ ctx }) => {
     try {
+      const membershipCount = await prisma.workspaceMember.count({
+        where: {
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (membershipCount === 0) {
+        return [];
+      }
+
       const workspaces = await prisma.workspace.findMany({
         where: {
           userId: ctx.auth.userId,
@@ -48,6 +67,7 @@ export const workspaceRouter = createTRPCRouter({
           updatedAt: "desc",
         },
       });
+
       return workspaces;
     } catch (error) {
       throw new TRPCError({

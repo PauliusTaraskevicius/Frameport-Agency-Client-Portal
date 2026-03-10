@@ -23,7 +23,8 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  workspaces Workspace[]
+  workspaces  Workspace[]
+  memberships WorkspaceMember[]
 }
 
 enum Plan {
@@ -44,9 +45,29 @@ model Workspace {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
-  //   members      WorkspaceMember[]
+  members WorkspaceMember[]
   //   clients      Client[]
   //   projects     Project[]
   //   invitations  Invitation[]
   //   activityLogs ActivityLog[]
+}
+
+enum WorkspaceRole {
+  OWNER
+  CLIENT
+}
+
+model WorkspaceMember {
+  id          String        @id @default(uuid())
+  role        WorkspaceRole @default(OWNER)
+  userId      String
+  workspaceId String
+
+  user      User      @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, workspaceId])
 }
