@@ -45,11 +45,14 @@ model Workspace {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
-  members WorkspaceMember[]
+  members     WorkspaceMember[]
   //   clients      Client[]
   //   projects     Project[]
   //   invitations  Invitation[]
   //   activityLogs ActivityLog[]
+  invitations Invitation[]
+  clients     Client[]
+  projects    Project[]
 }
 
 enum WorkspaceRole {
@@ -70,4 +73,78 @@ model WorkspaceMember {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, workspaceId])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+model Invitation {
+  id          String           @id @default(uuid())
+  email       String
+  token       String           @unique @default(uuid())
+  role        WorkspaceRole    @default(CLIENT)
+  status      InvitationStatus @default(PENDING)
+  expiresAt   DateTime
+  workspaceId String
+  clientId    String?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([token])
+  @@index([email, workspaceId])
+}
+
+model Client {
+  id          String  @id @default(uuid())
+  name        String
+  email       String?
+  company     String?
+  avatarUrl   String? @db.Text
+  workspaceId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  projects    Project[]
+  invitations Invitation[]
+
+  @@index([workspaceId])
+}
+
+enum ProjectStatus {
+  ACTIVE
+  REVIEW
+  APPROVED
+  COMPLETED
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  name        String
+  description String?       @db.Text
+  status      ProjectStatus @default(ACTIVE)
+  workspaceId String
+  clientId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  // tasks        Task[]
+  // files        File[]
+  // approvals    Approval[]
+  // activityLogs ActivityLog[]
+
+  @@index([workspaceId])
+  @@index([clientId])
 }
