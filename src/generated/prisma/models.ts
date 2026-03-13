@@ -11,4 +11,7 @@
 export type * from './models/User'
 export type * from './models/Workspace'
 export type * from './models/WorkspaceMember'
+export type * from './models/Invitation'
+export type * from './models/Client'
+export type * from './models/Project'
 export type * from './commonInputTypes'

@@ -61,7 +61,11 @@ export const workspaceRouter = createTRPCRouter({
 
       const workspaces = await prisma.workspace.findMany({
         where: {
-          userId: ctx.auth.userId,
+          members: {
+            some: {
+              userId: ctx.auth.userId,
+            },
+          },
         },
         orderBy: {
           updatedAt: "desc",
