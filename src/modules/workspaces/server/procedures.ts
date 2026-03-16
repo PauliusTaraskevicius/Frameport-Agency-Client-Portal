@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { createWorkspaceSchema } from "../schema";
+import { createWorkspaceSchema, updateWorkspaceSchema } from "../schema";
 import { z } from "zod";
 import { MemberRole } from "../types";
 
@@ -101,5 +101,42 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
       return existingWorkspace;
+    }),
+  update: protectedProcedure
+    .input(updateWorkspaceSchema)
+    .mutation(async ({ ctx, input }) => {
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: input.id,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found",
+        });
+      }
+
+      if (member.role !== MemberRole.OWNER) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to update this workspace",
+        });
+      }
+
+
+      const updatedWorkspace = await prisma.workspace.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          slug: input.name.toLowerCase().replace(/\s+/g, "-"),
+        },
+      });
+
+      return updatedWorkspace;
     }),
 });
