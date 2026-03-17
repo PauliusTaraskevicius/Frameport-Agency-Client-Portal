@@ -6,6 +6,7 @@ import {
 } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { createInvitationSchema, acceptInvitationSchema } from "../schema";
+import { z } from "zod";
 import { addDays } from "date-fns";
 import { sendInvitationEmail } from "../utils";
 import { InvitationStatus } from "../types";
@@ -227,6 +228,84 @@ export const invitationRouter = createTRPCRouter({
       return prisma.invitation.update({
         where: { id: invitation.id },
         data: { status: InvitationStatus.REVOKED },
+      });
+    }),
+
+  reset: protectedProcedure
+    .input(acceptInvitationSchema)
+    .mutation(async ({ ctx, input }) => {
+      const invitation = await prisma.invitation.findUnique({
+        where: { token: input.token },
+      });
+
+      if (!invitation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Invitation not found",
+        });
+      }
+
+      const membership = await prisma.workspaceMember.findUnique({
+        where: {
+          userId_workspaceId: {
+            userId: ctx.auth.userId,
+            workspaceId: invitation.workspaceId,
+          },
+        },
+      });
+
+      if (!membership || membership.role !== MemberRole.OWNER) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners can reset invitations",
+        });
+      }
+
+      const newToken = crypto.randomUUID();
+
+      const updatedInvitation = await prisma.invitation.update({
+        where: { id: invitation.id },
+        data: {
+          token: newToken,
+          expiresAt: addDays(new Date(), 7),
+          status: InvitationStatus.PENDING,
+        },
+      });
+
+      await sendInvitationEmail({
+        email: updatedInvitation.email,
+        token: updatedInvitation.token,
+        workspaceId: updatedInvitation.workspaceId,
+      });
+
+      return updatedInvitation;
+    }),
+
+  getByWorkspace: protectedProcedure
+    .input(z.object({ workspaceId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const membership = await prisma.workspaceMember.findUnique({
+        where: {
+          userId_workspaceId: {
+            userId: ctx.auth.userId,
+            workspaceId: input.workspaceId,
+          },
+        },
+      });
+
+      if (!membership || membership.role !== "OWNER") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only workspace owners can view invitations",
+        });
+      }
+
+      return prisma.invitation.findMany({
+        where: {
+          workspaceId: input.workspaceId,
+          status: "PENDING",
+        },
+        orderBy: { createdAt: "desc" },
       });
     }),
 });
