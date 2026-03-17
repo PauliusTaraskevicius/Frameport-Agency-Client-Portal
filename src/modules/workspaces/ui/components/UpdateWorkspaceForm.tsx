@@ -72,6 +72,29 @@ export const UpdateWorkspaceForm = ({
     }),
   );
 
+  const deleteWorkspace = useMutation(
+    trpc.workspaces.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Workspace deleted successfully");
+        queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
+        router.push("/dashboard");
+      },
+      onError: (error) => {
+        toast.error(
+          error.message || "An error occurred while deleting the workspace",
+        );
+      },
+    }),
+  );
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirmDelete();
+
+    if (!ok) return;
+
+    deleteWorkspace.mutate({ id });
+  };
+
   const onSubmit = async (values: z.infer<typeof updateWorkspaceSchema>) => {
     await updateWorkspace.mutateAsync(values);
   };
@@ -179,7 +202,7 @@ export const UpdateWorkspaceForm = ({
         </CardContent>
       </Card> */}
 
-      {/* <Card className="h-full w-full border-none shadow-none">
+      <Card className="h-full w-full border-none shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
             <h3 className="font-bold">Danger Zone</h3>
@@ -193,14 +216,14 @@ export const UpdateWorkspaceForm = ({
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending || isDeletingWorkspace}
-              onClick={handleDelete}
+              disabled={deleteWorkspace.isPending || updateWorkspace.isPending}
+              onClick={() => handleDelete(initialValues.id)}
             >
               Delete Workspace
             </Button>
           </div>
         </CardContent>
-      </Card> */}
+      </Card>
     </div>
   );
 };

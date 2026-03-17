@@ -126,7 +126,6 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
 
-
       const updatedWorkspace = await prisma.workspace.update({
         where: {
           id: input.id,
@@ -138,5 +137,37 @@ export const workspaceRouter = createTRPCRouter({
       });
 
       return updatedWorkspace;
+    }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().min(1, "ID is required") }))
+    .mutation(async ({ ctx, input }) => {
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: input.id,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found",
+        });
+      }
+
+      if (member.role !== MemberRole.OWNER) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this workspace",
+        });
+      }
+
+      await prisma.workspace.delete({
+        where: {
+          id: input.id,
+        },
+      });
+
+      return { success: true };
     }),
 });
