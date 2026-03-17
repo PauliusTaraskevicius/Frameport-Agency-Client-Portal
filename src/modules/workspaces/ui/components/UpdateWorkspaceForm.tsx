@@ -22,12 +22,13 @@ import {
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "sonner";
 import { Workspace } from "@/generated/prisma/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import z from "zod";
 import { updateWorkspaceSchema } from "../../schema";
 import { DottedSeparator } from "@/components/DottedSeparator";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CopyIcon, RefreshCw } from "lucide-react";
+import { useCreateInvitationModal } from "@/modules/invitations/hooks/use-create-invitation-modal";
 
 interface UpdateWorkspaceFormProps {
   onCancel?: () => void;
@@ -47,7 +48,10 @@ export const UpdateWorkspaceForm = ({
     "This action cannot be undone",
   );
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [ResetDialog, confirmReset] = useConfirm(
+    "Reset Invite Link",
+    "This will invalidate the current link and send a new one. Continue?",
+  );
 
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -87,6 +91,42 @@ export const UpdateWorkspaceForm = ({
     }),
   );
 
+  const pendingInvitations = useQuery(
+    trpc.invitations.getByWorkspace.queryOptions({
+      workspaceId: initialValues.id,
+    }),
+  );
+
+  const resetInvitation = useMutation(
+    trpc.invitations.reset.mutationOptions({
+      onSuccess: () => {
+        toast.success("Invitation reset and resent successfully");
+        queryClient.invalidateQueries(
+          trpc.invitations.getByWorkspace.queryOptions({
+            workspaceId: initialValues.id,
+          }),
+        );
+      },
+      onError: (error) => {
+        toast.error(
+          error.message || "An error occurred while resetting the invitation",
+        );
+      },
+    }),
+  );
+
+  const handleResetInvitation = async (token: string) => {
+    const ok = await confirmReset();
+    if (!ok) return;
+    resetInvitation.mutate({ token });
+  };
+
+  const handleCopyInviteLink = (token: string) => {
+    const link = `${window.location.origin}/invitation/${token}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Invite link copied to clipboard");
+  };
+
   const handleDelete = async (id: string) => {
     const ok = await confirmDelete();
 
@@ -102,7 +142,7 @@ export const UpdateWorkspaceForm = ({
   return (
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
-      {/* <ResetDialog /> */}
+      <ResetDialog />
       <Card className="h-full w-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center space-y-0 gap-x-4 p-7">
           <Button
@@ -168,39 +208,50 @@ export const UpdateWorkspaceForm = ({
         </CardContent>
       </Card>
 
-      {/* <Card className="h-full w-full border-none shadow-none">
+      <Card className="h-full w-full border-none shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
-            <h3 className="font-bold">Invite members</h3>
+            <h3 className="font-bold">Pending Invitations</h3>
             <p className="text-muted-foreground text-sm">
-              Use the invite link to add members to your workspace
+              Manage pending invitations for this workspace
             </p>
-            <div className="mt-4">
-              <div className="flex items-center gap-x-2">
-                <Input disabled value={fullInviteLink} />
-                <Button
-                  onClick={handleCopyInviteLink}
-                  variant="secondary"
-                  className="size-12"
-                >
-                  <CopyIcon className="size-5" />
-                </Button>
+            <DottedSeparator className="py-4" />
+            {pendingInvitations.isLoading && (
+              <p className="text-muted-foreground text-sm">Loading...</p>
+            )}
+            {pendingInvitations.data?.length === 0 && (
+              <p className="text-muted-foreground text-sm">
+                No pending invitations
+              </p>
+            )}
+            {pendingInvitations.data?.map((invitation) => (
+              <div
+                key={invitation.id}
+                className="flex items-center justify-between py-2"
+              >
+                <span className="text-sm">{invitation.email}</span>
+                <div className="flex items-center gap-x-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => handleCopyInviteLink(invitation.token)}
+                  >
+                    <CopyIcon className="size-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={resetInvitation.isPending}
+                    onClick={() => handleResetInvitation(invitation.token)}
+                  >
+                    <RefreshCw className="size-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-            <DottedSeparator className="py-7" />
-            <Button
-              className="mt-6 ml-auto w-fit"
-              size="sm"
-              variant="destructive"
-              type="button"
-              disabled={isPending || isResetingInviteCode}
-              onClick={handleResetInviteCode}
-            >
-              Reset invite link
-            </Button>
+            ))}
           </div>
         </CardContent>
-      </Card> */}
+      </Card>
 
       <Card className="h-full w-full border-none shadow-none">
         <CardContent className="p-7">
