@@ -14,7 +14,8 @@ export async function sendInvitationEmail({
   workspaceId,
 }: SendInvitationEmailParams) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const magicLink = `${baseUrl}/invitation/${token}`;
+  // const magicLink = `${baseUrl}/invitation/${token}`;
+  const magicLink = `${baseUrl}/dashboard/workspaces/${workspaceId}/join/${token}`;
 
   const { data, error } = await resend.emails.send({
     from: "Frameport <onboarding@resend.dev>",

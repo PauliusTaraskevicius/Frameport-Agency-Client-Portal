@@ -23,9 +23,9 @@ export function AcceptInvitation({ token }: Props) {
 
   const acceptMutation = useMutation(
     trpc.invitations.accept.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
-        router.push(`/workspaces`);
+        router.push(`/dashboard/workspaces/${data.invitation.workspaceId}`);
       },
     }),
   );
