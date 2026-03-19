@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -27,8 +26,7 @@ import { useTRPC } from "@/trpc/client";
 import z from "zod";
 import { updateWorkspaceSchema } from "../../schema";
 import { DottedSeparator } from "@/components/DottedSeparator";
-import { ArrowLeft, CopyIcon, RefreshCw } from "lucide-react";
-import { useCreateInvitationModal } from "@/modules/invitations/hooks/use-create-invitation-modal";
+import { ArrowLeft, CopyIcon, RefreshCw, Ban } from "lucide-react";
 
 interface UpdateWorkspaceFormProps {
   onCancel?: () => void;
@@ -51,6 +49,11 @@ export const UpdateWorkspaceForm = ({
   const [ResetDialog, confirmReset] = useConfirm(
     "Reset Invite Link",
     "This will invalidate the current link and send a new one. Continue?",
+  );
+
+  const [RevokeDialog, confirmRevoke] = useConfirm(
+    "Revoke Invite Link",
+    "This will cancel the current invitation and invalidate the link. Continue?",
   );
 
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
@@ -115,6 +118,30 @@ export const UpdateWorkspaceForm = ({
     }),
   );
 
+  const revokeInvitation = useMutation(
+    trpc.invitations.revoke.mutationOptions({
+      onSuccess: () => {
+        toast.success("Invitation cancelled successfully");
+        queryClient.invalidateQueries(
+          trpc.invitations.getByWorkspace.queryOptions({
+            workspaceId: initialValues.id,
+          }),
+        );
+      },
+      onError: (error) => {
+        toast.error(
+          error.message || "An error occurred while cancelling the invitation",
+        );
+      },
+    }),
+  );
+
+  const handleCancelInvitation = async (token: string) => {
+    const ok = await confirmRevoke();
+    if (!ok) return;
+    revokeInvitation.mutate({ token });
+  };
+
   const handleResetInvitation = async (token: string) => {
     const ok = await confirmReset();
     if (!ok) return;
@@ -122,7 +149,7 @@ export const UpdateWorkspaceForm = ({
   };
 
   const handleCopyInviteLink = (token: string) => {
-    const link = `${window.location.origin}/invitation/${token}`;
+    const link = `${window.location.origin}/dashboard/workspaces/${initialValues.id}/join/${token}`;
     navigator.clipboard.writeText(link);
     toast.success("Invite link copied to clipboard");
   };
@@ -143,6 +170,7 @@ export const UpdateWorkspaceForm = ({
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
       <ResetDialog />
+      <RevokeDialog />
       <Card className="h-full w-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center space-y-0 gap-x-4 p-7">
           <Button
@@ -240,11 +268,19 @@ export const UpdateWorkspaceForm = ({
                   </Button>
                   <Button
                     size="sm"
-                    variant="destructive"
+                    variant="default"
                     disabled={resetInvitation.isPending}
                     onClick={() => handleResetInvitation(invitation.token)}
                   >
                     <RefreshCw className="size-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="default"
+                    disabled={revokeInvitation.isPending}
+                    onClick={() => handleCancelInvitation(invitation.token)}
+                  >
+                    <Ban className="size-4" />
                   </Button>
                 </div>
               </div>

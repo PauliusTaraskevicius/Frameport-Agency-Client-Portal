@@ -47,6 +47,7 @@ export const SendInvitationForm = ({ onCancel }: SendInvitationFormProps) => {
       onSuccess: () => {
         form.reset();
         toast.success("Invitation sent successfully");
+
         close();
       },
       onError: (error) => {
@@ -57,9 +58,7 @@ export const SendInvitationForm = ({ onCancel }: SendInvitationFormProps) => {
 
   const isPending = sendInvitation.isPending;
 
-  const onSubmit = async (
-    values: z.infer<typeof createInvitationSchema>,
-  ) => {
+  const onSubmit = async (values: z.infer<typeof createInvitationSchema>) => {
     await sendInvitation.mutateAsync(values);
   };
 

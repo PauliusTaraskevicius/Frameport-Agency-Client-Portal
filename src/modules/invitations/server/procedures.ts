@@ -225,10 +225,20 @@ export const invitationRouter = createTRPCRouter({
         });
       }
 
-      return prisma.invitation.update({
+      const revokedInvitation = await prisma.invitation.update({
         where: { id: invitation.id },
         data: { status: InvitationStatus.REVOKED },
       });
+
+      await prisma.invitation.delete({
+        where: { id: revokedInvitation.id },
+      });
+
+      return revokedInvitation;
+      // return prisma.invitation.update({
+      //   where: { id: invitation.id },
+      //   data: { status: InvitationStatus.REVOKED },
+      // });
     }),
 
   reset: protectedProcedure
