@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { createWorkspaceSchema, updateWorkspaceSchema } from "../schema";
 import { z } from "zod";
-import { MemberRole } from "../types";
+import { MemberRole } from "@/modules/members/types";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -87,10 +87,23 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: input.id,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found",
+        });
+      }
+
       const existingWorkspace = await prisma.workspace.findUnique({
         where: {
           id: input.id,
-          userId: ctx.auth.userId,
         },
       });
 
@@ -126,17 +139,33 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
 
-      const updatedWorkspace = await prisma.workspace.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-          slug: input.name.toLowerCase().replace(/\s+/g, "-"),
-        },
-      });
+      try {
+        const updatedWorkspace = await prisma.workspace.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            name: input.name,
+            slug: input.name.toLowerCase().replace(/\s+/g, "-"),
+          },
+        });
 
-      return updatedWorkspace;
+        return updatedWorkspace;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("Unique constraint")
+        ) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A workspace with that name already exists",
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An error occurred while updating the workspace",
+        });
+      }
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string().min(1, "ID is required") }))

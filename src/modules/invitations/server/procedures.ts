@@ -10,7 +10,8 @@ import { z } from "zod";
 import { addDays } from "date-fns";
 import { sendInvitationEmail } from "../utils";
 import { InvitationStatus } from "../types";
-import { MemberRole } from "@/modules/workspaces/types";
+import { MemberRole } from "@/modules/members/types";
+
 
 export const invitationRouter = createTRPCRouter({
   create: protectedProcedure

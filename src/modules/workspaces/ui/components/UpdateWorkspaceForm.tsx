@@ -27,6 +27,8 @@ import z from "zod";
 import { updateWorkspaceSchema } from "../../schema";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { ArrowLeft, CopyIcon, RefreshCw, Ban } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
+import { MemberRole } from "@/modules/members/types";
 
 interface UpdateWorkspaceFormProps {
   onCancel?: () => void;
@@ -40,6 +42,7 @@ export const UpdateWorkspaceForm = ({
   const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+  const { userId } = useAuth();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
     "Delete Workspace",
@@ -55,6 +58,13 @@ export const UpdateWorkspaceForm = ({
     "Revoke Invite Link",
     "This will cancel the current invitation and invalidate the link. Continue?",
   );
+
+  const { data: members } = useQuery(
+    trpc.members.getMany.queryOptions({ workspaceId: initialValues.id }),
+  );
+
+  const currentMember = members?.find((member) => member.userId === userId);
+  const isClient = currentMember?.role === MemberRole.CLIENT;
 
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -226,7 +236,7 @@ export const UpdateWorkspaceForm = ({
                   type="submit"
                   size="lg"
                   variant="default"
-                  disabled={updateWorkspace.isPending}
+                  disabled={updateWorkspace.isPending || isClient}
                 >
                   Save Changes
                 </Button>
@@ -235,59 +245,61 @@ export const UpdateWorkspaceForm = ({
           </Form>
         </CardContent>
       </Card>
-
-      <Card className="h-full w-full border-none shadow-none">
-        <CardContent className="p-7">
-          <div className="flex flex-col">
-            <h3 className="font-bold">Pending Invitations</h3>
-            <p className="text-muted-foreground text-sm">
-              Manage pending invitations for this workspace
-            </p>
-            <DottedSeparator className="py-4" />
-            {pendingInvitations.isLoading && (
-              <p className="text-muted-foreground text-sm">Loading...</p>
-            )}
-            {pendingInvitations.data?.length === 0 && (
+      {!isClient && (
+        <Card className="h-full w-full border-none shadow-none">
+          <CardContent className="p-7">
+            <div className="flex flex-col">
+              <h3 className="font-bold">Pending Invitations</h3>
               <p className="text-muted-foreground text-sm">
-                No pending invitations
+                Manage pending invitations for this workspace
               </p>
-            )}
-            {pendingInvitations.data?.map((invitation) => (
-              <div
-                key={invitation.id}
-                className="flex items-center justify-between py-2"
-              >
-                <span className="text-sm">{invitation.email}</span>
-                <div className="flex items-center gap-x-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => handleCopyInviteLink(invitation.token)}
-                  >
-                    <CopyIcon className="size-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="default"
-                    disabled={resetInvitation.isPending}
-                    onClick={() => handleResetInvitation(invitation.token)}
-                  >
-                    <RefreshCw className="size-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="default"
-                    disabled={revokeInvitation.isPending}
-                    onClick={() => handleCancelInvitation(invitation.token)}
-                  >
-                    <Ban className="size-4" />
-                  </Button>
+              <DottedSeparator className="py-4" />
+              {pendingInvitations.isLoading && (
+                <p className="text-muted-foreground text-sm">Loading...</p>
+              )}
+              {pendingInvitations.data?.length === 0 && (
+                <p className="text-muted-foreground text-sm">
+                  No pending invitations
+                </p>
+              )}
+
+              {pendingInvitations.data?.map((invitation) => (
+                <div
+                  key={invitation.id}
+                  className="flex items-center justify-between py-2"
+                >
+                  <span className="text-sm">{invitation.email}</span>
+                  <div className="flex items-center gap-x-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleCopyInviteLink(invitation.token)}
+                    >
+                      <CopyIcon className="size-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      disabled={resetInvitation.isPending}
+                      onClick={() => handleResetInvitation(invitation.token)}
+                    >
+                      <RefreshCw className="size-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      disabled={revokeInvitation.isPending}
+                      onClick={() => handleCancelInvitation(invitation.token)}
+                    >
+                      <Ban className="size-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="h-full w-full border-none shadow-none">
         <CardContent className="p-7">
@@ -303,7 +315,11 @@ export const UpdateWorkspaceForm = ({
               size="sm"
               variant="destructive"
               type="button"
-              disabled={deleteWorkspace.isPending || updateWorkspace.isPending}
+              disabled={
+                deleteWorkspace.isPending ||
+                updateWorkspace.isPending ||
+                isClient
+              }
               onClick={() => handleDelete(initialValues.id)}
             >
               Delete Workspace
