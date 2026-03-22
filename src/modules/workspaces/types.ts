@@ -1,7 +1,3 @@
-export enum MemberRole {
-  OWNER = "OWNER",
-  CLIENT = "CLIENT",
-}
 
 export enum WorkspacePlan {
   STARTER = "STARTER",
