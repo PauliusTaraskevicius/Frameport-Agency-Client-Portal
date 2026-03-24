@@ -21,7 +21,6 @@ import { useTRPC } from "@/trpc/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { useForm } from "react-hook-form";
-import { Workspace } from "@/generated/prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateMemberSchema } from "@/modules/members/schema";
 import { MemberRole } from "@/modules/members/types";
@@ -140,15 +139,15 @@ export const MembersList = () => {
                       </DropdownMenuItem>
                     )}
 
-                    {member.role !== MemberRole.CLIENT && (
+                    {member.role !== MemberRole.MEMBER && (
                       <DropdownMenuItem
                         className="font-medium"
                         onClick={() =>
-                          handleUpdateMember(member.userId, MemberRole.CLIENT)
+                          handleUpdateMember(member.userId, MemberRole.MEMBER)
                         }
                         disabled={updateMember.isPending}
                       >
-                        Set as Client
+                        Set as Member
                       </DropdownMenuItem>
                     )}
 

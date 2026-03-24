@@ -12,7 +12,6 @@ import { sendInvitationEmail } from "../utils";
 import { InvitationStatus } from "../types";
 import { MemberRole } from "@/modules/members/types";
 
-
 export const invitationRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createInvitationSchema)
@@ -78,7 +77,7 @@ export const invitationRouter = createTRPCRouter({
           email: input.email,
           workspaceId: input.workspaceId,
           clientId: input.clientId ?? null,
-          role: MemberRole.CLIENT,
+          role: MemberRole.MEMBER,
           status: InvitationStatus.PENDING,
           expiresAt: addDays(new Date(), 7), // 7-day expiry
         },
@@ -140,22 +139,39 @@ export const invitationRouter = createTRPCRouter({
         });
       }
 
-      // Use a transaction to accept invitation + create membership
-      const [updatedInvitation, member] = await prisma.$transaction([
-        prisma.invitation.update({
-          where: { id: invitation.id },
-          data: { status: InvitationStatus.ACCEPTED },
-        }),
-        prisma.workspaceMember.create({
-          data: {
-            userId: ctx.auth.userId,
-            workspaceId: invitation.workspaceId,
-            role: invitation.role,
-          },
-        }),
-      ]);
+      // Branch based on invitation type
+      if (invitation.clientId) {
+        // Client invitation — link the Client record to this user
+        const [updatedInvitation, updatedClient] = await prisma.$transaction([
+          prisma.invitation.update({
+            where: { id: invitation.id },
+            data: { status: InvitationStatus.ACCEPTED },
+          }),
+          prisma.client.update({
+            where: { id: invitation.clientId },
+            data: { userId: ctx.auth.userId },
+          }),
+        ]);
 
-      return { invitation: updatedInvitation, member };
+        return { invitation: updatedInvitation, client: updatedClient };
+      } else {
+        // Team member invitation — create WorkspaceMember
+        const [updatedInvitation, member] = await prisma.$transaction([
+          prisma.invitation.update({
+            where: { id: invitation.id },
+            data: { status: InvitationStatus.ACCEPTED },
+          }),
+          prisma.workspaceMember.create({
+            data: {
+              userId: ctx.auth.userId,
+              workspaceId: invitation.workspaceId,
+              role: invitation.role,
+            },
+          }),
+        ]);
+
+        return { invitation: updatedInvitation, member };
+      }
     }),
 
   // Validate a token (public — used on the accept page before sign-in)

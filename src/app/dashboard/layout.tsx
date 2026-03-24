@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
 import { CreateWorkspaceModal } from "@/modules/workspaces/ui/components/CreateWorkspaceModal";
 import { CreateInvitationModal } from "@/modules/invitations/ui/components/CreateInvitationModal";
+import { CreateProjectModal } from "@/modules/projects/ui/components/CreateProjectModal";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen">
       <CreateWorkspaceModal />
       <CreateInvitationModal />
+      <CreateProjectModal />
       <div className="flex h-full w-full">
         <div className="fixed top-0 left-0 hidden h-full overflow-y-auto lg:block lg:w-66">
           <Sidebar />
