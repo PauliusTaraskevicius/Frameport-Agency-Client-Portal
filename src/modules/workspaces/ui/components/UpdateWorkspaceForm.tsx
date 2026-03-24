@@ -64,7 +64,7 @@ export const UpdateWorkspaceForm = ({
   );
 
   const currentMember = members?.find((member) => member.userId === userId);
-  const isClient = currentMember?.role === MemberRole.CLIENT;
+  const isOwner = currentMember?.role === MemberRole.OWNER;
 
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -236,7 +236,7 @@ export const UpdateWorkspaceForm = ({
                   type="submit"
                   size="lg"
                   variant="default"
-                  disabled={updateWorkspace.isPending || isClient}
+                  disabled={updateWorkspace.isPending || !isOwner}
                 >
                   Save Changes
                 </Button>
@@ -245,7 +245,7 @@ export const UpdateWorkspaceForm = ({
           </Form>
         </CardContent>
       </Card>
-      {!isClient && (
+      {isOwner && (
         <Card className="h-full w-full border-none shadow-none">
           <CardContent className="p-7">
             <div className="flex flex-col">
@@ -318,7 +318,7 @@ export const UpdateWorkspaceForm = ({
               disabled={
                 deleteWorkspace.isPending ||
                 updateWorkspace.isPending ||
-                isClient
+                !isOwner
               }
               onClick={() => handleDelete(initialValues.id)}
             >

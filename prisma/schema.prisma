@@ -25,6 +25,7 @@ model User {
 
   workspaces  Workspace[]
   memberships WorkspaceMember[]
+  clients     Client[]
 }
 
 enum Plan {
@@ -46,9 +47,6 @@ model Workspace {
   updatedAt            DateTime @updatedAt
 
   members     WorkspaceMember[]
-  //   clients      Client[]
-  //   projects     Project[]
-  //   invitations  Invitation[]
   //   activityLogs ActivityLog[]
   invitations Invitation[]
   clients     Client[]
@@ -57,7 +55,8 @@ model Workspace {
 
 enum WorkspaceRole {
   OWNER
-  CLIENT
+  ADMIN // optional: for team members who aren't the owner
+  MEMBER // optional: for team members with limited access
 }
 
 model WorkspaceMember {
@@ -86,7 +85,7 @@ model Invitation {
   id          String           @id @default(uuid())
   email       String
   token       String           @unique @default(uuid())
-  role        WorkspaceRole    @default(CLIENT)
+  role        WorkspaceRole    @default(MEMBER)
   status      InvitationStatus @default(PENDING)
   expiresAt   DateTime
   workspaceId String
@@ -108,6 +107,7 @@ model Client {
   email       String?
   company     String?
   avatarUrl   String? @db.Text
+  userId      String? // linked when the client accepts an invitation
   workspaceId String
 
   createdAt DateTime @default(now())
@@ -116,7 +116,9 @@ model Client {
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projects    Project[]
   invitations Invitation[]
+  user        User?        @relation(fields: [userId], references: [clerkUserId], onDelete: SetNull)
 
+  @@unique([userId, workspaceId]) // a user can only be one client per workspace
   @@index([workspaceId])
 }
 

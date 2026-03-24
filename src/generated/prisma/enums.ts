@@ -20,7 +20,8 @@ export type Plan = (typeof Plan)[keyof typeof Plan]
 
 export const WorkspaceRole = {
   OWNER: 'OWNER',
-  CLIENT: 'CLIENT'
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
 } as const
 
 export type WorkspaceRole = (typeof WorkspaceRole)[keyof typeof WorkspaceRole]
