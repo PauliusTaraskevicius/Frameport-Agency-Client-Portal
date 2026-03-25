@@ -21,7 +21,7 @@ import {
 import { useConfirm } from "@/hooks/use-confirm";
 import { toast } from "sonner";
 import { Workspace } from "@/generated/prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import z from "zod";
 import { updateWorkspaceSchema } from "../../schema";
@@ -29,6 +29,10 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { ArrowLeft, CopyIcon, RefreshCw, Ban } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { MemberRole } from "@/modules/members/types";
+import { useUpdateWorkspace } from "../../api/use-update-workspace";
+import { useDeleteWorkspace } from "../../api/use-delete-workspace";
+import { useResetInvitation } from "@/modules/invitations/api/use-reset-invitation";
+import { useRevokeInvitation } from "@/modules/invitations/api/use-revoke-invitation";
 
 interface UpdateWorkspaceFormProps {
   onCancel?: () => void;
@@ -40,7 +44,6 @@ export const UpdateWorkspaceForm = ({
   initialValues,
 }: UpdateWorkspaceFormProps) => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const trpc = useTRPC();
   const { userId } = useAuth();
 
@@ -73,36 +76,10 @@ export const UpdateWorkspaceForm = ({
     },
   });
 
-  const updateWorkspace = useMutation(
-    trpc.workspaces.update.mutationOptions({
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
-        toast.success("Workspace updated successfully");
-        router.push(`/dashboard/workspaces/${data.id}`);
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while updating the workspace",
-        );
-      },
-    }),
-  );
-
-  const deleteWorkspace = useMutation(
-    trpc.workspaces.delete.mutationOptions({
-      onSuccess: () => {
-        toast.success("Workspace deleted successfully");
-        queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
-        router.push("/dashboard");
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while deleting the workspace",
-        );
-      },
-    }),
-  );
+  const updateWorkspaceMutation = useUpdateWorkspace();
+  const deleteWorkspaceMutation = useDeleteWorkspace();
+  const resetInvitationMutation = useResetInvitation({ id: initialValues.id });
+  const revokeInvitationMutation = useRevokeInvitation({ id: initialValues.id });
 
   const pendingInvitations = useQuery(
     trpc.invitations.getByWorkspace.queryOptions({
@@ -110,52 +87,17 @@ export const UpdateWorkspaceForm = ({
     }),
   );
 
-  const resetInvitation = useMutation(
-    trpc.invitations.reset.mutationOptions({
-      onSuccess: () => {
-        toast.success("Invitation reset and resent successfully");
-        queryClient.invalidateQueries(
-          trpc.invitations.getByWorkspace.queryOptions({
-            workspaceId: initialValues.id,
-          }),
-        );
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while resetting the invitation",
-        );
-      },
-    }),
-  );
-
-  const revokeInvitation = useMutation(
-    trpc.invitations.revoke.mutationOptions({
-      onSuccess: () => {
-        toast.success("Invitation cancelled successfully");
-        queryClient.invalidateQueries(
-          trpc.invitations.getByWorkspace.queryOptions({
-            workspaceId: initialValues.id,
-          }),
-        );
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while cancelling the invitation",
-        );
-      },
-    }),
-  );
 
   const handleCancelInvitation = async (token: string) => {
     const ok = await confirmRevoke();
     if (!ok) return;
-    revokeInvitation.mutate({ token });
+    revokeInvitationMutation.mutate({ token });
   };
 
   const handleResetInvitation = async (token: string) => {
     const ok = await confirmReset();
     if (!ok) return;
-    resetInvitation.mutate({ token });
+    resetInvitationMutation.mutate({ token });
   };
 
   const handleCopyInviteLink = (token: string) => {
@@ -169,11 +111,11 @@ export const UpdateWorkspaceForm = ({
 
     if (!ok) return;
 
-    deleteWorkspace.mutate({ id });
+    deleteWorkspaceMutation.mutate({ id });
   };
 
   const onSubmit = async (values: z.infer<typeof updateWorkspaceSchema>) => {
-    await updateWorkspace.mutateAsync(values);
+    await updateWorkspaceMutation.mutateAsync(values);
   };
 
   return (
@@ -227,7 +169,7 @@ export const UpdateWorkspaceForm = ({
                   size="lg"
                   variant="secondary"
                   onClick={onCancel}
-                  disabled={updateWorkspace.isPending}
+                  disabled={updateWorkspaceMutation.isPending}
                   className={cn(!onCancel && "invisible")}
                 >
                   Cancel
@@ -236,7 +178,7 @@ export const UpdateWorkspaceForm = ({
                   type="submit"
                   size="lg"
                   variant="default"
-                  disabled={updateWorkspace.isPending || !isOwner}
+                  disabled={updateWorkspaceMutation.isPending || !isOwner}
                 >
                   Save Changes
                 </Button>
@@ -280,7 +222,7 @@ export const UpdateWorkspaceForm = ({
                     <Button
                       size="sm"
                       variant="default"
-                      disabled={resetInvitation.isPending}
+                      disabled={resetInvitationMutation.isPending}
                       onClick={() => handleResetInvitation(invitation.token)}
                     >
                       <RefreshCw className="size-4" />
@@ -288,7 +230,7 @@ export const UpdateWorkspaceForm = ({
                     <Button
                       size="sm"
                       variant="default"
-                      disabled={revokeInvitation.isPending}
+                      disabled={revokeInvitationMutation.isPending}
                       onClick={() => handleCancelInvitation(invitation.token)}
                     >
                       <Ban className="size-4" />
@@ -316,8 +258,8 @@ export const UpdateWorkspaceForm = ({
               variant="destructive"
               type="button"
               disabled={
-                deleteWorkspace.isPending ||
-                updateWorkspace.isPending ||
+                deleteWorkspaceMutation.isPending ||
+                updateWorkspaceMutation.isPending ||
                 !isOwner
               }
               onClick={() => handleDelete(initialValues.id)}
