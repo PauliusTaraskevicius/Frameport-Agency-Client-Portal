@@ -18,20 +18,19 @@ import {
 import { useWorkspaceId } from "../../hooks/use-workspace-id";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateMemberSchema } from "@/modules/members/schema";
 import { MemberRole } from "@/modules/members/types";
-import { toast } from "sonner";
+
 import { useAuth } from "@clerk/nextjs";
-
-
+import { useUpdateMember } from "@/modules/members/api/use-update-member";
+import { useDeleteMember } from "@/modules/members/api/use-delete-member";
 
 export const MembersList = () => {
   const workspaceId = useWorkspaceId();
-  const queryClient = useQueryClient();
   const { userId } = useAuth();
   const trpc = useTRPC();
   const [ConfirmDialog, confirmDelete] = useConfirm(
@@ -39,7 +38,7 @@ export const MembersList = () => {
     "This member will be removed from the workspace.",
   );
 
-  const { data: members, isLoading: isLoadingMembers } = useQuery(
+  const { data: members } = useQuery(
     trpc.members.getMany.queryOptions({ workspaceId }),
   );
 
@@ -54,43 +53,19 @@ export const MembersList = () => {
     },
   });
 
-  const updateMember = useMutation(
-    trpc.members.update.mutationOptions({
-      onSuccess: () => {
-        form.reset;
-        queryClient.invalidateQueries(
-          trpc.members.getMany.queryOptions({ workspaceId }),
-        );
-        toast.success("Member role updated successfully");
-      },
-      onError: (error) => {
-        toast.error(error.message || "Failed to update member role");
-      },
-    }),
-  );
-
-  const deleteMember = useMutation(
-    trpc.members.delete.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries(
-          trpc.members.getMany.queryOptions({ workspaceId }),
-        );
-      },
-      onError: (error) => {
-        toast.error(error.message || "Failed to delete member");
-      },
-    }),
-  );
+  const updateMemberMutation = useUpdateMember(workspaceId);
+  const deleteMemberMutation = useDeleteMember(workspaceId);
 
   const handleUpdateMember = async (userId: string, role: MemberRole) => {
-    updateMember.mutate({ workspaceId, userId, role });
+    updateMemberMutation.mutate({ workspaceId, userId, role });
+    form.reset();
   };
 
   const handleDeleteMember = async (userId: string) => {
     const ok = await confirmDelete();
     if (!ok) return;
 
-    deleteMember.mutate({ workspaceId, userId });
+    deleteMemberMutation.mutate({ workspaceId, userId });
   };
 
   return (
@@ -133,7 +108,7 @@ export const MembersList = () => {
                         onClick={() =>
                           handleUpdateMember(member.userId, MemberRole.OWNER)
                         }
-                        disabled={updateMember.isPending}
+                        disabled={updateMemberMutation.isPending}
                       >
                         Set as Administrator
                       </DropdownMenuItem>
@@ -145,7 +120,7 @@ export const MembersList = () => {
                         onClick={() =>
                           handleUpdateMember(member.userId, MemberRole.MEMBER)
                         }
-                        disabled={updateMember.isPending}
+                        disabled={updateMemberMutation.isPending}
                       >
                         Set as Member
                       </DropdownMenuItem>
@@ -154,7 +129,7 @@ export const MembersList = () => {
                     <DropdownMenuItem
                       className="font-medium text-amber-700"
                       onClick={() => handleDeleteMember(member.userId)}
-                      disabled={deleteMember.isPending}
+                      disabled={deleteMemberMutation.isPending}
                     >
                       Remove {member.user.firstName}
                     </DropdownMenuItem>

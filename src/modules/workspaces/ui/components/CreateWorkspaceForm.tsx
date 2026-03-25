@@ -1,13 +1,9 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWorkspaceSchema } from "../../schema";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -22,17 +18,13 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
+import { useCreateWorkspace } from "../../api/use-create-workspace";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const trpc = useTRPC();
-
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
@@ -40,31 +32,13 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     },
   });
 
-  const createWorkspace = useMutation(
-    trpc.workspaces.create.mutationOptions({
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
-        router.push(`/dashboard/workspaces/${data.id}`);
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while creating the workspace",
-        );
-        if (error.data?.code === "TOO_MANY_REQUESTS") {
-          //   router.push("/pricing");
-          toast.error(
-            "You are creating workspaces too quickly. Please wait a moment and try again.",
-          );
-        }
-      },
-    }),
-  );
+  const createWorkspaceMutation = useCreateWorkspace();
 
-  const isPending = createWorkspace.isPending;
+  const isPending = createWorkspaceMutation.isPending;
 
   const onSubmit = async (values: z.infer<typeof createWorkspaceSchema>) => {
-    await createWorkspace.mutateAsync(values);
+    await createWorkspaceMutation.mutateAsync(values);
+    form.reset();
   };
 
   return (

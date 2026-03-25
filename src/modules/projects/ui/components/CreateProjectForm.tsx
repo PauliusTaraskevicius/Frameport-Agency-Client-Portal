@@ -3,11 +3,11 @@
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createProjectSchema } from "../../schema";
-import { toast } from "sonner";
+
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateProject } from "../../api/use-create-project";
 
 interface CreateProjectFormProps {
   onCancel?: () => void;
@@ -57,25 +58,12 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
     }),
   );
 
-  const createProject = useMutation(
-    trpc.projects.create.mutationOptions({
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries(trpc.projects.getMany.queryOptions({ workspaceId }));
-        router.push(`/dashboard/workspaces/${workspaceId}/projects/${data.id}`);
-      },
-      onError: (error) => {
-        toast.error(
-          error.message || "An error occurred while creating the project",
-        );
-      },
-    }),
-  );
+  const createProjectMutation = useCreateProject(workspaceId);
 
-  const isPending = createProject.isPending;
+  const isPending = createProjectMutation.isPending;
 
   const onSubmit = (data: z.infer<typeof createProjectSchema>) => {
-    createProject.mutate({
+    createProjectMutation.mutate({
       ...data,
       workspaceId,
     });
