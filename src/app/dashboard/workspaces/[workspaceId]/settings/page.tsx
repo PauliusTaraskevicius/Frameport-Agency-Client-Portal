@@ -3,6 +3,7 @@ import { caller } from "@/trpc/server";
 import { UpdateWorkspaceForm } from "@/modules/workspaces/ui/components/UpdateWorkspaceForm";
 
 import { redirect } from "next/navigation";
+import { PageError } from "@/components/PageError";
 
 interface WorkspaceIdSettingsPageProps {
   params: Promise<{
@@ -26,7 +27,7 @@ const WorkspaceIdSettingsPage = async ({
   });
 
   if (!initialValues) {
-    redirect(`/dashboard/workspaces/${workspaceId}`);
+    return <PageError message="Project not found." />;
   }
 
   return (

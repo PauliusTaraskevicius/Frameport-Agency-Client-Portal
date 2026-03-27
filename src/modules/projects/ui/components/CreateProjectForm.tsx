@@ -38,9 +38,6 @@ interface CreateProjectFormProps {
 
 export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const workspaceId = useWorkspaceId();
-  const router = useRouter();
-
-  const queryClient = useQueryClient();
   const trpc = useTRPC();
 
   const form = useForm({
