@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { MemberRole } from "@/modules/members/types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 
@@ -88,5 +89,176 @@ export const projectsRouter = createTRPCRouter({
           message: "An error occurred while fetching projects",
         });
       }
+    }),
+
+  getOne: protectedProcedure
+    .input(z.object({ projectId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const project = await prisma.project.findUnique({
+        where: {
+          id: input.projectId,
+        },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: {
+            some: {
+              id: input.projectId,
+            },
+          },
+        },
+      });
+
+      if (!member && !client) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+      return project;
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        name: z
+          .string()
+          .min(1, "Name is required")
+          .max(255, "Name is too long"),
+        description: z.string().max(1024, "Description is too long").optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const project = await prisma.project.findUnique({
+        where: {
+          id: input.projectId,
+        },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: {
+            some: {
+              id: input.projectId,
+            },
+          },
+        },
+      });
+
+      if (!member && !client) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      try {
+        const updatedProject = await prisma.project.update({
+          where: {
+            id: input.projectId,
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+          },
+        });
+
+        return updatedProject;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("Unique constraint")
+        ) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message:
+              "A project with that name already exists in this workspace",
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An error occurred while updating the project",
+        });
+      }
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ projectId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      // First, fetch the project
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      // Check membership using the project's workspaceId
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      if (
+        member.role !== MemberRole.OWNER &&
+        member.role !== MemberRole.ADMIN
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this project",
+        });
+      }
+
+      await prisma.project.delete({
+        where: {
+          id: input.projectId,
+        },
+      });
+      return { success: true };
     }),
 });

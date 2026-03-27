@@ -4,27 +4,27 @@ import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
-export const useCreateProject = (workspaceId: string) => {
+export const useDeleteProject = ({ workspaceId }: { workspaceId: string }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
-  const createProject = useMutation(
-    trpc.projects.create.mutationOptions({
-      onSuccess: (data) => {
+  const deleteProject = useMutation(
+    trpc.projects.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Project deleted successfully");
         queryClient.invalidateQueries(
           trpc.projects.getMany.queryOptions({ workspaceId }),
         );
-        toast.success("Project created successfully");
-        router.push(`/dashboard/workspaces/${workspaceId}/projects/${data.id}`);
+        router.push(`/dashboard/workspaces/${workspaceId}`);
       },
       onError: (error) => {
         toast.error(
-          error.message || "An error occurred while creating the project",
+          error.message || "An error occurred while deleting the project",
         );
       },
     }),
   );
 
-  return createProject;
+  return deleteProject;
 };

@@ -132,7 +132,10 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
 
-      if (member.role !== MemberRole.OWNER) {
+      if (
+        member.role !== MemberRole.OWNER &&
+        member.role !== MemberRole.ADMIN
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to update this workspace",
@@ -184,7 +187,10 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
 
-      if (member.role !== MemberRole.OWNER) {
+      if (
+        member.role !== MemberRole.OWNER &&
+        member.role !== MemberRole.ADMIN
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this workspace",
