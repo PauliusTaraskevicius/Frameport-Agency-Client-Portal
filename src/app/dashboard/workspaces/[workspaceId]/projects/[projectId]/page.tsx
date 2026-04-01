@@ -2,6 +2,7 @@ import { PageError } from "@/components/PageError";
 import { Button } from "@/components/ui/button";
 import { isMemberClient } from "@/modules/projects/hooks/is-member-client";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
+import { TasksViewSwitcher } from "@/modules/tasks/components/TasksViewSwitcher";
 import { caller } from "@/trpc/server";
 import { auth } from "@clerk/nextjs/server";
 import { PencilIcon } from "lucide-react";
@@ -56,6 +57,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
           </Button>
         </div>
       </div>
+      <TasksViewSwitcher />
     </div>
   );
 };

@@ -47,3 +47,8 @@ export type Client = Prisma.ClientModel
  * 
  */
 export type Project = Prisma.ProjectModel
+/**
+ * Model Task
+ * 
+ */
+export type Task = Prisma.TaskModel
