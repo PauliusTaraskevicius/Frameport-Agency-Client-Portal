@@ -17,5 +17,6 @@ export const createTaskSchema = z.object({
     .default(TaskStatus.TODO),
   projectId: z.string().min(1, "Project ID is required"),
   assigneeId: z.string().min(1, "Assignee ID is required"),
-  dueDate: z.coerce.date(),
+  workspaceId: z.string().trim().min(1, "Workspace ID is required"),
+  dueDate: z.coerce.date("Invalid date format"),
 });
