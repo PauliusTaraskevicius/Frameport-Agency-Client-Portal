@@ -14,3 +14,12 @@ export function generateInvitecode(length: number = 6): string {
   }
   return inviteCode;
 }
+
+
+export const formatStatus = (status: string) => {
+  return status
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
