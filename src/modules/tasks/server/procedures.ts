@@ -126,6 +126,7 @@ export const tasksRouter = createTRPCRouter({
           ])
           .optional(),
         dueDate: z.date().optional(),
+        search: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -154,6 +155,14 @@ export const tasksRouter = createTRPCRouter({
             ...(input.assigneeId && { assigneeId: input.assigneeId }),
             ...(input.status && { status: input.status }),
             ...(input.dueDate && { dueDate: input.dueDate }),
+            ...(input.search && {
+              OR: [
+                { title: { contains: input.search, mode: "insensitive" } },
+                {
+                  description: { contains: input.search, mode: "insensitive" },
+                },
+              ],
+            }),
           },
           orderBy: {
             position: "asc",
