@@ -3,8 +3,7 @@
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import z from "zod";
@@ -47,7 +46,6 @@ export const CreateTaskForm = ({
   memberOptions,
 }: CreateTaskFormProps) => {
   const workspaceId = useWorkspaceId();
-  const trpc = useTRPC();
 
   const form = useForm({
     resolver: zodResolver(createTaskSchema),
@@ -61,14 +59,6 @@ export const CreateTaskForm = ({
       dueDate: undefined,
     },
   });
-
-  const getTasks = useQuery(trpc.tasks.getMany.queryOptions({ workspaceId }));
-
-  const clientsQuery = useQuery(
-    trpc.clients.getMany.queryOptions({
-      workspaceId,
-    }),
-  );
 
   const createTaskMutation = useCreateTask(workspaceId);
 
