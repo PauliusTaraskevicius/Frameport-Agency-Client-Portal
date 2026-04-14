@@ -6,6 +6,60 @@ import z from "zod";
 import { TaskStatus } from "../types";
 
 export const tasksRouter = createTRPCRouter({
+  delete: protectedProcedure
+    .input(z.object({ taskId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      // Get the task to find its project and workspace
+      const task = await prisma.task.findUnique({
+        where: {
+          id: input.taskId,
+        },
+        select: {
+          projectId: true,
+        },
+      });
+      if (!task) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Task not found",
+        });
+      }
+      const project = await prisma.project.findUnique({
+        where: {
+          id: task.projectId,
+        },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      // Check if user is a member of the workspace
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspaceId: project.workspaceId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this task",
+        });
+      }
+
+      await prisma.task.delete({
+        where: {
+          id: input.taskId,
+        },
+      });
+
+      return { success: true };
+    }),
   create: protectedProcedure
     .input(
       z.object({
@@ -164,12 +218,30 @@ export const tasksRouter = createTRPCRouter({
               ],
             }),
           },
+          include: {
+            project: true,
+            assignee: {
+              include: {
+                user: true,
+              },
+            },
+          },
           orderBy: {
             position: "asc",
           },
         });
 
-        return tasks;
+        return tasks.map((task) => ({
+          ...task,
+          assignee: {
+            ...task.assignee,
+            user: {
+              name: [task.assignee.user.firstName, task.assignee.user.lastName]
+                .filter(Boolean)
+                .join(" "),
+            },
+          },
+        }));
       } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
