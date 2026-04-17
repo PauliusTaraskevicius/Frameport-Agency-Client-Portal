@@ -16,7 +16,7 @@ export type Task = {
   description?: string | null;
   status: TaskStatus;
   position: number;
-  dueDate: string;
+  dueDate: Date;
   projectId: string;
   assigneeId: string;
   project: Project;

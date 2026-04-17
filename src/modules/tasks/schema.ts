@@ -3,7 +3,7 @@ import { TaskStatus } from "./types";
 
 export const createTaskSchema = z.object({
   title: z.string().trim().min(1, "Task title is required"),
-  description: z.string().optional(),
+  description: z.string().max(1024, "Description is too long").optional(),
   status: z
     .enum(
       [
