@@ -6,6 +6,104 @@ import z from "zod";
 import { TaskStatus } from "../types";
 
 export const tasksRouter = createTRPCRouter({
+  update: protectedProcedure
+    .input(
+      z.object({
+        taskId: z.string().min(1),
+        title: z
+          .string()
+          .min(1, "Title is required")
+          .max(255, "Title is too long")
+          .optional(),
+        description: z.string().max(1024, "Description is too long").optional(),
+        assigneeId: z.string().min(1, "Assignee is required").optional(),
+        dueDate: z.date().optional(),
+        position: z.number().optional(),
+        status: z
+          .enum([
+            TaskStatus.TODO,
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.REVIEW,
+            TaskStatus.DONE,
+          ])
+          .optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get the task to find its project and workspace
+      const task = await prisma.task.findUnique({
+        where: {
+          id: input.taskId,
+        },
+      });
+
+      if (!task) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Task not found",
+        });
+      }
+
+      // Get the project to find its workspace
+      const project = await prisma.project.findUnique({
+        where: {
+          id: task.projectId,
+        },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      // Check if user is a member of the workspace
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspaceId: project.workspaceId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to update this task",
+        });
+      }
+
+      try {
+        const updatedTask = await prisma.task.update({
+          where: {
+            id: input.taskId,
+          },
+          data: {
+            title: input.title,
+            description: input.description,
+            assigneeId: input.assigneeId,
+            dueDate: input.dueDate,
+            status: input.status,
+          },
+        });
+        return updatedTask;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("Unique constraint")
+        ) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A task with that name already exists in this project",
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An error occurred while updating the task",
+        });
+      }
+    }),
+
   delete: protectedProcedure
     .input(z.object({ taskId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -248,5 +346,58 @@ export const tasksRouter = createTRPCRouter({
           message: "An error occurred while fetching tasks",
         });
       }
+    }),
+
+  getOne: protectedProcedure
+    .input(z.object({ taskId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      // Get the task to find its project and workspace
+      const task = await prisma.task.findUnique({
+        where: {
+          id: input.taskId,
+        },
+        include: {
+          project: true,
+          assignee: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
+
+      if (!task) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Task not found",
+        });
+      }
+
+      // Check if user is a member of the workspace
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspaceId: task.project.workspaceId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to view this task",
+        });
+      }
+
+      return {
+        ...task,
+        assignee: {
+          ...task.assignee,
+          user: {
+            name: [task.assignee.user.firstName, task.assignee.user.lastName]
+              .filter(Boolean)
+              .join(" "),
+          },
+        },
+      };
     }),
 });

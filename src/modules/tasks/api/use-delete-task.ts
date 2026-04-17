@@ -9,7 +9,10 @@ interface UseDeleteTaskOptions {
   projectId: string;
 }
 
-export const useDeleteTask = ({ workspaceId, projectId }: UseDeleteTaskOptions) => {
+export const useDeleteTask = ({
+  workspaceId,
+  projectId,
+}: UseDeleteTaskOptions) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();

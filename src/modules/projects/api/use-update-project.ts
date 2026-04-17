@@ -12,12 +12,14 @@ export const useUpdateProject = () => {
   const updateProject = useMutation(
     trpc.projects.update.mutationOptions({
       onSuccess: (data) => {
-        queryClient.invalidateQueries(
-          trpc.projects.getMany.queryOptions({ workspaceId: data.workspaceId }),
-        );
-        queryClient.invalidateQueries(
-          trpc.projects.getOne.queryOptions({ projectId: data.id }),
-        );
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.getMany.queryKey({
+            workspaceId: data.workspaceId,
+          }),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.getOne.queryKey({ projectId: data.id }),
+        });
         toast.success("Project updated successfully");
         router.push(
           `/dashboard/workspaces/${data.workspaceId}/projects/${data.id}`,

@@ -11,7 +11,7 @@ import {
 
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import { useDeleteTask } from "../api/use-delete-task";
-import { useEditTaskModal } from "../hooks/use-edit-task-modal";
+import { useUpdateTaskModal } from "../hooks/use-update-task-modal";
 
 interface TaskActionsProps {
   id: string;
@@ -23,7 +23,7 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
-  const { open } = useEditTaskModal();
+  const { open } = useUpdateTaskModal();
 
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete Task",

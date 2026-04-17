@@ -4,6 +4,7 @@ import { CreateWorkspaceModal } from "@/modules/workspaces/ui/components/CreateW
 import { CreateInvitationModal } from "@/modules/invitations/ui/components/CreateInvitationModal";
 import { CreateProjectModal } from "@/modules/projects/ui/components/CreateProjectModal";
 import { CreateTaskModal } from "@/modules/tasks/components/CreateTaskModal";
+import { UpdateTaskModal } from "@/modules/tasks/components/UpdateTaskModal";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <CreateInvitationModal />
       <CreateProjectModal />
       <CreateTaskModal />
+      <UpdateTaskModal />
       <div className="flex h-full w-full">
         <div className="fixed top-0 left-0 hidden h-full overflow-y-auto lg:block lg:w-66">
           <Sidebar />
