@@ -4,13 +4,16 @@ import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { CreateTaskForm } from "./CreateTaskForm";
+import { TaskStatus } from "../types";
 
 interface CreateTaskFormWrapperProps {
   onCancel: () => void;
+  initialStatus?: TaskStatus | null;
 }
 
 export const CreateTaskFormWrapper = ({
   onCancel,
+  initialStatus,
 }: CreateTaskFormWrapperProps) => {
   const trpc = useTRPC();
   const workspaceId = useWorkspaceId();
@@ -53,7 +56,7 @@ export const CreateTaskFormWrapper = ({
         onCancel={onCancel}
         projectOptions={projectOptions ?? []}
         memberOptions={memberOptions ?? []}
-        
+        initialStatus={initialStatus}
       />
     </div>
   );
