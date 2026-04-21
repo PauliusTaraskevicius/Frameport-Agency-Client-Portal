@@ -400,4 +400,76 @@ export const tasksRouter = createTRPCRouter({
         },
       };
     }),
+  bulk: protectedProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.string().min(1),
+          status: z.enum([
+            TaskStatus.TODO,
+            TaskStatus.IN_PROGRESS,
+            TaskStatus.REVIEW,
+            TaskStatus.DONE,
+          ]),
+          position: z.number().min(0),
+        }),
+      ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const tasks = await prisma.task.findMany({
+        where: {
+          id: { in: input.map((t) => t.id) },
+        },
+        select: {
+          projectId: true,
+        },
+      });
+
+      if (tasks.length !== input.length) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "One or more tasks not found",
+        });
+      }
+
+      // Get unique project IDs and resolve their workspace IDs
+      const projectIds = [...new Set(tasks.map((t) => t.projectId))];
+
+      const projects = await prisma.project.findMany({
+        where: { id: { in: projectIds } },
+        select: { workspaceId: true },
+      });
+
+      const workspaceIds = [...new Set(projects.map((p) => p.workspaceId))];
+
+      // Verify the user is a member of every workspace involved
+      const memberCount = await prisma.workspaceMember.count({
+        where: {
+          userId: ctx.auth.userId,
+          workspaceId: { in: workspaceIds },
+        },
+      });
+
+      if (memberCount !== workspaceIds.length) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "You do not have permission to update one or more of these tasks",
+        });
+      }
+
+      const updates = input.map((task) =>
+        prisma.task.update({
+          where: { id: task.id },
+          data: {
+            status: task.status,
+            position: task.position,
+          },
+        }),
+      );
+
+      await prisma.$transaction(updates);
+
+      return { success: true };
+    }),
 });
