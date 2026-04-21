@@ -38,12 +38,14 @@ interface CreateTaskFormProps {
   onCancel?: () => void;
   projectOptions: { id: string; name: string }[];
   memberOptions: { id: string; name: string }[];
+  initialStatus?: TaskStatus | null;
 }
 
 export const CreateTaskForm = ({
   onCancel,
   projectOptions,
   memberOptions,
+  initialStatus,
 }: CreateTaskFormProps) => {
   const workspaceId = useWorkspaceId();
 
@@ -53,7 +55,7 @@ export const CreateTaskForm = ({
       workspaceId,
       title: "",
       description: "",
-      status: TaskStatus.TODO,
+      status: initialStatus ?? TaskStatus.TODO,
       projectId: "",
       assigneeId: "",
       dueDate: undefined,
