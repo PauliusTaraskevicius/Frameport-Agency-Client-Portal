@@ -6,11 +6,13 @@ import { toast } from "sonner";
 interface UseUpdateTaskOptions {
   workspaceId: string;
   projectId: string;
+  onSuccess?: () => void;
 }
 
 export const useUpdateTask = ({
   workspaceId,
   projectId,
+  onSuccess,
 }: UseUpdateTaskOptions) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -47,10 +49,14 @@ export const useUpdateTask = ({
         queryClient.invalidateQueries({
           queryKey: trpc.tasks.getMany.queryKey({ workspaceId }),
         });
+        queryClient.invalidateQueries({
+          queryKey: trpc.tasks.getOne.queryKey({ taskId: data.id }),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.getOne.queryKey({ projectId }),
+        });
         toast.success("Task updated successfully");
-        router.push(
-          `/dashboard/workspaces/${workspaceId}/projects/${projectId}`,
-        );
+        onSuccess?.();
       },
       onError: (error, variables, context: any) => {
         // Roll back optimistic update on error
