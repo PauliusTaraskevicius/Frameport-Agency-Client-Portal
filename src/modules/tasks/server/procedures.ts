@@ -17,6 +17,7 @@ export const tasksRouter = createTRPCRouter({
           .optional(),
         description: z.string().max(1024, "Description is too long").optional(),
         assigneeId: z.string().min(1, "Assignee is required").optional(),
+        projectId: z.string().min(1).optional(),
         dueDate: z.date().optional(),
         position: z.number().optional(),
         status: z
@@ -84,6 +85,7 @@ export const tasksRouter = createTRPCRouter({
             assigneeId: input.assigneeId,
             dueDate: input.dueDate,
             status: input.status,
+            projectId: input.projectId,
           },
         });
         return updatedTask;

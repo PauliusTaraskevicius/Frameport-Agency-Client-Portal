@@ -63,6 +63,7 @@ export const UpdateTaskForm = ({
   const updateTaskMutation = useUpdateTask({
     workspaceId,
     projectId: initialValues.projectId,
+    onSuccess: onCancel,
   });
 
   const isPending = updateTaskMutation.isPending;

@@ -1,3 +1,6 @@
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./data-calendar.css";
+
 import {
   format,
   getDay,
@@ -13,8 +16,6 @@ import { enUS } from "date-fns/locale";
 import { Task } from "../../types";
 import { useState } from "react";
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import "./data-calendar.css";
 import { EventCard } from "./EventCard";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
