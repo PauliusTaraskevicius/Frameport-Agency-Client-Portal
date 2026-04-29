@@ -7,6 +7,9 @@ import { TasksViewSwitcher } from "@/modules/tasks/components/TasksViewSwitcher"
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 
+import useGetProjectAnalytics from "../../api/use-get-project-analytics";
+import { Analytics } from "@/components/Analytics";
+
 interface ClientProjectIdPageProps {
   params: {
     projectId: string;
@@ -17,8 +20,11 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
 
   const getProject = useGetProject({ projectId });
+  const getProjectAnalytics = useGetProjectAnalytics({ projectId });
 
-  if (!getProject.data) {
+  const isLoading = getProject.isLoading || getProjectAnalytics.isLoading;
+
+  if (!getProject.data || !getProjectAnalytics.data) {
     return null;
   }
 
@@ -40,6 +46,10 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
           </Button>
         </div>
       </div>
+      {getProjectAnalytics.data ? (
+        <Analytics data={getProjectAnalytics.data} />
+      ) : null}
+
       <TasksViewSwitcher hideProjectFilter />
     </div>
   );

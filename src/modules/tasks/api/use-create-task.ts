@@ -15,6 +15,11 @@ export const useCreateTask = (workspaceId: string) => {
         queryClient.invalidateQueries(
           trpc.tasks.getMany.queryOptions({ workspaceId }),
         );
+        queryClient.invalidateQueries(
+          trpc.projects.getProjectAnalytics.queryOptions({
+            projectId: data.projectId,
+          }),
+        );
         toast.success("Task created successfully");
         router.push(
           `/dashboard/workspaces/${workspaceId}/projects/${data.projectId}`,
