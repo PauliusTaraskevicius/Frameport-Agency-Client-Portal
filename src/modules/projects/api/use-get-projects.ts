@@ -6,5 +6,9 @@ export const useGetProjects = (workspaceId: string) => {
 
   const query = useQuery(trpc.projects.getMany.queryOptions({ workspaceId }));
 
+  if (query.isError) {
+    throw new Error("Failed to fetch project");
+  }
+
   return query;
 };
