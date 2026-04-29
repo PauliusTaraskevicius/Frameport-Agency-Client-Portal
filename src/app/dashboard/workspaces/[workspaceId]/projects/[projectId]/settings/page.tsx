@@ -1,9 +1,8 @@
 import { PageError } from "@/components/PageError";
 import { isMemberClient } from "@/modules/projects/hooks/is-member-client";
-import { caller } from "@/trpc/server";
+import { ProjectIdSettingsClient } from "@/modules/projects/ui/components/ProjectIdSettingsClient";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ProjectIdSettingsClient } from "./client";
 
 interface ProjectSettingsPageProps {
   params: Promise<{
