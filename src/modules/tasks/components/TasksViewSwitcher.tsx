@@ -17,23 +17,30 @@ import { useCallback } from "react";
 import { TaskStatus } from "../types";
 import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks";
 import { DataCalendar } from "./data-table/DataCalendar";
+import { useAuth } from "@clerk/nextjs";
+import { useGetMembers } from "@/modules/members/api/use-get-members";
 
 interface TasksViewSwitcherProps {
   hideProjectFilter?: boolean;
 }
 
-export const TasksViewSwitcher = ({ hideProjectFilter }: TasksViewSwitcherProps) => {
+export const TasksViewSwitcher = ({
+  hideProjectFilter,
+}: TasksViewSwitcherProps) => {
   const [{ status, assigneeId, projectId, dueDate }] = useTasksFilters();
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
-
+  const { userId } = useAuth();
   const workspaceId = useWorkspaceId();
+
+  const { data: members } = useGetMembers(workspaceId);
+  const currentMember = members?.find((m) => m.userId === userId);
 
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
     status,
-    assigneeId,
+    assigneeId: currentMember?.id,
     projectId,
     dueDate,
   });

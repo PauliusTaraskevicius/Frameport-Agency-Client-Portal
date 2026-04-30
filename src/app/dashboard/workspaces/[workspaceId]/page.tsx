@@ -1,16 +1,18 @@
 import InvitationButton from "@/modules/invitations/ui/components/InvitationButton";
+import { ClientWorkspaceIdPage } from "@/modules/workspaces/ui/components/ClientWorkspaceIdPage";
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-const WorkspaceId = async () => {
+const WorkspaceIdPage = async () => {
   const { userId } = await auth();
 
   if (!userId) {
     redirect("/sign-in");
   }
+  
 
-  return <div><InvitationButton /></div>;
+  return <ClientWorkspaceIdPage />
 };
 
-export default WorkspaceId;
+export default WorkspaceIdPage;
