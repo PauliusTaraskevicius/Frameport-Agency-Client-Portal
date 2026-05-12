@@ -31,12 +31,12 @@ export const ClientWorkspaceIdPage = () => {
 
   const getProjects = useGetProjects(workspaceId);
   const getMembers = useGetMembers(workspaceId);
-  const { userId } = useAuth();
-  const currentMember = getMembers.data?.find((m) => m.userId === userId);
+  // const { userId } = useAuth();
+  // const currentMember = getMembers.data?.find((m) => m.userId === userId);
 
   const getTasks = useGetTasks({
     workspaceId,
-    assigneeId: currentMember?.id,
+    // assigneeId: currentMember?.id,
   });
 
   const { open: createProject } = useCreateProjectModal();

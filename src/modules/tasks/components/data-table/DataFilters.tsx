@@ -14,18 +14,27 @@ import { useGetMembers } from "@/modules/members/api/use-get-members";
 import { TaskStatus } from "../../types";
 import { useTasksFilters } from "../../hooks/use-tasks-filters";
 import { DatePicker } from "@/components/DatePicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@clerk/nextjs";
 
 interface DataFiltersProps {
   hideProjectFilter?: boolean;
+  myTasksByDefault?: boolean;
 }
 
-export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
+export const DataFilters = ({
+  hideProjectFilter,
+  myTasksByDefault,
+}: DataFiltersProps) => {
   const workspaceId = useWorkspaceId();
+  const { userId } = useAuth();
 
   const { data: projects, isLoading: isLoadingProjects } =
     useGetProjects(workspaceId);
   const { data: members, isLoading: isLoadingMembers } =
     useGetMembers(workspaceId);
+
+  const currentMember = members?.find((m) => m.userId === userId);
 
   const isLoading = isLoadingProjects || isLoadingMembers;
 
@@ -38,8 +47,23 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     label: member.user.firstName,
   }));
 
-  const [{ status, assigneeId, projectId, dueDate }, setFilters] =
+  const [{ status, assigneeId, projectId, dueDate, showAll }, setFilters] =
     useTasksFilters();
+
+  const isMyTasksOnly =
+    !myTasksByDefault && !!assigneeId && assigneeId === currentMember?.id;
+
+  const onMyTasksChange = (checked: boolean) => {
+    if (checked && currentMember) {
+      setFilters({ assigneeId: currentMember.id });
+    } else {
+      setFilters({ assigneeId: null });
+    }
+  };
+
+  const onShowAllChange = (checked: boolean) => {
+    setFilters({ showAll: checked ? true : null });
+  };
 
   const onStatusChange = (value: string) => {
     setFilters({ status: value === "all" ? null : (value as TaskStatus) });
@@ -76,26 +100,29 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
         </SelectContent>
       </Select>
-      <Select
-        defaultValue={assigneeId ?? undefined}
-        onValueChange={(value) => onAssigneeChange(value)}
-      >
-        <SelectTrigger className="h-8 w-full lg:w-auto">
-          <div className="flex items-center pr-2">
-            <UserIcon className="mr-2 size-4" />
-            <SelectValue placeholder="All assignees" />
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All assignees</SelectItem>
-          <SelectSeparator />
-          {memberOptions?.map((member) => (
-            <SelectItem key={member.value} value={member.value}>
-              {member.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!isMyTasksOnly && !myTasksByDefault && (
+        <Select
+          defaultValue={assigneeId ?? undefined}
+          onValueChange={(value) => onAssigneeChange(value)}
+        >
+          <SelectTrigger className="h-8 w-full lg:w-auto">
+            <div className="flex items-center pr-2">
+              <UserIcon className="mr-2 size-4" />
+              <SelectValue placeholder="All assignees" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All assignees</SelectItem>
+            <SelectSeparator />
+            {memberOptions?.map((member) => (
+              <SelectItem key={member.value} value={member.value}>
+                {member.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
       {!hideProjectFilter && (
         <Select
           defaultValue={projectId ?? undefined}
@@ -126,6 +153,21 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           setFilters({ dueDate: date ? date.toISOString() : null });
         }}
       />
+      {myTasksByDefault ? (
+        <div className="flex items-center gap-2">
+          <Checkbox checked={!!showAll} onCheckedChange={onShowAllChange} />
+          <span className="text-muted-foreground text-sm">
+            {showAll ? "Show my tasks only" : "Show all tasks"}
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <Checkbox checked={isMyTasksOnly} onCheckedChange={onMyTasksChange} />
+          <span className="text-muted-foreground text-sm">
+            {isMyTasksOnly ? "Show all tasks" : "Show my tasks only"}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

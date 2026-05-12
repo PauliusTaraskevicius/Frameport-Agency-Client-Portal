@@ -24,6 +24,14 @@ export const useDeleteTask = ({
         queryClient.invalidateQueries(
           trpc.tasks.getMany.queryFilter({ workspaceId }),
         );
+        queryClient.invalidateQueries({
+          queryKey: trpc.workspaces.getWorkspaceAnalytics.queryKey({
+            workspaceId,
+          }),
+        });
+        queryClient.invalidateQueries(
+          trpc.projects.getProjectAnalytics.queryOptions({ projectId }),
+        );
         router.push(
           `/dashboard/workspaces/${workspaceId}/projects/${projectId}`,
         );

@@ -50,7 +50,7 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
         <Analytics data={getProjectAnalytics.data} />
       ) : null}
 
-      <TasksViewSwitcher hideProjectFilter />
+      <TasksViewSwitcher hideProjectFilter projectId={projectId} />
     </div>
   );
 };

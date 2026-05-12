@@ -37,6 +37,12 @@ export const useUpdateTask = ({
           (old: any) => (old ? { ...old, ...variables } : old),
         );
 
+        queryClient.invalidateQueries({
+          queryKey: trpc.workspaces.getWorkspaceAnalytics.queryKey({
+            workspaceId,
+          }),
+        });
+
         return { previous, taskId: variables.taskId };
       },
       onSuccess: (data) => {
@@ -55,6 +61,10 @@ export const useUpdateTask = ({
         queryClient.invalidateQueries({
           queryKey: trpc.projects.getOne.queryKey({ projectId }),
         });
+        queryClient.invalidateQueries(
+          trpc.projects.getProjectAnalytics.queryOptions({ projectId }),
+        );
+
         toast.success("Task updated successfully");
         onSuccess?.();
       },

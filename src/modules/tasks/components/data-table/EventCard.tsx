@@ -1,4 +1,4 @@
-import { Project } from "@/generated/prisma/client";
+import { Project, WorkspaceMember } from "@/generated/prisma/client";
 
 import { TaskStatus } from "@/generated/prisma/enums";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import {
 interface EventCardProps {
   id: string;
   title: string;
-  assignee: any;
+  assignee: WorkspaceMember & { user: { name: string } };
   project: Project;
   status: TaskStatus;
 }
