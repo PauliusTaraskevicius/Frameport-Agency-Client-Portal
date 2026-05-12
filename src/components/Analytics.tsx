@@ -29,7 +29,7 @@ export const Analytics = ({ data }: AnalyticsProps) => {
           <AnalyticsCard
             title="Total tasks"
             value={data.taskCount}
-            variant={data.taskDifference > 0 ? "up" : "down"}
+            variant={data.taskDifference >= 0 ? "up" : "down"}
             increaseValue={data.taskDifference}
           />
           <DottedSeparator direction="vertical" />

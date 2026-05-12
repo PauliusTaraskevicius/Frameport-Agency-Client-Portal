@@ -310,140 +310,127 @@ export const projectsRouter = createTRPCRouter({
       const lastMonthStart = startOfMonth(subMonths(now, 1));
       const lastMonthEnd = endOfMonth(subMonths(now, 1));
 
-      const thisMonthTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          createdAt: {
-            gte: thisMonthStart,
-            lte: thisMonthEnd,
+      // --- Total tasks ---
+      const [taskCount, thisMonthTaskCount, lastMonthTaskCount] =
+        await Promise.all([
+          prisma.task.count({ where: { projectId: input.projectId } }),
+          prisma.task.count({
+            where: {
+              projectId: input.projectId,
+              createdAt: { gte: thisMonthStart, lte: thisMonthEnd },
+            },
+          }),
+          prisma.task.count({
+            where: {
+              projectId: input.projectId,
+              createdAt: { gte: lastMonthStart, lte: lastMonthEnd },
+            },
+          }),
+        ]);
+      const taskDifference = thisMonthTaskCount - lastMonthTaskCount;
+
+      // --- Assigned tasks ---
+      const [
+        assignedTaskCount,
+        thisMonthAssignedCount,
+        lastMonthAssignedCount,
+      ] = await Promise.all([
+        prisma.task.count({
+          where: { projectId: input.projectId, assigneeId: member?.id },
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            assigneeId: member?.id,
+            createdAt: { gte: thisMonthStart, lte: thisMonthEnd },
           },
-        },
-      });
-
-      const lastMonthTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          createdAt: {
-            gte: lastMonthStart,
-            lte: lastMonthEnd,
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            assigneeId: member?.id,
+            createdAt: { gte: lastMonthStart, lte: lastMonthEnd },
           },
-        },
-      });
-
-      const taskCount = thisMonthTasks.length;
-
-      const taskDifference = taskCount - lastMonthTasks.length;
-
-      const thisMonthAssignedTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          assigneeId: member?.id,
-          createdAt: {
-            gte: thisMonthStart,
-            lte: thisMonthEnd,
-          },
-        },
-      });
-
-      const lastMonthAssignedTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          assigneeId: member?.id,
-          createdAt: {
-            gte: lastMonthStart,
-            lte: lastMonthEnd,
-          },
-        },
-      });
-
-      const assignedTaskCount = thisMonthAssignedTasks.length;
-
+        }),
+      ]);
       const assignedTaskDifference =
-        assignedTaskCount - lastMonthAssignedTasks.length;
+        thisMonthAssignedCount - lastMonthAssignedCount;
 
-      const thisMonthIncompleteTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          status: {
-            not: TaskStatus.DONE,
+      // --- Incomplete tasks ---
+      const [
+        incompleteTaskCount,
+        thisMonthIncompleteCount,
+        lastMonthIncompleteCount,
+      ] = await Promise.all([
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            status: { not: TaskStatus.DONE },
           },
-          createdAt: {
-            gte: thisMonthStart,
-            lte: thisMonthEnd,
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            status: { not: TaskStatus.DONE },
+            createdAt: { gte: thisMonthStart, lte: thisMonthEnd },
           },
-        },
-      });
-
-      const lastMonthIncompleteTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          status: {
-            not: TaskStatus.DONE,
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            status: { not: TaskStatus.DONE },
+            createdAt: { gte: lastMonthStart, lte: lastMonthEnd },
           },
-          createdAt: {
-            gte: lastMonthStart,
-            lte: lastMonthEnd,
-          },
-        },
-      });
-
-      const incompleteTaskCount = thisMonthIncompleteTasks.length;
+        }),
+      ]);
       const incompleteTaskDifference =
-        incompleteTaskCount - lastMonthIncompleteTasks.length;
+        thisMonthIncompleteCount - lastMonthIncompleteCount;
 
-      const thisMonthCompletedTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          status: TaskStatus.DONE,
-          createdAt: {
-            gte: thisMonthStart,
-            lte: thisMonthEnd,
+      // --- Completed tasks ---
+      const [
+        completedTaskCount,
+        thisMonthCompletedCount,
+        lastMonthCompletedCount,
+      ] = await Promise.all([
+        prisma.task.count({
+          where: { projectId: input.projectId, status: TaskStatus.DONE },
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            status: TaskStatus.DONE,
+            createdAt: { gte: thisMonthStart, lte: thisMonthEnd },
           },
-        },
-      });
-
-      const lastMonthsCompletedTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          status: TaskStatus.DONE,
-          createdAt: {
-            gte: lastMonthStart,
-            lte: lastMonthEnd,
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            status: TaskStatus.DONE,
+            createdAt: { gte: lastMonthStart, lte: lastMonthEnd },
           },
-        },
-      });
-
-      const completedTaskCount = thisMonthCompletedTasks.length;
+        }),
+      ]);
       const completedTaskDifference =
-        completedTaskCount - lastMonthsCompletedTasks.length;
+        thisMonthCompletedCount - lastMonthCompletedCount;
 
-      const thiMonthsOverdueTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          dueDate: {
-            lt: now,
+      // --- Overdue tasks ---
+      const [overdueTaskCount, lastMonthOverdueCount] = await Promise.all([
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            dueDate: { lt: now },
+            status: { not: TaskStatus.DONE },
           },
-          status: {
-            not: TaskStatus.DONE,
+        }),
+        prisma.task.count({
+          where: {
+            projectId: input.projectId,
+            dueDate: { lt: subMonths(now, 1) },
+            status: { not: TaskStatus.DONE },
           },
-        },
-      });
-
-      const lastMonthsOverdueTasks = await prisma.task.findMany({
-        where: {
-          projectId: input.projectId,
-          dueDate: {
-            lt: subMonths(now, 1),
-          },
-          status: {
-            not: TaskStatus.DONE,
-          },
-        },
-      });
-
-      const overdueTaskCount = thiMonthsOverdueTasks.length;
-      const overdueTaskDifference =
-        overdueTaskCount - lastMonthsOverdueTasks.length;
+        }),
+      ]);
+      const overdueTaskDifference = overdueTaskCount - lastMonthOverdueCount;
 
       return {
         taskCount,

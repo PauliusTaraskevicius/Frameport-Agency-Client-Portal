@@ -1,6 +1,5 @@
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface UseUpdateTaskOptions {
@@ -8,7 +7,10 @@ interface UseUpdateTaskOptions {
   projectId: string;
 }
 
-export const useBulkUpdateTasks = ({ workspaceId }: UseUpdateTaskOptions) => {
+export const useBulkUpdateTasks = ({
+  workspaceId,
+  projectId,
+}: UseUpdateTaskOptions) => {
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
@@ -19,6 +21,15 @@ export const useBulkUpdateTasks = ({ workspaceId }: UseUpdateTaskOptions) => {
         queryClient.invalidateQueries({
           queryKey: trpc.tasks.getMany.queryKey({ workspaceId }),
         });
+        queryClient.invalidateQueries({
+          queryKey: trpc.workspaces.getWorkspaceAnalytics.queryKey({
+            workspaceId,
+          }),
+        });
+        queryClient.invalidateQueries(
+          trpc.projects.getProjectAnalytics.queryOptions({ projectId }),
+        );
+
         toast.success("Tasks updated successfully");
       },
       onError: (error) => {

@@ -13,13 +13,19 @@ export const useCreateTask = (workspaceId: string) => {
     trpc.tasks.create.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(
-          trpc.tasks.getMany.queryOptions({ workspaceId }),
+          trpc.tasks.getMany.queryFilter({ workspaceId }),
         );
         queryClient.invalidateQueries(
           trpc.projects.getProjectAnalytics.queryOptions({
             projectId: data.projectId,
           }),
         );
+        queryClient.invalidateQueries({
+          queryKey: trpc.workspaces.getWorkspaceAnalytics.queryKey({
+            workspaceId,
+          }),
+        });
+
         toast.success("Task created successfully");
         router.push(
           `/dashboard/workspaces/${workspaceId}/projects/${data.projectId}`,

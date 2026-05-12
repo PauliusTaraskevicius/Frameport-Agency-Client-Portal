@@ -22,26 +22,37 @@ import { useGetMembers } from "@/modules/members/api/use-get-members";
 
 interface TasksViewSwitcherProps {
   hideProjectFilter?: boolean;
+  projectId?: string;
+  myTasksByDefault?: boolean;
 }
 
 export const TasksViewSwitcher = ({
   hideProjectFilter,
+  projectId: projectIdProp,
+  myTasksByDefault,
 }: TasksViewSwitcherProps) => {
-  const [{ status, assigneeId, projectId, dueDate }] = useTasksFilters();
+  const [{ status, assigneeId, projectId: filterProjectId, dueDate, showAll }] =
+    useTasksFilters();
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
   const { userId } = useAuth();
   const workspaceId = useWorkspaceId();
 
+  const projectId = projectIdProp ?? filterProjectId;
+
   const { data: members } = useGetMembers(workspaceId);
   const currentMember = members?.find((m) => m.userId === userId);
+
+  // When myTasksByDefault: show current user's tasks unless showAll is checked
+  const effectiveAssigneeId =
+    myTasksByDefault && !showAll ? currentMember?.id : assigneeId;
 
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
     status,
-    assigneeId: currentMember?.id,
-    projectId,
+    assigneeId: effectiveAssigneeId,
+    projectId: projectId ?? filterProjectId,
     dueDate,
   });
 
@@ -94,7 +105,7 @@ export const TasksViewSwitcher = ({
           </Button>
         </div>
         <DottedSeparator className="my-4" />
-        <DataFilters hideProjectFilter={hideProjectFilter} />
+        <DataFilters hideProjectFilter={hideProjectFilter} myTasksByDefault={myTasksByDefault} />
         <DottedSeparator className="my-4" />
         {isLoadingTasks ? (
           <div className="flex h-50 w-full flex-col items-center justify-center rounded-lg border">
