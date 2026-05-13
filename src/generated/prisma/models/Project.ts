@@ -209,6 +209,7 @@ export type ProjectWhereInput = {
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   tasks?: Prisma.TaskListRelationFilter
+  files?: Prisma.FileListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -223,6 +224,7 @@ export type ProjectOrderByWithRelationInput = {
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
+  files?: Prisma.FileOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -240,6 +242,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   tasks?: Prisma.TaskListRelationFilter
+  files?: Prisma.FileListRelationFilter
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -280,6 +283,7 @@ export type ProjectCreateInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   client: Prisma.ClientCreateNestedOneWithoutProjectsInput
   tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -292,6 +296,7 @@ export type ProjectUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -304,6 +309,7 @@ export type ProjectUpdateInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutProjectsNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -316,6 +322,7 @@ export type ProjectUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -499,6 +506,20 @@ export type ProjectUpdateOneRequiredWithoutTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTasksInput, Prisma.ProjectUpdateWithoutTasksInput>, Prisma.ProjectUncheckedUpdateWithoutTasksInput>
 }
 
+export type ProjectCreateNestedOneWithoutFilesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutFilesInput, Prisma.ProjectUncheckedCreateWithoutFilesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutFilesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutFilesInput, Prisma.ProjectUncheckedCreateWithoutFilesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutFilesInput
+  upsert?: Prisma.ProjectUpsertWithoutFilesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutFilesInput, Prisma.ProjectUpdateWithoutFilesInput>, Prisma.ProjectUncheckedUpdateWithoutFilesInput>
+}
+
 export type ProjectCreateWithoutWorkspaceInput = {
   id?: string
   name: string
@@ -508,6 +529,7 @@ export type ProjectCreateWithoutWorkspaceInput = {
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutProjectsInput
   tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutWorkspaceInput = {
@@ -519,6 +541,7 @@ export type ProjectUncheckedCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutWorkspaceInput = {
@@ -570,6 +593,7 @@ export type ProjectCreateWithoutClientInput = {
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutClientInput = {
@@ -581,6 +605,7 @@ export type ProjectUncheckedCreateWithoutClientInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutClientInput = {
@@ -618,6 +643,7 @@ export type ProjectCreateWithoutTasksInput = {
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
   client: Prisma.ClientCreateNestedOneWithoutProjectsInput
+  files?: Prisma.FileCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutTasksInput = {
@@ -629,6 +655,7 @@ export type ProjectUncheckedCreateWithoutTasksInput = {
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutTasksInput = {
@@ -656,6 +683,7 @@ export type ProjectUpdateWithoutTasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutProjectsNestedInput
+  files?: Prisma.FileUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutTasksInput = {
@@ -667,6 +695,71 @@ export type ProjectUncheckedUpdateWithoutTasksInput = {
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutFilesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ProjectStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutProjectsInput
+  client: Prisma.ClientCreateNestedOneWithoutProjectsInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutFilesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ProjectStatus
+  workspaceId: string
+  clientId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutFilesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutFilesInput, Prisma.ProjectUncheckedCreateWithoutFilesInput>
+}
+
+export type ProjectUpsertWithoutFilesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutFilesInput, Prisma.ProjectUncheckedUpdateWithoutFilesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutFilesInput, Prisma.ProjectUncheckedCreateWithoutFilesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutFilesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutFilesInput, Prisma.ProjectUncheckedUpdateWithoutFilesInput>
+}
+
+export type ProjectUpdateWithoutFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutProjectsNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyWorkspaceInput = {
@@ -688,6 +781,7 @@ export type ProjectUpdateWithoutWorkspaceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutProjectsNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutWorkspaceInput = {
@@ -699,6 +793,7 @@ export type ProjectUncheckedUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -730,6 +825,7 @@ export type ProjectUpdateWithoutClientInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProjectsNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutClientInput = {
@@ -741,6 +837,7 @@ export type ProjectUncheckedUpdateWithoutClientInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutClientInput = {
@@ -760,10 +857,12 @@ export type ProjectUncheckedUpdateManyWithoutClientInput = {
 
 export type ProjectCountOutputType = {
   tasks: number
+  files: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | ProjectCountOutputTypeCountTasksArgs
+  files?: boolean | ProjectCountOutputTypeCountFilesArgs
 }
 
 /**
@@ -783,6 +882,13 @@ export type ProjectCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.TaskWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -796,6 +902,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Project$tasksArgs<ExtArgs>
+  files?: boolean | Prisma.Project$filesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -841,6 +948,7 @@ export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Project$tasksArgs<ExtArgs>
+  files?: boolean | Prisma.Project$filesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -858,6 +966,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     client: Prisma.$ClientPayload<ExtArgs>
     tasks: Prisma.$TaskPayload<ExtArgs>[]
+    files: Prisma.$FilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1265,6 +1374,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.Project$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  files<T extends Prisma.Project$filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1724,6 +1834,30 @@ export type Project$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
+}
+
+/**
+ * Project.files
+ */
+export type Project$filesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the File
+   */
+  select?: Prisma.FileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the File
+   */
+  omit?: Prisma.FileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileInclude<ExtArgs> | null
+  where?: Prisma.FileWhereInput
+  orderBy?: Prisma.FileOrderByWithRelationInput | Prisma.FileOrderByWithRelationInput[]
+  cursor?: Prisma.FileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileScalarFieldEnum | Prisma.FileScalarFieldEnum[]
 }
 
 /**

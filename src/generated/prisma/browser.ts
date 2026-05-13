@@ -52,3 +52,8 @@ export type Project = Prisma.ProjectModel
  * 
  */
 export type Task = Prisma.TaskModel
+/**
+ * Model File
+ * 
+ */
+export type File = Prisma.FileModel

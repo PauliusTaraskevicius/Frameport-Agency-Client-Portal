@@ -61,7 +61,7 @@ enum WorkspaceRole {
 
 model WorkspaceMember {
   id          String        @id @default(uuid())
-  role        WorkspaceRole @default(OWNER)
+  role        WorkspaceRole @default(ADMIN)
   userId      String
   workspaceId String
 
@@ -71,6 +71,7 @@ model WorkspaceMember {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  files     File[]
 
   @@unique([userId, workspaceId])
 }
@@ -144,9 +145,9 @@ model Project {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   tasks     Task[]
-  // files        File[]
   // approvals    Approval[]
   // activityLogs ActivityLog[]
+  files     File[]
 
   @@index([workspaceId])
   @@index([clientId])
@@ -177,4 +178,24 @@ model Task {
 
   @@index([projectId])
   @@index([assigneeId])
+}
+
+model File {
+  id           String   @id @default(uuid())
+  name         String
+  key          String   @unique
+  url          String   @db.Text
+  mimeType     String?
+  size         Int? // size in bytes
+  projectId    String
+  uploadedById String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project  Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploader WorkspaceMember @relation(fields: [uploadedById], references: [id])
+
+  // comments Comment[]
+
+  @@index([projectId])
 }
