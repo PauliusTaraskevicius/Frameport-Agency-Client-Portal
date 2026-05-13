@@ -193,6 +193,7 @@ export type WorkspaceMemberWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   tasks?: Prisma.TaskListRelationFilter
+  files?: Prisma.FileListRelationFilter
 }
 
 export type WorkspaceMemberOrderByWithRelationInput = {
@@ -205,6 +206,7 @@ export type WorkspaceMemberOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
+  files?: Prisma.FileOrderByRelationAggregateInput
 }
 
 export type WorkspaceMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -221,6 +223,7 @@ export type WorkspaceMemberWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   tasks?: Prisma.TaskListRelationFilter
+  files?: Prisma.FileListRelationFilter
 }, "id" | "userId_workspaceId">
 
 export type WorkspaceMemberOrderByWithAggregationInput = {
@@ -255,6 +258,7 @@ export type WorkspaceMemberCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberUncheckedCreateInput = {
@@ -265,6 +269,7 @@ export type WorkspaceMemberUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberUpdateInput = {
@@ -275,6 +280,7 @@ export type WorkspaceMemberUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateInput = {
@@ -285,6 +291,7 @@ export type WorkspaceMemberUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberCreateManyInput = {
@@ -461,6 +468,20 @@ export type WorkspaceMemberUpdateOneRequiredWithoutTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutTasksInput, Prisma.WorkspaceMemberUpdateWithoutTasksInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutTasksInput>
 }
 
+export type WorkspaceMemberCreateNestedOneWithoutFilesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedCreateWithoutFilesInput>
+  connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutFilesInput
+  connect?: Prisma.WorkspaceMemberWhereUniqueInput
+}
+
+export type WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedCreateWithoutFilesInput>
+  connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutFilesInput
+  upsert?: Prisma.WorkspaceMemberUpsertWithoutFilesInput
+  connect?: Prisma.WorkspaceMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutFilesInput, Prisma.WorkspaceMemberUpdateWithoutFilesInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutFilesInput>
+}
+
 export type WorkspaceMemberCreateWithoutUserInput = {
   id?: string
   role?: $Enums.WorkspaceRole
@@ -468,6 +489,7 @@ export type WorkspaceMemberCreateWithoutUserInput = {
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutUserInput = {
@@ -477,6 +499,7 @@ export type WorkspaceMemberUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutUserInput = {
@@ -524,6 +547,7 @@ export type WorkspaceMemberCreateWithoutWorkspaceInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutWorkspaceInput = {
@@ -533,6 +557,7 @@ export type WorkspaceMemberUncheckedCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutWorkspaceInput = {
@@ -568,6 +593,7 @@ export type WorkspaceMemberCreateWithoutTasksInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
+  files?: Prisma.FileCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutTasksInput = {
@@ -577,6 +603,7 @@ export type WorkspaceMemberUncheckedCreateWithoutTasksInput = {
   workspaceId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutTasksInput = {
@@ -602,6 +629,7 @@ export type WorkspaceMemberUpdateWithoutTasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
+  files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutTasksInput = {
@@ -611,6 +639,63 @@ export type WorkspaceMemberUncheckedUpdateWithoutTasksInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
+}
+
+export type WorkspaceMemberCreateWithoutFilesInput = {
+  id?: string
+  role?: $Enums.WorkspaceRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+}
+
+export type WorkspaceMemberUncheckedCreateWithoutFilesInput = {
+  id?: string
+  role?: $Enums.WorkspaceRole
+  userId: string
+  workspaceId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+}
+
+export type WorkspaceMemberCreateOrConnectWithoutFilesInput = {
+  where: Prisma.WorkspaceMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedCreateWithoutFilesInput>
+}
+
+export type WorkspaceMemberUpsertWithoutFilesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceMemberUpdateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedUpdateWithoutFilesInput>
+  create: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedCreateWithoutFilesInput>
+  where?: Prisma.WorkspaceMemberWhereInput
+}
+
+export type WorkspaceMemberUpdateToOneWithWhereWithoutFilesInput = {
+  where?: Prisma.WorkspaceMemberWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceMemberUpdateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedUpdateWithoutFilesInput>
+}
+
+export type WorkspaceMemberUpdateWithoutFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWorkspaceRoleFieldUpdateOperationsInput | $Enums.WorkspaceRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+}
+
+export type WorkspaceMemberUncheckedUpdateWithoutFilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWorkspaceRoleFieldUpdateOperationsInput | $Enums.WorkspaceRole
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type WorkspaceMemberCreateManyUserInput = {
@@ -628,6 +713,7 @@ export type WorkspaceMemberUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutUserInput = {
@@ -637,6 +723,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateManyWithoutUserInput = {
@@ -662,6 +749,7 @@ export type WorkspaceMemberUpdateWithoutWorkspaceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutWorkspaceInput = {
@@ -671,6 +759,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -688,10 +777,12 @@ export type WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceInput = {
 
 export type WorkspaceMemberCountOutputType = {
   tasks: number
+  files: number
 }
 
 export type WorkspaceMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | WorkspaceMemberCountOutputTypeCountTasksArgs
+  files?: boolean | WorkspaceMemberCountOutputTypeCountFilesArgs
 }
 
 /**
@@ -711,6 +802,13 @@ export type WorkspaceMemberCountOutputTypeCountTasksArgs<ExtArgs extends runtime
   where?: Prisma.TaskWhereInput
 }
 
+/**
+ * WorkspaceMemberCountOutputType without action
+ */
+export type WorkspaceMemberCountOutputTypeCountFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileWhereInput
+}
+
 
 export type WorkspaceMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -722,6 +820,7 @@ export type WorkspaceMemberSelect<ExtArgs extends runtime.Types.Extensions.Inter
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.WorkspaceMember$tasksArgs<ExtArgs>
+  files?: boolean | Prisma.WorkspaceMember$filesArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspaceMember"]>
 
@@ -761,6 +860,7 @@ export type WorkspaceMemberInclude<ExtArgs extends runtime.Types.Extensions.Inte
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.WorkspaceMember$tasksArgs<ExtArgs>
+  files?: boolean | Prisma.WorkspaceMember$filesArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceMemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -778,6 +878,7 @@ export type $WorkspaceMemberPayload<ExtArgs extends runtime.Types.Extensions.Int
     user: Prisma.$UserPayload<ExtArgs>
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     tasks: Prisma.$TaskPayload<ExtArgs>[]
+    files: Prisma.$FilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1183,6 +1284,7 @@ export interface Prisma__WorkspaceMemberClient<T, Null = never, ExtArgs extends 
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.WorkspaceMember$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  files<T extends Prisma.WorkspaceMember$filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1640,6 +1742,30 @@ export type WorkspaceMember$tasksArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
+}
+
+/**
+ * WorkspaceMember.files
+ */
+export type WorkspaceMember$filesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the File
+   */
+  select?: Prisma.FileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the File
+   */
+  omit?: Prisma.FileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileInclude<ExtArgs> | null
+  where?: Prisma.FileWhereInput
+  orderBy?: Prisma.FileOrderByWithRelationInput | Prisma.FileOrderByWithRelationInput[]
+  cursor?: Prisma.FileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileScalarFieldEnum | Prisma.FileScalarFieldEnum[]
 }
 
 /**
