@@ -5,6 +5,7 @@ import { membersRouter } from "@/modules/members/server/procedures";
 import { projectsRouter } from "@/modules/projects/server/procedures";
 import { clientsRouter } from "@/modules/clients/server/procedures";
 import { tasksRouter } from "@/modules/tasks/server/procedures";
+import { filesRouter } from "@/modules/projects/server/files-procedures";
 
 export const appRouter = createTRPCRouter({
   workspaces: workspaceRouter,
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   projects: projectsRouter,
   clients: clientsRouter,
   tasks: tasksRouter,
+  files: filesRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;
