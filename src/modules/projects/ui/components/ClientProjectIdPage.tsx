@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import useGetProject from "@/modules/projects/api/use-get-project";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
 import { TasksViewSwitcher } from "@/modules/tasks/components/TasksViewSwitcher";
-import { PencilIcon } from "lucide-react";
+import { FileIcon, PencilIcon, X } from "lucide-react";
 import Link from "next/link";
-
 import useGetProjectAnalytics from "../../api/use-get-project-analytics";
 import { Analytics } from "@/components/Analytics";
+import { FileUpload } from "./FileUpload";
 
 interface ClientProjectIdPageProps {
   params: {
@@ -18,11 +19,10 @@ interface ClientProjectIdPageProps {
 }
 export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
+  const [showUpload, setShowUpload] = useState(false);
 
   const getProject = useGetProject({ projectId });
   const getProjectAnalytics = useGetProjectAnalytics({ projectId });
-
-  const isLoading = getProject.isLoading || getProjectAnalytics.isLoading;
 
   if (!getProject.data || !getProjectAnalytics.data) {
     return null;
@@ -33,9 +33,23 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
           <ProjectAvatar name={getProject.data.name} className="size-8" />
-          <p className="text-lg font-semibold">{getProject.data.name}</p>
+          <p className="hidden text-lg font-semibold md:block">
+            {getProject.data.name}
+          </p>
         </div>
-        <div>
+        <div className="flex items-center gap-x-2">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => setShowUpload((v) => !v)}
+          >
+            {showUpload ? (
+              <X className="mr-2 size-4" />
+            ) : (
+              <FileIcon className="mr-2 size-4" />
+            )}
+            {showUpload ? "Close" : "Add files"}
+          </Button>
           <Button variant="secondary" size="sm" asChild>
             <Link
               href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
@@ -46,6 +60,17 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
           </Button>
         </div>
       </div>
+
+      {showUpload && (
+        <div className="rounded-lg border p-4">
+          <p className="mb-3 text-sm font-medium">Upload files</p>
+          <FileUpload
+            projectId={projectId}
+            onSuccess={() => setShowUpload(false)}
+          />
+        </div>
+      )}
+
       {getProjectAnalytics.data ? (
         <Analytics data={getProjectAnalytics.data} />
       ) : null}
