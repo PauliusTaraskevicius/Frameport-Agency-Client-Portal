@@ -5,7 +5,7 @@ import { membersRouter } from "@/modules/members/server/procedures";
 import { projectsRouter } from "@/modules/projects/server/procedures";
 import { clientsRouter } from "@/modules/clients/server/procedures";
 import { tasksRouter } from "@/modules/tasks/server/procedures";
-import { filesRouter } from "@/modules/projects/server/files-procedures";
+import { filesRouter } from "@/modules/files/server/procedures";
 
 export const appRouter = createTRPCRouter({
   workspaces: workspaceRouter,

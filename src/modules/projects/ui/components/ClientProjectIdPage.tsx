@@ -9,7 +9,7 @@ import { FileIcon, PencilIcon, X } from "lucide-react";
 import Link from "next/link";
 import useGetProjectAnalytics from "../../api/use-get-project-analytics";
 import { Analytics } from "@/components/Analytics";
-import { FileUpload } from "./FileUpload";
+import { FileUpload } from "../../../files/ui/components/FileUpload";
 
 interface ClientProjectIdPageProps {
   params: {
