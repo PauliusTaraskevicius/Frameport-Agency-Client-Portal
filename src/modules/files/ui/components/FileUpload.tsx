@@ -5,7 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   UploadCloud,
@@ -15,6 +15,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useGetPresignedUrls } from "../../api/use-get-presigned-urls";
+import { useSaveFiles } from "../../api/use-save-files";
 
 interface FileItem {
   file: File;
@@ -32,11 +34,9 @@ export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const getPresignedUrls = useMutation(
-    trpc.files.getPresignedUrls.mutationOptions(),
-  );
+  const getPresignedUrls = useGetPresignedUrls();
 
-  const saveFiles = useMutation(trpc.files.saveFiles.mutationOptions());
+  const saveFiles = useSaveFiles();
 
   const onDrop = useCallback(
     (accepted: File[]) => {

@@ -148,7 +148,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
         url: string;
         mimeType?: string;
         size: number;
-      }[] = [];
+      }[] = []; 
 
       await Promise.all(
         pending.map(
