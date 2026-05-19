@@ -5,11 +5,23 @@ import { Button } from "@/components/ui/button";
 import useGetProject from "@/modules/projects/api/use-get-project";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
 import { TasksViewSwitcher } from "@/modules/tasks/components/TasksViewSwitcher";
-import { FileIcon, PencilIcon, X } from "lucide-react";
+import { FileIcon, FilesIcon, PencilIcon, X } from "lucide-react";
 import Link from "next/link";
 import useGetProjectAnalytics from "../../api/use-get-project-analytics";
 import { Analytics } from "@/components/Analytics";
 import { FileUpload } from "../../../files/ui/components/FileUpload";
+import { useGetFiles } from "@/modules/files/api/use-get-files";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ClientProjectIdPageProps {
   params: {
@@ -21,8 +33,11 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
   const [showUpload, setShowUpload] = useState(false);
 
+  const isMobile = useIsMobile();
+
   const getProject = useGetProject({ projectId });
   const getProjectAnalytics = useGetProjectAnalytics({ projectId });
+  const getFiles = useGetFiles({ projectId });
 
   if (!getProject.data || !getProjectAnalytics.data) {
     return null;
@@ -37,28 +52,84 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
             {getProject.data.name}
           </p>
         </div>
-        <div className="flex items-center gap-x-2">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => setShowUpload((v) => !v)}
-          >
-            {showUpload ? (
-              <X className="mr-2 size-4" />
-            ) : (
-              <FileIcon className="mr-2 size-4" />
-            )}
-            {showUpload ? "Close" : "Add files"}
-          </Button>
-          <Button variant="secondary" size="sm" asChild>
-            <Link
-              href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+
+        {isMobile ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Actions</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="flex items-center"
+                  onClick={() => setShowUpload((v) => !v)}
+                >
+                  {" "}
+                  {showUpload ? (
+                    <X className="mr-1 size-4" />
+                  ) : (
+                    <FileIcon className="mr-1 size-4" />
+                  )}
+                  {showUpload ? "Close" : "Add files"}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  {" "}
+                  <Link
+                    className="flex items-center"
+                    href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+                  >
+                    <PencilIcon className="mr-1 size-4" />
+                    Edit Project
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  {" "}
+                  <Link
+                    className="flex items-center"
+                    href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/files`}
+                  >
+                    <FilesIcon className="mr-1 size-4" />
+                    {getFiles.data?.length || 0} files
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-x-2">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setShowUpload((v) => !v)}
             >
-              <PencilIcon className="mr-2 size-4" />
-              Edit Project
-            </Link>
-          </Button>
-        </div>
+              {showUpload ? (
+                <X className="mr-1 size-4" />
+              ) : (
+                <FileIcon className="mr-1 size-4" />
+              )}
+              {showUpload ? "Close" : "Add files"}
+            </Button>
+            <Button variant="secondary" size="sm" asChild>
+              <Link
+                href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+              >
+                <PencilIcon className="mr-1 size-4" />
+                Edit Project
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link
+                href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/files`}
+              >
+                <FilesIcon className="mr-1 size-4" />
+                {getFiles.data?.length || 0} files
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
 
       {showUpload && (

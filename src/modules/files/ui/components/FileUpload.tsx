@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { FileRejection, useDropzone } from "react-dropzone";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
@@ -53,9 +53,44 @@ export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
     [files.length],
   );
 
+  const onDropRejected = useCallback((fileRejections: FileRejection[]) => {
+    if (fileRejections.length > 0) {
+      const tooManyFiles = fileRejections.find(
+        (fileRejection) => fileRejection.errors[0].code === "too-many-files",
+      );
+
+      const fileTooLarge = fileRejections.find(
+        (fileRejection) => fileRejection.errors[0].code === "file-too-large",
+      );
+
+      const invalidType = fileRejections.find(
+        (fileRejection) => fileRejection.errors[0].code === "file-invalid-type",
+      );
+
+      if (tooManyFiles) {
+        toast.error("You can only upload up to 10 files at a time");
+      }
+
+      if (fileTooLarge) {
+        toast.error("Each file must be smaller than 5MB");
+      }
+      if (invalidType) {
+        toast.error("Only images and PDFs are allowed");
+      }
+    }
+  }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    onDropRejected,
     disabled: files.length >= 10,
+    maxSize: 1024 * 1024 * 5,
+    maxFiles: 10,
+    accept: {
+      "image/*": [],
+      // "video/*": [],
+      "application/pdf": [],
+    },
   });
 
   const removeFile = (index: number) => {
@@ -222,6 +257,9 @@ export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
                   </Button>
                 )}
               </div>
+              {(item.status === "uploading" || item.status === "done") && (
+                <Progress value={item.progress} className="h-1.5" />
+              )}
             </li>
           ))}
         </ul>
