@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db";
-import { generatePresignedUrl } from "@/lib/s3";
+import { generatePresignedGetUrl, generatePresignedUrl } from "@/lib/s3";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import z from "zod";
+import z, { file } from "zod";
 
 export const filesRouter = createTRPCRouter({
   getPresignedUrls: protectedProcedure
@@ -113,10 +113,17 @@ export const filesRouter = createTRPCRouter({
       if (!member && !client)
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
 
-      return prisma.file.findMany({
+      const files = await prisma.file.findMany({
         where: { projectId: input.projectId },
         orderBy: { createdAt: "desc" },
-        include: { uploader: true },
+        include: { uploader: true, project: true },
       });
+
+      return Promise.all(
+        files.map(async (file) => ({
+          ...file,
+          url: await generatePresignedGetUrl(file.key),
+        })),
+      );
     }),
 });

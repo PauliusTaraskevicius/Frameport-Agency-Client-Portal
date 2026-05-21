@@ -38,7 +38,7 @@ export const TasksViewSwitcher = ({
   });
   const { userId } = useAuth();
   const workspaceId = useWorkspaceId();
-
+ 
   const projectId = projectIdProp ?? filterProjectId;
 
   const { data: members } = useGetMembers(workspaceId);
