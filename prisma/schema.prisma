@@ -57,6 +57,7 @@ enum WorkspaceRole {
   OWNER
   ADMIN //  for team members who aren't the owner
   MEMBER //  for team members with limited access
+  CLIENT // for clients who can only access specific projects they're invited to
 }
 
 model WorkspaceMember {

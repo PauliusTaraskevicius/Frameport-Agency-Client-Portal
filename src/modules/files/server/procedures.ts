@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/db";
-import { generatePresignedGetUrl, generatePresignedUrl } from "@/lib/s3";
+import { deleteS3Object, generatePresignedGetUrl, generatePresignedUrl } from "@/lib/s3";
+import { MemberRole } from "@/modules/members/types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import z, { file } from "zod";
+import z from "zod";
 
 export const filesRouter = createTRPCRouter({
   getPresignedUrls: protectedProcedure
@@ -125,5 +126,44 @@ export const filesRouter = createTRPCRouter({
           url: await generatePresignedGetUrl(file.key),
         })),
       );
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ fileId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const file = await prisma.file.findUnique({
+        where: { id: input.fileId },
+        include: { project: true },
+      });
+      if (!file)
+        throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: file.project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+      if (!member)
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+
+      if (
+        member.role !== MemberRole.OWNER &&
+        member.role !== MemberRole.ADMIN &&
+        member.role !== MemberRole.MEMBER
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to delete this file",
+        });
+      }
+
+      await deleteS3Object(file.key);
+
+      await prisma.file.delete({
+        where: { id: input.fileId },
+      });
+
+      return { success: true };
     }),
 });
