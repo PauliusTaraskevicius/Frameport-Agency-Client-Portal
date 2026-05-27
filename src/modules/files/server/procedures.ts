@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/db";
-import { deleteS3Object, generatePresignedGetUrl, generatePresignedUrl } from "@/lib/s3";
+import {
+  deleteS3Object,
+  generatePresignedGetUrl,
+  generatePresignedUrl,
+} from "@/lib/s3";
 import { MemberRole } from "@/modules/members/types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
@@ -126,6 +130,35 @@ export const filesRouter = createTRPCRouter({
           url: await generatePresignedGetUrl(file.key),
         })),
       );
+    }),
+
+  getOne: protectedProcedure
+    .input(z.object({ fileId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const file = await prisma.file.findUnique({
+        where: { id: input.fileId },
+        include: { uploader: true, project: true },
+      });
+
+      if (!file) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
+      }
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: file.project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      }
+
+      return {
+        ...file,
+        url: await generatePresignedGetUrl(file.key),
+      };
     }),
 
   delete: protectedProcedure

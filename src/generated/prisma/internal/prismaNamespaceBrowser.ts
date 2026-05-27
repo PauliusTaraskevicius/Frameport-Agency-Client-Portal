@@ -58,7 +58,8 @@ export const ModelName = {
   Client: 'Client',
   Project: 'Project',
   Task: 'Task',
-  File: 'File'
+  File: 'File',
+  Comments: 'Comments'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -193,6 +194,19 @@ export const FileScalarFieldEnum = {
 } as const
 
 export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
+
+
+export const CommentsScalarFieldEnum = {
+  id: 'id',
+  body: 'body',
+  authorId: 'authorId',
+  taskId: 'taskId',
+  fileId: 'fileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentsScalarFieldEnum = (typeof CommentsScalarFieldEnum)[keyof typeof CommentsScalarFieldEnum]
 
 
 export const SortOrder = {

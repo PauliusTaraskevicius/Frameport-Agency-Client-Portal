@@ -391,7 +391,8 @@ export const ModelName = {
   Client: 'Client',
   Project: 'Project',
   Task: 'Task',
-  File: 'File'
+  File: 'File',
+  Comments: 'Comments'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "invitation" | "client" | "project" | "task" | "file"
+    modelProps: "user" | "workspace" | "workspaceMember" | "invitation" | "client" | "project" | "task" | "file" | "comments"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Comments: {
+      payload: Prisma.$CommentsPayload<ExtArgs>
+      fields: Prisma.CommentsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommentsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommentsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        findFirst: {
+          args: Prisma.CommentsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommentsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        findMany: {
+          args: Prisma.CommentsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>[]
+        }
+        create: {
+          args: Prisma.CommentsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        createMany: {
+          args: Prisma.CommentsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommentsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>[]
+        }
+        delete: {
+          args: Prisma.CommentsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        update: {
+          args: Prisma.CommentsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommentsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommentsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommentsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommentsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentsPayload>
+        }
+        aggregate: {
+          args: Prisma.CommentsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComments>
+        }
+        groupBy: {
+          args: Prisma.CommentsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommentsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1158,6 +1233,19 @@ export const FileScalarFieldEnum = {
 } as const
 
 export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
+
+
+export const CommentsScalarFieldEnum = {
+  id: 'id',
+  body: 'body',
+  authorId: 'authorId',
+  taskId: 'taskId',
+  fileId: 'fileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentsScalarFieldEnum = (typeof CommentsScalarFieldEnum)[keyof typeof CommentsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1418,6 +1506,7 @@ export type GlobalOmitConfig = {
   project?: Prisma.ProjectOmit
   task?: Prisma.TaskOmit
   file?: Prisma.FileOmit
+  comments?: Prisma.CommentsOmit
 }
 
 /* Types for Logging */

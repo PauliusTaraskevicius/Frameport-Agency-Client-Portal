@@ -81,3 +81,8 @@ export type Task = Prisma.TaskModel
  * 
  */
 export type File = Prisma.FileModel
+/**
+ * Model Comments
+ * 
+ */
+export type Comments = Prisma.CommentsModel
