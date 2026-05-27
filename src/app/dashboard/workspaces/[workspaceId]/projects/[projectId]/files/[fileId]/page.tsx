@@ -3,11 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 interface FileIdPageProps {
-  params: {
+  params: Promise<{
     fileId: string;
     projectId: string;
     workspaceId: string;
-  };
+  }>;
 }
 
 const FileIdPage = async ({ params }: FileIdPageProps) => {
@@ -17,9 +17,11 @@ const FileIdPage = async ({ params }: FileIdPageProps) => {
     redirect("/sign-in");
   }
 
+  const { fileId, projectId, workspaceId } = await params;
+
   return (
     <div>
-      <ClientFileIdPage params={params} />
+      <ClientFileIdPage params={{ fileId, projectId, workspaceId }} />
     </div>
   );
 };

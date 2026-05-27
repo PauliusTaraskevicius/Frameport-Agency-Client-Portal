@@ -18,7 +18,6 @@ export const ClientTaskIdPage = ({ params }: ClientTaskIdPageProps) => {
   const {
     data: task,
     isLoading,
-    error,
   } = useGetTask({ taskId: params.taskId });
 
   if (isLoading) {
