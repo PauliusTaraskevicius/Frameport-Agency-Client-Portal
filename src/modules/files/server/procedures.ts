@@ -10,6 +10,92 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 
 export const filesRouter = createTRPCRouter({
+  createComment: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        fileId: z.string().min(1),
+        body: z.string().min(1).max(1024),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const file = await prisma.file.findUnique({
+        where: { id: input.fileId },
+      });
+
+      if (!file || file.projectId !== input.projectId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "File not found",
+        });
+      }
+      const member = await prisma.workspaceMember.findFirst({
+        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
+      });
+
+      if (!member) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      }
+
+      const comment = await prisma.comments.create({
+        data: {
+          body: input.body,
+          authorId: member.id,
+          fileId: input.fileId,
+        },
+      });
+
+      return comment;
+    }),
+
+  getCommentsByFile: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        fileId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      // project + access check...
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+      });
+      if (!project)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
+      });
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+      if (!member && !client)
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+
+      const comments = await prisma.comments.findMany({
+        where: { fileId: input.fileId, file: { projectId: input.projectId } },
+        orderBy: { createdAt: "asc" },
+      });
+
+      return comments;
+    }),
   getPresignedUrls: protectedProcedure
     .input(
       z.object({
@@ -151,7 +237,14 @@ export const filesRouter = createTRPCRouter({
         },
       });
 
-      if (!member) {
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: file.projectId } },
+        },
+      });
+
+      if (!member && !client) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
       }
 

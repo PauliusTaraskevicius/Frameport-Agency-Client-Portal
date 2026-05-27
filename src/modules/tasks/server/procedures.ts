@@ -6,6 +6,93 @@ import z from "zod";
 import { TaskStatus } from "../types";
 
 export const tasksRouter = createTRPCRouter({
+  createComment: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        taskId: z.string().min(1),
+        body: z.string().min(1).max(1024),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+      });
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+
+      const task = await prisma.task.findUnique({
+        where: { id: input.taskId },
+      });
+
+      if (!task || task.projectId !== input.projectId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Task not found",
+        });
+      }
+      const member = await prisma.workspaceMember.findFirst({
+        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
+      });
+
+      if (!member) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      }
+
+      const comment = await prisma.comments.create({
+        data: {
+          body: input.body,
+          authorId: member.id,
+          taskId: input.taskId,
+        },
+      });
+
+      return comment;
+    }),
+
+  getCommentsByTask: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        taskId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      // project + access check...
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
+      });
+      if (!project)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
+      });
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+      if (!member && !client)
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+
+      const comments = await prisma.comments.findMany({
+        where: { taskId: input.taskId, task: { projectId: input.projectId } },
+        orderBy: { createdAt: "asc" },
+      });
+
+      return comments;
+    }),
+
   update: protectedProcedure
     .input(
       z.object({

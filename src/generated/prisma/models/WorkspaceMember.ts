@@ -373,6 +373,11 @@ export type WorkspaceMemberScalarRelationFilter = {
   isNot?: Prisma.WorkspaceMemberWhereInput
 }
 
+export type WorkspaceMemberNullableScalarRelationFilter = {
+  is?: Prisma.WorkspaceMemberWhereInput | null
+  isNot?: Prisma.WorkspaceMemberWhereInput | null
+}
+
 export type WorkspaceMemberCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutUserInput, Prisma.WorkspaceMemberUncheckedCreateWithoutUserInput> | Prisma.WorkspaceMemberCreateWithoutUserInput[] | Prisma.WorkspaceMemberUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutUserInput | Prisma.WorkspaceMemberCreateOrConnectWithoutUserInput[]
@@ -495,10 +500,12 @@ export type WorkspaceMemberCreateNestedOneWithoutCommentsInput = {
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
 }
 
-export type WorkspaceMemberUpdateOneRequiredWithoutCommentsNestedInput = {
+export type WorkspaceMemberUpdateOneWithoutCommentsNestedInput = {
   create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutCommentsInput, Prisma.WorkspaceMemberUncheckedCreateWithoutCommentsInput>
   connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutCommentsInput
   upsert?: Prisma.WorkspaceMemberUpsertWithoutCommentsInput
+  disconnect?: Prisma.WorkspaceMemberWhereInput | boolean
+  delete?: Prisma.WorkspaceMemberWhereInput | boolean
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutCommentsInput, Prisma.WorkspaceMemberUpdateWithoutCommentsInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutCommentsInput>
 }
