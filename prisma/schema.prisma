@@ -121,6 +121,7 @@ model Client {
   projects    Project[]
   invitations Invitation[]
   user        User?        @relation(fields: [userId], references: [clerkUserId], onDelete: SetNull)
+  comments    Comments[]
 
   @@unique([userId, workspaceId]) // a user can only be one client per workspace
   @@index([workspaceId])
@@ -205,16 +206,20 @@ model File {
 model Comments {
   id        String   @id @default(uuid())
   body      String   @db.Text
-  authorId  String
+  authorId  String?
+  clientId  String?
   taskId    String?
   fileId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author WorkspaceMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  task   Task?           @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  file   File?           @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  author WorkspaceMember? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  client Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  task   Task?            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  file   File?            @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
   @@index([taskId])
   @@index([fileId])
+  @@index([authorId])
+  @@index([clientId])
 }
