@@ -53,12 +53,11 @@ export const membersRouter = createTRPCRouter({
       if (!currentMember) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You must be a member of the workspace to update member roles",
+          message: "You must be a member of the workspace to remove members",
         });
       }
 
-      if (!currentMember || currentMember.role !== MemberRole.OWNER) {
+      if (currentMember.role !== MemberRole.OWNER) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only workspace owners can remove members",
@@ -123,10 +122,10 @@ export const membersRouter = createTRPCRouter({
         });
       }
 
-      if (!currentMember || currentMember.role !== MemberRole.OWNER) {
+      if (currentMember.role !== MemberRole.OWNER && currentMember.role !== MemberRole.ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Only workspace owners can update member roles",
+          message: "Only workspace owners and admins can update member roles",
         });
       }
 
@@ -134,7 +133,7 @@ export const membersRouter = createTRPCRouter({
       if (input.userId === ctx.auth.userId) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Owners cannot change their own role",
+          message: "Owners or admins cannot change their own role",
         });
       }
 
@@ -142,10 +141,21 @@ export const membersRouter = createTRPCRouter({
         where: { workspaceId: input.workspaceId },
       });
 
-      if (members.length <= 1 && input.role !== MemberRole.OWNER) {
+      const targetMember = members.find(
+        (member) => member.userId === input.userId,
+      );
+      const ownerCount = members.filter(
+        (member) => member.role === MemberRole.OWNER,
+      ).length;
+
+      if (
+        ownerCount <= 1 &&
+        targetMember?.role === MemberRole.OWNER &&
+        input.role !== MemberRole.OWNER
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Cannot change the last owner's role in the workspace",
+          message: "Cannot demote the last owner of the workspace",
         });
       }
 

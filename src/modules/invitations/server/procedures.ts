@@ -200,6 +200,10 @@ export const invitationRouter = createTRPCRouter({
       }
 
       if (new Date() > invitation.expiresAt) {
+        await prisma.invitation.update({
+          where: { id: invitation.id },
+          data: { status: InvitationStatus.EXPIRED },
+        });
         return { valid: false, reason: "expired" as const };
       }
 
@@ -247,15 +251,11 @@ export const invitationRouter = createTRPCRouter({
         data: { status: InvitationStatus.REVOKED },
       });
 
-      await prisma.invitation.delete({
-        where: { id: revokedInvitation.id },
-      });
+      // await prisma.invitation.delete({
+      //   where: { id: revokedInvitation.id },
+      // });
 
       return revokedInvitation;
-      // return prisma.invitation.update({
-      //   where: { id: invitation.id },
-      //   data: { status: InvitationStatus.REVOKED },
-      // });
     }),
 
   reset: protectedProcedure

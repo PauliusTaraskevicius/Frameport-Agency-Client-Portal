@@ -18,11 +18,8 @@ import {
 import { useWorkspaceId } from "../../hooks/use-workspace-id";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useTRPC } from "@/trpc/client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { DottedSeparator } from "@/components/DottedSeparator";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { updateMemberSchema } from "@/modules/members/schema";
 import { MemberRole } from "@/modules/members/types";
 
 import { useAuth } from "@clerk/nextjs";
@@ -44,21 +41,16 @@ export const MembersList = () => {
 
   const currentMember = members?.find((member) => member.userId === userId);
   const isOwner = currentMember?.role === MemberRole.OWNER;
-
-  const form = useForm({
-    resolver: zodResolver(updateMemberSchema),
-    defaultValues: {
-      id: "",
-      role: "" as MemberRole,
-    },
-  });
+  const isAdmin = currentMember?.role === MemberRole.ADMIN;
 
   const updateMemberMutation = useUpdateMember(workspaceId);
   const deleteMemberMutation = useDeleteMember(workspaceId);
 
-  const handleUpdateMember = async (userId: string, role: MemberRole) => {
+  const handleUpdateMember = async (
+    userId: string,
+    role: MemberRole.OWNER | MemberRole.ADMIN | MemberRole.MEMBER,
+  ) => {
     updateMemberMutation.mutate({ workspaceId, userId, role });
-    form.reset();
   };
 
   const handleDeleteMember = async (userId: string) => {
@@ -91,10 +83,11 @@ export const MembersList = () => {
                 <p className="text-sm font-medium">{member.user.firstName}</p>
                 <p className="text-muted-foreground text-xs">
                   {member.user.email}
+                  {member.role}
                 </p>
               </div>
 
-              {isOwner && (
+              {(isOwner || isAdmin) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button className="ml-auto" variant="secondary" size="sm">
@@ -106,7 +99,7 @@ export const MembersList = () => {
                       <DropdownMenuItem
                         className="font-medium"
                         onClick={() =>
-                          handleUpdateMember(member.userId, MemberRole.OWNER)
+                          handleUpdateMember(member.userId, MemberRole.ADMIN)
                         }
                         disabled={updateMemberMutation.isPending}
                       >

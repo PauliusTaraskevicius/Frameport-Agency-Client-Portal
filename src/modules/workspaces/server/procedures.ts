@@ -51,37 +51,11 @@ export const workspaceRouter = createTRPCRouter({
       }
     }),
   getMany: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const membershipCount = await prisma.workspaceMember.count({
-        where: {
-          userId: ctx.auth.userId,
-        },
-      });
-
-      if (membershipCount === 0) {
-        return [];
-      }
-
-      const workspaces = await prisma.workspace.findMany({
-        where: {
-          members: {
-            some: {
-              userId: ctx.auth.userId,
-            },
-          },
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      });
-
-      return workspaces;
-    } catch (error) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An error occurred while fetching the workspaces",
-      });
-    }
+    const workspaces = await prisma.workspace.findMany({
+      where: { members: { some: { userId: ctx.auth.userId } } },
+      orderBy: { updatedAt: "desc" },
+    });
+    return workspaces;
   }),
   getOne: protectedProcedure
     .input(
@@ -190,10 +164,7 @@ export const workspaceRouter = createTRPCRouter({
         });
       }
 
-      if (
-        member.role !== MemberRole.OWNER &&
-        member.role !== MemberRole.ADMIN
-      ) {
+      if (member.role !== MemberRole.OWNER) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this workspace",
@@ -264,7 +235,7 @@ export const workspaceRouter = createTRPCRouter({
         ]);
       const taskDifference = thisMonthTaskCount - lastMonthTaskCount;
 
-      // --- Assigned tasks ---
+      // Assigned tasks
       const [
         assignedTaskCount,
         thisMonthAssignedCount,

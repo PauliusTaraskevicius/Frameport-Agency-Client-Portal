@@ -146,6 +146,22 @@ export const tasksRouter = createTRPCRouter({
         });
       }
 
+      if (input.projectId && input.projectId !== task.projectId) {
+        const targetProject = await prisma.project.findUnique({
+          where: { id: input.projectId },
+          select: { workspaceId: true },
+        });
+        if (
+          !targetProject ||
+          targetProject.workspaceId !== project.workspaceId
+        ) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Cannot move a task to a project in a different workspace",
+          });
+        }
+      }
+
       // Check if user is a member of the workspace
       const member = await prisma.workspaceMember.findFirst({
         where: {

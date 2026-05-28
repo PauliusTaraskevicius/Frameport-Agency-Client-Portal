@@ -21,6 +21,12 @@ export const projectsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const member = await prisma.workspaceMember.findFirst({
+        where: { workspaceId: input.workspaceId, userId: ctx.auth.userId },
+      });
+      if (!member)
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+
       try {
         const project = await prisma.project.create({
           data: {
@@ -34,15 +40,14 @@ export const projectsRouter = createTRPCRouter({
         return project;
       } catch (error) {
         const existingProject = await prisma.project.findFirst({
-          where: {
-            name: input.name,
-          },
+          where: { name: input.name, workspaceId: input.workspaceId },
         });
 
         if (existingProject) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "A project with this name already exists",
+            message:
+              "A project with this name already exists in this workspace",
           });
         }
 
@@ -168,22 +173,8 @@ export const projectsRouter = createTRPCRouter({
         },
       });
 
-      const client = await prisma.client.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          projects: {
-            some: {
-              id: input.projectId,
-            },
-          },
-        },
-      });
-
-      if (!member && !client) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Project not found",
-        });
+      if (!member) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
       }
 
       try {
