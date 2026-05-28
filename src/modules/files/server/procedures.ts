@@ -44,14 +44,22 @@ export const filesRouter = createTRPCRouter({
         where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
       });
 
-      if (!member) {
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      if (!member && !client) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
       }
 
       const comment = await prisma.comments.create({
         data: {
           body: input.body,
-          authorId: member.id,
+          authorId: member?.id ?? null,
+          clientId: client?.id ?? null,
           fileId: input.fileId,
         },
       });

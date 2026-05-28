@@ -17,7 +17,6 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import { useAuth } from "@clerk/nextjs";
 import { Project } from "@/generated/prisma/browser";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
 import { WorkspaceMember } from "@/generated/prisma/client";
@@ -100,7 +99,7 @@ export const TaskList = ({ tasks, total }: TaskListProps) => {
         </div>
         <DottedSeparator className="my-4" />
         <ul className="flex flex-col gap-y-4">
-          {tasks.map((task) => (
+          {tasks.slice(0, 5).map((task) => (
             <li key={task.id}>
               <Link
                 href={`/dashboard/workspaces/${workspaceId}/tasks/${task.id}`}
