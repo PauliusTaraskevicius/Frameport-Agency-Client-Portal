@@ -5,6 +5,9 @@ import { useGetFile } from "../../api/use-get-file";
 import { PageLoader } from "@/components/PageLoader";
 import Image from "next/image";
 import { AiOutlineFilePdf } from "react-icons/ai";
+import { CommentsSection } from "@/components/comments/CommentsSection";
+import { useGetFileComments } from "../../api/use-get-file-comments";
+import { useCreateComment } from "../../api/use-create-comment";
 
 interface ClientFileIdPageProps {
   params: {
@@ -15,9 +18,20 @@ interface ClientFileIdPageProps {
 }
 
 const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
-  const { data: file, isLoading } = useGetFile({ fileId: params.fileId });
+  const { data: file, isLoading: isFileLoading } = useGetFile({
+    fileId: params.fileId,
+  });
+  const { data: comments, isLoading: isCommentsLoading } = useGetFileComments({
+    fileId: params.fileId,
+    projectId: params.projectId,
+  });
 
-  if (isLoading) {
+  const createFileCommentMutation = useCreateComment(
+    params.fileId,
+    params.projectId,
+  );
+
+  if (isFileLoading || isCommentsLoading) {
     return <PageLoader />;
   }
 
@@ -43,7 +57,20 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
         )}
         <h1 className="mb-4 text-center text-2xl font-bold">{file.name}</h1>
       </div>
-      <div>{/* // Comments and other file details can go here */}</div>
+      <div>
+        {" "}
+        <CommentsSection
+          comments={comments ?? []}
+          onSubmit={async (body, parentId) => {
+            await createFileCommentMutation.mutateAsync({
+              projectId: params.projectId,
+              fileId: params.fileId,
+              body,
+              parentId,
+            });
+          }}
+        />
+      </div>
     </div>
   );
 };
