@@ -7,6 +7,9 @@ import { TaskBreadcrumbs } from "./TaskBreadcrumbs";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { TaskOverview } from "./TaskOverview";
 import { TaskDescription } from "./TaskDescription";
+import { CommentsSection } from "@/components/comments/CommentsSection";
+import { useGetTaskComments } from "../api/use-get-task-comments";
+import { useCreateComment } from "../api/use-create-comment";
 
 interface ClientTaskIdPageProps {
   params: {
@@ -15,12 +18,19 @@ interface ClientTaskIdPageProps {
 }
 
 export const ClientTaskIdPage = ({ params }: ClientTaskIdPageProps) => {
-  const {
-    data: task,
-    isLoading,
-  } = useGetTask({ taskId: params.taskId });
+  const { data: task, isLoading: isTaskLoading } = useGetTask({
+    taskId: params.taskId,
+  });
+  const { data: comments, isLoading: isCommentsLoading } = useGetTaskComments({
+    taskId: params.taskId,
+    projectId: task?.project.id ?? "",
+  });
+  const createTaskCommentMutation = useCreateComment(
+    params.taskId,
+    task?.project.id ?? "",
+  );
 
-  if (isLoading) {
+  if (isTaskLoading || isCommentsLoading) {
     return <PageLoader />;
   }
 
@@ -35,6 +45,17 @@ export const ClientTaskIdPage = ({ params }: ClientTaskIdPageProps) => {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <TaskOverview task={task} />
         <TaskDescription task={task} />
+        <CommentsSection
+          comments={comments ?? []}
+          onSubmit={async (body, parentId) => {
+            await createTaskCommentMutation.mutateAsync({
+              projectId: task.project.id,
+              taskId: task.id,
+              body,
+              parentId,
+            });
+          }}
+        />
       </div>
     </div>
   );

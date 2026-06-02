@@ -170,7 +170,7 @@ export const filesRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
 
       const comments = await prisma.comments.findMany({
-        where: { fileId: input.fileId },
+        where: { fileId: input.fileId, parentId: null },
         orderBy: { createdAt: "asc" },
         include: {
           author: {
