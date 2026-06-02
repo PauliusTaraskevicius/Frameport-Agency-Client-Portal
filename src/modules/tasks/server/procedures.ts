@@ -10,8 +10,10 @@ export const tasksRouter = createTRPCRouter({
     .input(
       z.object({
         projectId: z.string().min(1),
-        taskId: z.string().min(1),
+        fileId: z.string().optional(),
+        taskId: z.string().optional(),
         body: z.string().min(1).max(1024),
+        parentId: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -40,19 +42,96 @@ export const tasksRouter = createTRPCRouter({
         where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
       });
 
-      if (!member) {
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      if (!member && !client) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      }
+
+      if (input.parentId) {
+        const parent = await prisma.comments.findUnique({
+          where: { id: input.parentId },
+        });
+        if (!parent || (input.taskId && parent.taskId !== input.taskId)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid parent comment",
+          });
+        }
       }
 
       const comment = await prisma.comments.create({
         data: {
           body: input.body,
-          authorId: member.id,
-          taskId: input.taskId,
+          authorId: member?.id ?? null,
+          clientId: client?.id ?? null,
+          fileId: input.fileId ?? null,
+          taskId: input.taskId ?? null,
+          parentId: input.parentId ?? null,
         },
       });
 
       return comment;
+    }),
+
+  deleteComment: protectedProcedure
+    .input(
+      z.object({ commentId: z.string().min(1), projectId: z.string().min(1) }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const comment = await prisma.comments.findUnique({
+        where: { id: input.commentId },
+      });
+      if (!comment) throw new TRPCError({ code: "NOT_FOUND" });
+
+      // Only author can delete
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspace: { projects: { some: { id: input.projectId } } },
+        },
+      });
+      if (comment.authorId !== member?.id)
+        throw new TRPCError({ code: "FORBIDDEN" });
+
+      await prisma.comments.delete({ where: { id: input.commentId } });
+    }),
+
+  updateComment: protectedProcedure
+    .input(
+      z.object({
+        commentId: z.string().min(1),
+        projectId: z.string().min(1),
+        body: z.string().min(1).max(1024),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const comment = await prisma.comments.findUnique({
+        where: { id: input.commentId },
+      });
+      if (!comment) throw new TRPCError({ code: "NOT_FOUND" });
+      // Only author can update
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspace: { projects: { some: { id: input.projectId } } },
+        },
+      });
+      if (comment.authorId !== member?.id) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      await prisma.comments.update({
+        where: { id: input.commentId },
+        data: {
+          body: input.body,
+        },
+      });
     }),
 
   getCommentsByTask: protectedProcedure
@@ -86,8 +165,19 @@ export const tasksRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
 
       const comments = await prisma.comments.findMany({
-        where: { taskId: input.taskId, task: { projectId: input.projectId } },
+        where: { taskId: input.taskId, parentId: null },
         orderBy: { createdAt: "asc" },
+        include: {
+          author: { include: { user: true } },
+          client: true,
+          replies: {
+            orderBy: { createdAt: "asc" },
+            include: {
+              author: { include: { user: true } },
+              client: true,
+            },
+          },
+        },
       });
 
       return comments;

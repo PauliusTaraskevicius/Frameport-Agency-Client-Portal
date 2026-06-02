@@ -15,7 +15,9 @@ export const filesRouter = createTRPCRouter({
       z.object({
         projectId: z.string().min(1),
         fileId: z.string().min(1),
+        taskId: z.string().min(1).optional(),
         body: z.string().min(1).max(1024),
+        parentId: z.string().min(1).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -55,16 +57,86 @@ export const filesRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
       }
 
+      if (input.parentId) {
+        const parent = await prisma.comments.findUnique({
+          where: { id: input.parentId },
+        });
+        if (!parent || parent.fileId !== input.fileId) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid parent comment",
+          });
+        }
+      }
+
       const comment = await prisma.comments.create({
         data: {
           body: input.body,
           authorId: member?.id ?? null,
           clientId: client?.id ?? null,
-          fileId: input.fileId,
+          fileId: input.fileId ?? null,
+          taskId: input.taskId ?? null,
+          parentId: input.parentId ?? null,
         },
       });
 
       return comment;
+    }),
+
+  deleteComment: protectedProcedure
+    .input(
+      z.object({ commentId: z.string().min(1), projectId: z.string().min(1) }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const comment = await prisma.comments.findUnique({
+        where: { id: input.commentId },
+      });
+      if (!comment) throw new TRPCError({ code: "NOT_FOUND" });
+
+      // Only author can delete
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspace: { projects: { some: { id: input.projectId } } },
+        },
+      });
+      if (comment.authorId !== member?.id)
+        throw new TRPCError({ code: "FORBIDDEN" });
+
+      // Cascade on parentId handles reply deletion
+      await prisma.comments.delete({ where: { id: input.commentId } });
+    }),
+
+  updateComment: protectedProcedure
+    .input(
+      z.object({
+        commentId: z.string().min(1),
+        projectId: z.string().min(1),
+        body: z.string().min(1).max(1024),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const comment = await prisma.comments.findUnique({
+        where: { id: input.commentId },
+      });
+      if (!comment) throw new TRPCError({ code: "NOT_FOUND" });
+      // Only author can update
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          workspace: { projects: { some: { id: input.projectId } } },
+        },
+      });
+      if (comment.authorId !== member?.id) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      await prisma.comments.update({
+        where: { id: input.commentId },
+        data: {
+          body: input.body,
+        },
+      });
     }),
 
   getCommentsByFile: protectedProcedure
@@ -98,8 +170,27 @@ export const filesRouter = createTRPCRouter({
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
 
       const comments = await prisma.comments.findMany({
-        where: { fileId: input.fileId, file: { projectId: input.projectId } },
+        where: { fileId: input.fileId },
         orderBy: { createdAt: "asc" },
+        include: {
+          author: {
+            include: {
+              user: true,
+            },
+          },
+          client: true,
+          replies: {
+            orderBy: { createdAt: "asc" },
+            include: {
+              author: {
+                include: {
+                  user: true,
+                },
+              },
+              client: true,
+            },
+          },
+        },
       });
 
       return comments;

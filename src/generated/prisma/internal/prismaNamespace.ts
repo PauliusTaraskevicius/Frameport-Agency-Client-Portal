@@ -1242,6 +1242,7 @@ export const CommentsScalarFieldEnum = {
   clientId: 'clientId',
   taskId: 'taskId',
   fileId: 'fileId',
+  parentId: 'parentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

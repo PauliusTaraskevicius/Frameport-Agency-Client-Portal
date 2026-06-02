@@ -31,6 +31,7 @@ export type CommentsMinAggregateOutputType = {
   clientId: string | null
   taskId: string | null
   fileId: string | null
+  parentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type CommentsMaxAggregateOutputType = {
   clientId: string | null
   taskId: string | null
   fileId: string | null
+  parentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type CommentsCountAggregateOutputType = {
   clientId: number
   taskId: number
   fileId: number
+  parentId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +69,7 @@ export type CommentsMinAggregateInputType = {
   clientId?: true
   taskId?: true
   fileId?: true
+  parentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +81,7 @@ export type CommentsMaxAggregateInputType = {
   clientId?: true
   taskId?: true
   fileId?: true
+  parentId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +93,7 @@ export type CommentsCountAggregateInputType = {
   clientId?: true
   taskId?: true
   fileId?: true
+  parentId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type CommentsGroupByOutputType = {
   clientId: string | null
   taskId: string | null
   fileId: string | null
+  parentId: string | null
   createdAt: Date
   updatedAt: Date
   _count: CommentsCountAggregateOutputType | null
@@ -204,12 +211,15 @@ export type CommentsWhereInput = {
   clientId?: Prisma.StringNullableFilter<"Comments"> | string | null
   taskId?: Prisma.StringNullableFilter<"Comments"> | string | null
   fileId?: Prisma.StringNullableFilter<"Comments"> | string | null
+  parentId?: Prisma.StringNullableFilter<"Comments"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
   author?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
   task?: Prisma.XOR<Prisma.TaskNullableScalarRelationFilter, Prisma.TaskWhereInput> | null
   file?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
+  parent?: Prisma.XOR<Prisma.CommentsNullableScalarRelationFilter, Prisma.CommentsWhereInput> | null
+  replies?: Prisma.CommentsListRelationFilter
 }
 
 export type CommentsOrderByWithRelationInput = {
@@ -219,12 +229,15 @@ export type CommentsOrderByWithRelationInput = {
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   author?: Prisma.WorkspaceMemberOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
   task?: Prisma.TaskOrderByWithRelationInput
   file?: Prisma.FileOrderByWithRelationInput
+  parent?: Prisma.CommentsOrderByWithRelationInput
+  replies?: Prisma.CommentsOrderByRelationAggregateInput
 }
 
 export type CommentsWhereUniqueInput = Prisma.AtLeast<{
@@ -237,12 +250,15 @@ export type CommentsWhereUniqueInput = Prisma.AtLeast<{
   clientId?: Prisma.StringNullableFilter<"Comments"> | string | null
   taskId?: Prisma.StringNullableFilter<"Comments"> | string | null
   fileId?: Prisma.StringNullableFilter<"Comments"> | string | null
+  parentId?: Prisma.StringNullableFilter<"Comments"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
   author?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientNullableScalarRelationFilter, Prisma.ClientWhereInput> | null
   task?: Prisma.XOR<Prisma.TaskNullableScalarRelationFilter, Prisma.TaskWhereInput> | null
   file?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
+  parent?: Prisma.XOR<Prisma.CommentsNullableScalarRelationFilter, Prisma.CommentsWhereInput> | null
+  replies?: Prisma.CommentsListRelationFilter
 }, "id">
 
 export type CommentsOrderByWithAggregationInput = {
@@ -252,6 +268,7 @@ export type CommentsOrderByWithAggregationInput = {
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CommentsCountOrderByAggregateInput
@@ -269,6 +286,7 @@ export type CommentsScalarWhereWithAggregatesInput = {
   clientId?: Prisma.StringNullableWithAggregatesFilter<"Comments"> | string | null
   taskId?: Prisma.StringNullableWithAggregatesFilter<"Comments"> | string | null
   fileId?: Prisma.StringNullableWithAggregatesFilter<"Comments"> | string | null
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"Comments"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Comments"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Comments"> | Date | string
 }
@@ -282,6 +300,8 @@ export type CommentsCreateInput = {
   client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
   task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
   file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUncheckedCreateInput = {
@@ -291,8 +311,10 @@ export type CommentsUncheckedCreateInput = {
   clientId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUpdateInput = {
@@ -304,6 +326,8 @@ export type CommentsUpdateInput = {
   client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
   task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
   file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateInput = {
@@ -313,8 +337,10 @@ export type CommentsUncheckedUpdateInput = {
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsCreateManyInput = {
@@ -324,6 +350,7 @@ export type CommentsCreateManyInput = {
   clientId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -342,6 +369,7 @@ export type CommentsUncheckedUpdateManyInput = {
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -356,6 +384,11 @@ export type CommentsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type CommentsNullableScalarRelationFilter = {
+  is?: Prisma.CommentsWhereInput | null
+  isNot?: Prisma.CommentsWhereInput | null
+}
+
 export type CommentsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   body?: Prisma.SortOrder
@@ -363,6 +396,7 @@ export type CommentsCountOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -374,6 +408,7 @@ export type CommentsMaxOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -385,6 +420,7 @@ export type CommentsMinOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -557,6 +593,64 @@ export type CommentsUncheckedUpdateManyWithoutFileNestedInput = {
   deleteMany?: Prisma.CommentsScalarWhereInput | Prisma.CommentsScalarWhereInput[]
 }
 
+export type CommentsCreateNestedOneWithoutRepliesInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutRepliesInput, Prisma.CommentsUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutRepliesInput
+  connect?: Prisma.CommentsWhereUniqueInput
+}
+
+export type CommentsCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput> | Prisma.CommentsCreateWithoutParentInput[] | Prisma.CommentsUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutParentInput | Prisma.CommentsCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.CommentsCreateManyParentInputEnvelope
+  connect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+}
+
+export type CommentsUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput> | Prisma.CommentsCreateWithoutParentInput[] | Prisma.CommentsUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutParentInput | Prisma.CommentsCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.CommentsCreateManyParentInputEnvelope
+  connect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+}
+
+export type CommentsUpdateOneWithoutRepliesNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutRepliesInput, Prisma.CommentsUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutRepliesInput
+  upsert?: Prisma.CommentsUpsertWithoutRepliesInput
+  disconnect?: Prisma.CommentsWhereInput | boolean
+  delete?: Prisma.CommentsWhereInput | boolean
+  connect?: Prisma.CommentsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommentsUpdateToOneWithWhereWithoutRepliesInput, Prisma.CommentsUpdateWithoutRepliesInput>, Prisma.CommentsUncheckedUpdateWithoutRepliesInput>
+}
+
+export type CommentsUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput> | Prisma.CommentsCreateWithoutParentInput[] | Prisma.CommentsUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutParentInput | Prisma.CommentsCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.CommentsUpsertWithWhereUniqueWithoutParentInput | Prisma.CommentsUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.CommentsCreateManyParentInputEnvelope
+  set?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  disconnect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  delete?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  connect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  update?: Prisma.CommentsUpdateWithWhereUniqueWithoutParentInput | Prisma.CommentsUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.CommentsUpdateManyWithWhereWithoutParentInput | Prisma.CommentsUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.CommentsScalarWhereInput | Prisma.CommentsScalarWhereInput[]
+}
+
+export type CommentsUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput> | Prisma.CommentsCreateWithoutParentInput[] | Prisma.CommentsUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentsCreateOrConnectWithoutParentInput | Prisma.CommentsCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.CommentsUpsertWithWhereUniqueWithoutParentInput | Prisma.CommentsUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.CommentsCreateManyParentInputEnvelope
+  set?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  disconnect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  delete?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  connect?: Prisma.CommentsWhereUniqueInput | Prisma.CommentsWhereUniqueInput[]
+  update?: Prisma.CommentsUpdateWithWhereUniqueWithoutParentInput | Prisma.CommentsUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.CommentsUpdateManyWithWhereWithoutParentInput | Prisma.CommentsUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.CommentsScalarWhereInput | Prisma.CommentsScalarWhereInput[]
+}
+
 export type CommentsCreateWithoutAuthorInput = {
   id?: string
   body: string
@@ -565,6 +659,8 @@ export type CommentsCreateWithoutAuthorInput = {
   client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
   task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
   file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUncheckedCreateWithoutAuthorInput = {
@@ -573,8 +669,10 @@ export type CommentsUncheckedCreateWithoutAuthorInput = {
   clientId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type CommentsCreateOrConnectWithoutAuthorInput = {
@@ -613,6 +711,7 @@ export type CommentsScalarWhereInput = {
   clientId?: Prisma.StringNullableFilter<"Comments"> | string | null
   taskId?: Prisma.StringNullableFilter<"Comments"> | string | null
   fileId?: Prisma.StringNullableFilter<"Comments"> | string | null
+  parentId?: Prisma.StringNullableFilter<"Comments"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Comments"> | Date | string
 }
@@ -625,6 +724,8 @@ export type CommentsCreateWithoutClientInput = {
   author?: Prisma.WorkspaceMemberCreateNestedOneWithoutCommentsInput
   task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
   file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUncheckedCreateWithoutClientInput = {
@@ -633,8 +734,10 @@ export type CommentsUncheckedCreateWithoutClientInput = {
   authorId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type CommentsCreateOrConnectWithoutClientInput = {
@@ -671,6 +774,8 @@ export type CommentsCreateWithoutTaskInput = {
   author?: Prisma.WorkspaceMemberCreateNestedOneWithoutCommentsInput
   client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
   file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUncheckedCreateWithoutTaskInput = {
@@ -679,8 +784,10 @@ export type CommentsUncheckedCreateWithoutTaskInput = {
   authorId?: string | null
   clientId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type CommentsCreateOrConnectWithoutTaskInput = {
@@ -717,6 +824,8 @@ export type CommentsCreateWithoutFileInput = {
   author?: Prisma.WorkspaceMemberCreateNestedOneWithoutCommentsInput
   client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
   task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
 }
 
 export type CommentsUncheckedCreateWithoutFileInput = {
@@ -725,8 +834,10 @@ export type CommentsUncheckedCreateWithoutFileInput = {
   authorId?: string | null
   clientId?: string | null
   taskId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type CommentsCreateOrConnectWithoutFileInput = {
@@ -755,12 +866,127 @@ export type CommentsUpdateManyWithWhereWithoutFileInput = {
   data: Prisma.XOR<Prisma.CommentsUpdateManyMutationInput, Prisma.CommentsUncheckedUpdateManyWithoutFileInput>
 }
 
+export type CommentsCreateWithoutRepliesInput = {
+  id?: string
+  body: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.WorkspaceMemberCreateNestedOneWithoutCommentsInput
+  client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
+  task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
+  file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentsCreateNestedOneWithoutRepliesInput
+}
+
+export type CommentsUncheckedCreateWithoutRepliesInput = {
+  id?: string
+  body: string
+  authorId?: string | null
+  clientId?: string | null
+  taskId?: string | null
+  fileId?: string | null
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CommentsCreateOrConnectWithoutRepliesInput = {
+  where: Prisma.CommentsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommentsCreateWithoutRepliesInput, Prisma.CommentsUncheckedCreateWithoutRepliesInput>
+}
+
+export type CommentsCreateWithoutParentInput = {
+  id?: string
+  body: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author?: Prisma.WorkspaceMemberCreateNestedOneWithoutCommentsInput
+  client?: Prisma.ClientCreateNestedOneWithoutCommentsInput
+  task?: Prisma.TaskCreateNestedOneWithoutCommentsInput
+  file?: Prisma.FileCreateNestedOneWithoutCommentsInput
+  replies?: Prisma.CommentsCreateNestedManyWithoutParentInput
+}
+
+export type CommentsUncheckedCreateWithoutParentInput = {
+  id?: string
+  body: string
+  authorId?: string | null
+  clientId?: string | null
+  taskId?: string | null
+  fileId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  replies?: Prisma.CommentsUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type CommentsCreateOrConnectWithoutParentInput = {
+  where: Prisma.CommentsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput>
+}
+
+export type CommentsCreateManyParentInputEnvelope = {
+  data: Prisma.CommentsCreateManyParentInput | Prisma.CommentsCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type CommentsUpsertWithoutRepliesInput = {
+  update: Prisma.XOR<Prisma.CommentsUpdateWithoutRepliesInput, Prisma.CommentsUncheckedUpdateWithoutRepliesInput>
+  create: Prisma.XOR<Prisma.CommentsCreateWithoutRepliesInput, Prisma.CommentsUncheckedCreateWithoutRepliesInput>
+  where?: Prisma.CommentsWhereInput
+}
+
+export type CommentsUpdateToOneWithWhereWithoutRepliesInput = {
+  where?: Prisma.CommentsWhereInput
+  data: Prisma.XOR<Prisma.CommentsUpdateWithoutRepliesInput, Prisma.CommentsUncheckedUpdateWithoutRepliesInput>
+}
+
+export type CommentsUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.WorkspaceMemberUpdateOneWithoutCommentsNestedInput
+  client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
+  task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
+  file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+}
+
+export type CommentsUncheckedUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CommentsUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.CommentsWhereUniqueInput
+  update: Prisma.XOR<Prisma.CommentsUpdateWithoutParentInput, Prisma.CommentsUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.CommentsCreateWithoutParentInput, Prisma.CommentsUncheckedCreateWithoutParentInput>
+}
+
+export type CommentsUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.CommentsWhereUniqueInput
+  data: Prisma.XOR<Prisma.CommentsUpdateWithoutParentInput, Prisma.CommentsUncheckedUpdateWithoutParentInput>
+}
+
+export type CommentsUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.CommentsScalarWhereInput
+  data: Prisma.XOR<Prisma.CommentsUpdateManyMutationInput, Prisma.CommentsUncheckedUpdateManyWithoutParentInput>
+}
+
 export type CommentsCreateManyAuthorInput = {
   id?: string
   body: string
   clientId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -773,6 +999,8 @@ export type CommentsUpdateWithoutAuthorInput = {
   client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
   task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
   file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateWithoutAuthorInput = {
@@ -781,8 +1009,10 @@ export type CommentsUncheckedUpdateWithoutAuthorInput = {
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateManyWithoutAuthorInput = {
@@ -791,6 +1021,7 @@ export type CommentsUncheckedUpdateManyWithoutAuthorInput = {
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -801,6 +1032,7 @@ export type CommentsCreateManyClientInput = {
   authorId?: string | null
   taskId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -813,6 +1045,8 @@ export type CommentsUpdateWithoutClientInput = {
   author?: Prisma.WorkspaceMemberUpdateOneWithoutCommentsNestedInput
   task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
   file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateWithoutClientInput = {
@@ -821,8 +1055,10 @@ export type CommentsUncheckedUpdateWithoutClientInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateManyWithoutClientInput = {
@@ -831,6 +1067,7 @@ export type CommentsUncheckedUpdateManyWithoutClientInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -841,6 +1078,7 @@ export type CommentsCreateManyTaskInput = {
   authorId?: string | null
   clientId?: string | null
   fileId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -853,6 +1091,8 @@ export type CommentsUpdateWithoutTaskInput = {
   author?: Prisma.WorkspaceMemberUpdateOneWithoutCommentsNestedInput
   client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
   file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateWithoutTaskInput = {
@@ -861,8 +1101,10 @@ export type CommentsUncheckedUpdateWithoutTaskInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateManyWithoutTaskInput = {
@@ -871,6 +1113,7 @@ export type CommentsUncheckedUpdateManyWithoutTaskInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -881,6 +1124,7 @@ export type CommentsCreateManyFileInput = {
   authorId?: string | null
   clientId?: string | null
   taskId?: string | null
+  parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -893,6 +1137,8 @@ export type CommentsUpdateWithoutFileInput = {
   author?: Prisma.WorkspaceMemberUpdateOneWithoutCommentsNestedInput
   client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
   task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
+  parent?: Prisma.CommentsUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateWithoutFileInput = {
@@ -901,8 +1147,10 @@ export type CommentsUncheckedUpdateWithoutFileInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type CommentsUncheckedUpdateManyWithoutFileInput = {
@@ -911,10 +1159,86 @@ export type CommentsUncheckedUpdateManyWithoutFileInput = {
   authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type CommentsCreateManyParentInput = {
+  id?: string
+  body: string
+  authorId?: string | null
+  clientId?: string | null
+  taskId?: string | null
+  fileId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CommentsUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.WorkspaceMemberUpdateOneWithoutCommentsNestedInput
+  client?: Prisma.ClientUpdateOneWithoutCommentsNestedInput
+  task?: Prisma.TaskUpdateOneWithoutCommentsNestedInput
+  file?: Prisma.FileUpdateOneWithoutCommentsNestedInput
+  replies?: Prisma.CommentsUpdateManyWithoutParentNestedInput
+}
+
+export type CommentsUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentsUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type CommentsUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type CommentsCountOutputType
+ */
+
+export type CommentsCountOutputType = {
+  replies: number
+}
+
+export type CommentsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  replies?: boolean | CommentsCountOutputTypeCountRepliesArgs
+}
+
+/**
+ * CommentsCountOutputType without action
+ */
+export type CommentsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentsCountOutputType
+   */
+  select?: Prisma.CommentsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CommentsCountOutputType without action
+ */
+export type CommentsCountOutputTypeCountRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentsWhereInput
+}
 
 
 export type CommentsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -924,12 +1248,16 @@ export type CommentsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   clientId?: boolean
   taskId?: boolean
   fileId?: boolean
+  parentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.Comments$repliesArgs<ExtArgs>
+  _count?: boolean | Prisma.CommentsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["comments"]>
 
 export type CommentsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -939,12 +1267,14 @@ export type CommentsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   clientId?: boolean
   taskId?: boolean
   fileId?: boolean
+  parentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
 }, ExtArgs["result"]["comments"]>
 
 export type CommentsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -954,12 +1284,14 @@ export type CommentsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   clientId?: boolean
   taskId?: boolean
   fileId?: boolean
+  parentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
 }, ExtArgs["result"]["comments"]>
 
 export type CommentsSelectScalar = {
@@ -969,28 +1301,34 @@ export type CommentsSelectScalar = {
   clientId?: boolean
   taskId?: boolean
   fileId?: boolean
+  parentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CommentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "authorId" | "clientId" | "taskId" | "fileId" | "createdAt" | "updatedAt", ExtArgs["result"]["comments"]>
+export type CommentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "body" | "authorId" | "clientId" | "taskId" | "fileId" | "parentId" | "createdAt" | "updatedAt", ExtArgs["result"]["comments"]>
 export type CommentsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.Comments$repliesArgs<ExtArgs>
+  _count?: boolean | Prisma.CommentsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommentsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
 }
 export type CommentsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.Comments$authorArgs<ExtArgs>
   client?: boolean | Prisma.Comments$clientArgs<ExtArgs>
   task?: boolean | Prisma.Comments$taskArgs<ExtArgs>
   file?: boolean | Prisma.Comments$fileArgs<ExtArgs>
+  parent?: boolean | Prisma.Comments$parentArgs<ExtArgs>
 }
 
 export type $CommentsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1000,6 +1338,8 @@ export type $CommentsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     client: Prisma.$ClientPayload<ExtArgs> | null
     task: Prisma.$TaskPayload<ExtArgs> | null
     file: Prisma.$FilePayload<ExtArgs> | null
+    parent: Prisma.$CommentsPayload<ExtArgs> | null
+    replies: Prisma.$CommentsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1008,6 +1348,7 @@ export type $CommentsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     clientId: string | null
     taskId: string | null
     fileId: string | null
+    parentId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["comments"]>
@@ -1408,6 +1749,8 @@ export interface Prisma__CommentsClient<T, Null = never, ExtArgs extends runtime
   client<T extends Prisma.Comments$clientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comments$clientArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   task<T extends Prisma.Comments$taskArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comments$taskArgs<ExtArgs>>): Prisma.Prisma__TaskClient<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   file<T extends Prisma.Comments$fileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comments$fileArgs<ExtArgs>>): Prisma.Prisma__FileClient<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  parent<T extends Prisma.Comments$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comments$parentArgs<ExtArgs>>): Prisma.Prisma__CommentsClient<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  replies<T extends Prisma.Comments$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comments$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1443,6 +1786,7 @@ export interface CommentsFieldRefs {
   readonly clientId: Prisma.FieldRef<"Comments", 'String'>
   readonly taskId: Prisma.FieldRef<"Comments", 'String'>
   readonly fileId: Prisma.FieldRef<"Comments", 'String'>
+  readonly parentId: Prisma.FieldRef<"Comments", 'String'>
   readonly createdAt: Prisma.FieldRef<"Comments", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Comments", 'DateTime'>
 }
@@ -1919,6 +2263,49 @@ export type Comments$fileArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.FileInclude<ExtArgs> | null
   where?: Prisma.FileWhereInput
+}
+
+/**
+ * Comments.parent
+ */
+export type Comments$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comments
+   */
+  select?: Prisma.CommentsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comments
+   */
+  omit?: Prisma.CommentsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentsInclude<ExtArgs> | null
+  where?: Prisma.CommentsWhereInput
+}
+
+/**
+ * Comments.replies
+ */
+export type Comments$repliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comments
+   */
+  select?: Prisma.CommentsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comments
+   */
+  omit?: Prisma.CommentsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentsInclude<ExtArgs> | null
+  where?: Prisma.CommentsWhereInput
+  orderBy?: Prisma.CommentsOrderByWithRelationInput | Prisma.CommentsOrderByWithRelationInput[]
+  cursor?: Prisma.CommentsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentsScalarFieldEnum | Prisma.CommentsScalarFieldEnum[]
 }
 
 /**
