@@ -1,0 +1,2 @@
+- Delete, edit comment
+- Send notification for task, file assignee, when comment from client is created. 

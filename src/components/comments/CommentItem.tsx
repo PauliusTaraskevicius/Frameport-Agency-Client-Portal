@@ -17,7 +17,9 @@ export const CommentItem = ({
   currentUserId,
 }: CommentItemProps) => {
   const displayName = comment.author
-    ? `${comment.author.user.firstName} ${comment.author.user.lastName}`
+    ? [comment.author.user.firstName, comment.author.user.lastName]
+        .filter(Boolean)
+        .join(" ")
     : (comment.client?.name ?? "Unknown user");
 
   const avatar =
@@ -43,12 +45,20 @@ export const CommentItem = ({
         <p className="mt-1 text-sm">{comment.body}</p>
         <div className="mt-1 flex gap-3">
           {onReply && (
-            <Button onClick={() => onReply(comment.id)} variant="default" className="cursor-pointer">
+            <Button
+              onClick={() => onReply(comment.id)}
+              variant="default"
+              className="cursor-pointer"
+            >
               Reply
             </Button>
           )}
           {isOwn && onDelete && (
-            <Button onClick={() => onDelete(comment.id)} variant="destructive" className="cursor-pointer">
+            <Button
+              onClick={() => onDelete(comment.id)}
+              variant="destructive"
+              className="cursor-pointer"
+            >
               Delete
             </Button>
           )}
