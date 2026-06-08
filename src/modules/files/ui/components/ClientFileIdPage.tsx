@@ -40,8 +40,8 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
   }
 
   return (
-    <div className="flex h-full w-full">
-      <div>
+    <div className="h-full w-full flex-col items-center justify-center">
+      <div className="mx-auto flex w-[600px] flex-col items-center justify-center">
         {file.mimeType === "application/pdf" ? (
           <div className="bg-muted flex h-96 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md">
             <AiOutlineFilePdf className="size-24 text-red-500" />
@@ -56,20 +56,20 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
           />
         )}
         <h1 className="mb-4 text-center text-2xl font-bold">{file.name}</h1>
-      </div>
-      <div>
-        {" "}
-        <CommentsSection
-          comments={comments ?? []}
-          onSubmit={async (body, parentId) => {
-            await createFileCommentMutation.mutateAsync({
-              projectId: params.projectId,
-              fileId: params.fileId,
-              body,
-              parentId,
-            });
-          }}
-        />
+        <div className="w-[600px]">
+          {" "}
+          <CommentsSection
+            comments={comments ?? []}
+            onSubmit={async (body, parentId) => {
+              await createFileCommentMutation.mutateAsync({
+                projectId: params.projectId,
+                fileId: params.fileId,
+                body,
+                parentId,
+              });
+            }}
+          />
+        </div>
       </div>
     </div>
   );
