@@ -122,6 +122,7 @@ model Client {
   invitations Invitation[]
   user        User?        @relation(fields: [userId], references: [clerkUserId], onDelete: SetNull)
   comments    Comments[]
+  approvals   Approval[]
 
   @@unique([userId, workspaceId]) // a user can only be one client per workspace
   @@index([workspaceId])
@@ -145,12 +146,13 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
   tasks     Task[]
   // approvals    Approval[]
   // activityLogs ActivityLog[]
   files     File[]
+  approvals Approval[]
 
   @@index([workspaceId])
   @@index([clientId])
@@ -198,7 +200,8 @@ model File {
   project  Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   uploader WorkspaceMember @relation(fields: [uploadedById], references: [id])
 
-  comments Comments[]
+  comments  Comments[]
+  approvals Approval[]
 
   @@index([projectId])
 }
@@ -227,4 +230,30 @@ model Comments {
   @@index([authorId])
   @@index([clientId])
   @@index([parentId])
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISION_REQUESTED
+}
+
+model Approval {
+  id        String         @id @default(uuid())
+  status    ApprovalStatus @default(PENDING)
+  note      String?        @db.Text
+  projectId String
+  fileId    String?
+  clientId  String // who is approving
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  file    File?   @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([fileId])
+  @@index([clientId])
 }

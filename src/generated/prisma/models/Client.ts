@@ -219,6 +219,7 @@ export type ClientWhereInput = {
   invitations?: Prisma.InvitationListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
+  approvals?: Prisma.ApprovalListRelationFilter
 }
 
 export type ClientOrderByWithRelationInput = {
@@ -236,6 +237,7 @@ export type ClientOrderByWithRelationInput = {
   invitations?: Prisma.InvitationOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   comments?: Prisma.CommentsOrderByRelationAggregateInput
+  approvals?: Prisma.ApprovalOrderByRelationAggregateInput
 }
 
 export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -257,6 +259,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   invitations?: Prisma.InvitationListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
+  approvals?: Prisma.ApprovalListRelationFilter
 }, "id" | "userId_workspaceId">
 
 export type ClientOrderByWithAggregationInput = {
@@ -302,6 +305,7 @@ export type ClientCreateInput = {
   invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
   user?: Prisma.UserCreateNestedOneWithoutClientsInput
   comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateInput = {
@@ -317,6 +321,7 @@ export type ClientUncheckedCreateInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientUpdateInput = {
@@ -332,6 +337,7 @@ export type ClientUpdateInput = {
   invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
   user?: Prisma.UserUpdateOneWithoutClientsNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateInput = {
@@ -347,6 +353,7 @@ export type ClientUncheckedUpdateInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyInput = {
@@ -574,6 +581,20 @@ export type ClientUpdateOneWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutCommentsInput, Prisma.ClientUpdateWithoutCommentsInput>, Prisma.ClientUncheckedUpdateWithoutCommentsInput>
 }
 
+export type ClientCreateNestedOneWithoutApprovalsInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutApprovalsInput, Prisma.ClientUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutApprovalsInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneRequiredWithoutApprovalsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutApprovalsInput, Prisma.ClientUncheckedCreateWithoutApprovalsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutApprovalsInput
+  upsert?: Prisma.ClientUpsertWithoutApprovalsInput
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutApprovalsInput, Prisma.ClientUpdateWithoutApprovalsInput>, Prisma.ClientUncheckedUpdateWithoutApprovalsInput>
+}
+
 export type ClientCreateWithoutUserInput = {
   id?: string
   name: string
@@ -586,6 +607,7 @@ export type ClientCreateWithoutUserInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutUserInput = {
@@ -600,6 +622,7 @@ export type ClientUncheckedCreateWithoutUserInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutUserInput = {
@@ -655,6 +678,7 @@ export type ClientCreateWithoutWorkspaceInput = {
   invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
   user?: Prisma.UserCreateNestedOneWithoutClientsInput
   comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutWorkspaceInput = {
@@ -669,6 +693,7 @@ export type ClientUncheckedCreateWithoutWorkspaceInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutWorkspaceInput = {
@@ -709,6 +734,7 @@ export type ClientCreateWithoutInvitationsInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutClientInput
   user?: Prisma.UserCreateNestedOneWithoutClientsInput
   comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutInvitationsInput = {
@@ -723,6 +749,7 @@ export type ClientUncheckedCreateWithoutInvitationsInput = {
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutInvitationsInput = {
@@ -753,6 +780,7 @@ export type ClientUpdateWithoutInvitationsInput = {
   projects?: Prisma.ProjectUpdateManyWithoutClientNestedInput
   user?: Prisma.UserUpdateOneWithoutClientsNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutInvitationsInput = {
@@ -767,6 +795,7 @@ export type ClientUncheckedUpdateWithoutInvitationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutProjectsInput = {
@@ -781,6 +810,7 @@ export type ClientCreateWithoutProjectsInput = {
   invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
   user?: Prisma.UserCreateNestedOneWithoutClientsInput
   comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutProjectsInput = {
@@ -795,6 +825,7 @@ export type ClientUncheckedCreateWithoutProjectsInput = {
   updatedAt?: Date | string
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutProjectsInput = {
@@ -825,6 +856,7 @@ export type ClientUpdateWithoutProjectsInput = {
   invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
   user?: Prisma.UserUpdateOneWithoutClientsNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutProjectsInput = {
@@ -839,6 +871,7 @@ export type ClientUncheckedUpdateWithoutProjectsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutCommentsInput = {
@@ -853,6 +886,7 @@ export type ClientCreateWithoutCommentsInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
   user?: Prisma.UserCreateNestedOneWithoutClientsInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutCommentsInput = {
@@ -867,6 +901,7 @@ export type ClientUncheckedCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutCommentsInput = {
@@ -897,6 +932,7 @@ export type ClientUpdateWithoutCommentsInput = {
   projects?: Prisma.ProjectUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
   user?: Prisma.UserUpdateOneWithoutClientsNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutCommentsInput = {
@@ -911,6 +947,83 @@ export type ClientUncheckedUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutApprovalsInput = {
+  id?: string
+  name: string
+  email?: string | null
+  company?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutClientsInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutClientInput
+  invitations?: Prisma.InvitationCreateNestedManyWithoutClientInput
+  user?: Prisma.UserCreateNestedOneWithoutClientsInput
+  comments?: Prisma.CommentsCreateNestedManyWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutApprovalsInput = {
+  id?: string
+  name: string
+  email?: string | null
+  company?: string | null
+  avatarUrl?: string | null
+  userId?: string | null
+  workspaceId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutClientInput
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutApprovalsInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutApprovalsInput, Prisma.ClientUncheckedCreateWithoutApprovalsInput>
+}
+
+export type ClientUpsertWithoutApprovalsInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutApprovalsInput, Prisma.ClientUncheckedUpdateWithoutApprovalsInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutApprovalsInput, Prisma.ClientUncheckedCreateWithoutApprovalsInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutApprovalsInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutApprovalsInput, Prisma.ClientUncheckedUpdateWithoutApprovalsInput>
+}
+
+export type ClientUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutClientsNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutClientNestedInput
+  invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
+  user?: Prisma.UserUpdateOneWithoutClientsNestedInput
+  comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutApprovalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyUserInput = {
@@ -936,6 +1049,7 @@ export type ClientUpdateWithoutUserInput = {
   projects?: Prisma.ProjectUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutUserInput = {
@@ -950,6 +1064,7 @@ export type ClientUncheckedUpdateWithoutUserInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutUserInput = {
@@ -986,6 +1101,7 @@ export type ClientUpdateWithoutWorkspaceInput = {
   invitations?: Prisma.InvitationUpdateManyWithoutClientNestedInput
   user?: Prisma.UserUpdateOneWithoutClientsNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutWorkspaceInput = {
@@ -1000,6 +1116,7 @@ export type ClientUncheckedUpdateWithoutWorkspaceInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutClientNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutClientNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -1022,12 +1139,14 @@ export type ClientCountOutputType = {
   projects: number
   invitations: number
   comments: number
+  approvals: number
 }
 
 export type ClientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | ClientCountOutputTypeCountProjectsArgs
   invitations?: boolean | ClientCountOutputTypeCountInvitationsArgs
   comments?: boolean | ClientCountOutputTypeCountCommentsArgs
+  approvals?: boolean | ClientCountOutputTypeCountApprovalsArgs
 }
 
 /**
@@ -1061,6 +1180,13 @@ export type ClientCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types
   where?: Prisma.CommentsWhereInput
 }
 
+/**
+ * ClientCountOutputType without action
+ */
+export type ClientCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApprovalWhereInput
+}
+
 
 export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1077,6 +1203,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   invitations?: boolean | Prisma.Client$invitationsArgs<ExtArgs>
   user?: boolean | Prisma.Client$userArgs<ExtArgs>
   comments?: boolean | Prisma.Client$commentsArgs<ExtArgs>
+  approvals?: boolean | Prisma.Client$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["client"]>
 
@@ -1127,6 +1254,7 @@ export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   invitations?: boolean | Prisma.Client$invitationsArgs<ExtArgs>
   user?: boolean | Prisma.Client$userArgs<ExtArgs>
   comments?: boolean | Prisma.Client$commentsArgs<ExtArgs>
+  approvals?: boolean | Prisma.Client$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1146,6 +1274,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     invitations: Prisma.$InvitationPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs> | null
     comments: Prisma.$CommentsPayload<ExtArgs>[]
+    approvals: Prisma.$ApprovalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1556,6 +1685,7 @@ export interface Prisma__ClientClient<T, Null = never, ExtArgs extends runtime.T
   invitations<T extends Prisma.Client$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.Client$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.Client$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvals<T extends Prisma.Client$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2083,6 +2213,30 @@ export type Client$commentsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.CommentsScalarFieldEnum | Prisma.CommentsScalarFieldEnum[]
+}
+
+/**
+ * Client.approvals
+ */
+export type Client$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Approval
+   */
+  select?: Prisma.ApprovalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Approval
+   */
+  omit?: Prisma.ApprovalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApprovalInclude<ExtArgs> | null
+  where?: Prisma.ApprovalWhereInput
+  orderBy?: Prisma.ApprovalOrderByWithRelationInput | Prisma.ApprovalOrderByWithRelationInput[]
+  cursor?: Prisma.ApprovalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApprovalScalarFieldEnum | Prisma.ApprovalScalarFieldEnum[]
 }
 
 /**
