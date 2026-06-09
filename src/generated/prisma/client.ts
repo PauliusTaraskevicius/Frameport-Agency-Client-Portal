@@ -86,3 +86,8 @@ export type File = Prisma.FileModel
  * 
  */
 export type Comments = Prisma.CommentsModel
+/**
+ * Model Approval
+ * 
+ */
+export type Approval = Prisma.ApprovalModel
