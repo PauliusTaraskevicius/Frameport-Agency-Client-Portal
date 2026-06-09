@@ -8,6 +8,8 @@ import { AiOutlineFilePdf } from "react-icons/ai";
 import { CommentsSection } from "@/components/comments/CommentsSection";
 import { useGetFileComments } from "../../api/use-get-file-comments";
 import { useCreateComment } from "../../api/use-create-comment";
+import { useDeleteComment } from "../../api/use-delete-comment";
+import { useUpdateComment } from "../../api/use-update-comment";
 
 interface ClientFileIdPageProps {
   params: {
@@ -25,6 +27,16 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
     fileId: params.fileId,
     projectId: params.projectId,
   });
+
+  const deleteFileCommentMutation = useDeleteComment(
+    params.fileId,
+    params.projectId,
+  );
+
+  const updateFileCommentMutation = useUpdateComment(
+    params.fileId,
+    params.projectId,
+  );
 
   const createFileCommentMutation = useCreateComment(
     params.fileId,
@@ -68,6 +80,19 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
                 parentId,
               });
             }}
+            onDelete={(commentId) =>
+              deleteFileCommentMutation.mutate({
+                commentId,
+                projectId: params.projectId,
+              })
+            }
+            onUpdate={(commentId, body) =>
+              updateFileCommentMutation.mutate({
+                commentId,
+                projectId: params.projectId,
+                body,
+              })
+            }
           />
         </div>
       </div>
