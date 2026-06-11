@@ -201,8 +201,8 @@ model File {
   uploader WorkspaceMember @relation(fields: [uploadedById], references: [id])
 
   comments  Comments[]
-  approvals Approval[]
   versions  FileVersion[]
+  approvals Approval[]
 
   @@index([projectId])
 }
@@ -258,23 +258,22 @@ enum ApprovalStatus {
 }
 
 model Approval {
-  id            String         @id @default(uuid())
-  status        ApprovalStatus @default(PENDING)
-  note          String?        @db.Text
-  projectId     String
-  fileId        String?
-  fileVersionId String?
-  clientId      String // who is approving
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id        String         @id @default(uuid())
+  status    ApprovalStatus @default(PENDING)
+  note      String?        @db.Text
+  projectId String
 
-  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  file        File?        @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  fileVersionId String?
+  clientId      String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   client      Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   fileVersion FileVersion? @relation(fields: [fileVersionId], references: [id])
+  file        File?        @relation(fields: [fileId], references: [id])
+  fileId      String?
 
   @@index([projectId])
-  @@index([fileId])
   @@index([fileVersionId])
   @@index([clientId])
 }

@@ -1419,11 +1419,9 @@ export const ApprovalScalarFieldEnum = {
   status: 'status',
   note: 'note',
   projectId: 'projectId',
-  fileId: 'fileId',
   fileVersionId: 'fileVersionId',
   clientId: 'clientId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  fileId: 'fileId'
 } as const
 
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]

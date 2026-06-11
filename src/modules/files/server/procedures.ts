@@ -9,8 +9,156 @@ import { MemberRole } from "@/modules/members/types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import { Status } from "../types";
 
 export const filesRouter = createTRPCRouter({
+  submitForApproval: protectedProcedure
+    .input(
+      z.object({
+        approvalId: z.string().min(1),
+        status: z.enum([
+          Status.APPROVED,
+          Status.REJECTED,
+          Status.REVISION_REQUESTED,
+        ]),
+        note: z.string().max(1024).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const approval = await prisma.approval.findUnique({
+        where: { id: input.approvalId },
+        include: {
+          fileVersion: { include: { file: { include: { project: true } } } },
+        },
+      });
+
+      if (!approval) throw new TRPCError({ code: "NOT_FOUND" });
+      if (approval.status !== "PENDING")
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Already resolved",
+        });
+
+      // only the assigned client can approve
+      const client = await prisma.client.findFirst({
+        where: { userId: ctx.auth.userId, id: approval.clientId },
+      });
+      if (!client) throw new TRPCError({ code: "FORBIDDEN" });
+
+      const project = approval.fileVersion?.file?.project;
+
+      if (!project || project.clientId !== client.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Client does not belong to this project",
+        });
+      }
+
+      return prisma.approval.update({
+        where: { id: input.approvalId },
+        data: { status: input.status, note: input.note },
+      });
+    }),
+
+  requestApproval: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string().min(1),
+        fileVersionId: z.string().min(1),
+        clientId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspace: { projects: { some: { id: input.projectId } } },
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) throw new TRPCError({ code: "FORBIDDEN" });
+
+      // prevent duplicate pending approval for same version
+      const existing = await prisma.approval.findFirst({
+        where: {
+          fileVersionId: input.fileVersionId,
+          clientId: input.clientId,
+          status: "PENDING",
+        },
+      });
+
+      if (existing)
+        throw new TRPCError({ code: "CONFLICT", message: "Already pending" });
+
+      return prisma.approval.create({
+        data: {
+          projectId: input.projectId,
+          fileVersionId: input.fileVersionId,
+          clientId: input.clientId,
+          status: "PENDING",
+        },
+      });
+    }),
+
+  addVersion: protectedProcedure
+    .input(
+      z.object({
+        fileId: z.string().min(1),
+        key: z.string(),
+        url: z.string().url(),
+        mimeType: z.string().optional(),
+        size: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const file = await prisma.file.findUnique({
+        where: { id: input.fileId },
+        include: {
+          project: true,
+          versions: {
+            orderBy: { version: "desc" },
+            take: 1,
+          },
+        },
+      });
+
+      if (!file) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
+      }
+
+      // only team members can upload revisions
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: file.project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+
+      if (!member) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      }
+
+      const nextVersion = (file.versions[0]?.version ?? 0) + 1;
+
+      return prisma.$transaction([
+        prisma.fileVersion.create({
+          data: {
+            fileId: input.fileId,
+            version: nextVersion,
+            key: input.key,
+            url: input.url,
+            mimeType: input.mimeType,
+            size: input.size,
+          },
+        }),
+        // keep File.key/url pointing to latest
+        prisma.file.update({
+          where: { id: input.fileId },
+          data: { key: input.key, url: input.url },
+        }),
+      ]);
+    }),
+
   getDownloadUrl: protectedProcedure
     .input(z.object({ fileId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
@@ -309,6 +457,15 @@ export const filesRouter = createTRPCRouter({
               size: f.size,
               projectId: input.projectId,
               uploadedById: member.id,
+              versions: {
+                create: {
+                  version: 1,
+                  key: f.key,
+                  url: f.url,
+                  mimeType: f.mimeType,
+                  size: f.size,
+                },
+              },
             },
           }),
         ),

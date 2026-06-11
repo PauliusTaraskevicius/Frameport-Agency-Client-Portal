@@ -259,8 +259,8 @@ export type FileWhereInput = {
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   uploader?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
   comments?: Prisma.CommentsListRelationFilter
-  approvals?: Prisma.ApprovalListRelationFilter
   versions?: Prisma.FileVersionListRelationFilter
+  approvals?: Prisma.ApprovalListRelationFilter
 }
 
 export type FileOrderByWithRelationInput = {
@@ -277,8 +277,8 @@ export type FileOrderByWithRelationInput = {
   project?: Prisma.ProjectOrderByWithRelationInput
   uploader?: Prisma.WorkspaceMemberOrderByWithRelationInput
   comments?: Prisma.CommentsOrderByRelationAggregateInput
-  approvals?: Prisma.ApprovalOrderByRelationAggregateInput
   versions?: Prisma.FileVersionOrderByRelationAggregateInput
+  approvals?: Prisma.ApprovalOrderByRelationAggregateInput
 }
 
 export type FileWhereUniqueInput = Prisma.AtLeast<{
@@ -298,8 +298,8 @@ export type FileWhereUniqueInput = Prisma.AtLeast<{
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   uploader?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
   comments?: Prisma.CommentsListRelationFilter
-  approvals?: Prisma.ApprovalListRelationFilter
   versions?: Prisma.FileVersionListRelationFilter
+  approvals?: Prisma.ApprovalListRelationFilter
 }, "id" | "key">
 
 export type FileOrderByWithAggregationInput = {
@@ -348,8 +348,8 @@ export type FileCreateInput = {
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
   uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
 
 export type FileUncheckedCreateInput = {
@@ -364,8 +364,8 @@ export type FileUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionUncheckedCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
 }
 
 export type FileUpdateInput = {
@@ -380,8 +380,8 @@ export type FileUpdateInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
   uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateInput = {
@@ -396,8 +396,8 @@ export type FileUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUncheckedUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
 }
 
 export type FileCreateManyInput = {
@@ -653,8 +653,8 @@ export type FileCreateWithoutUploaderInput = {
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutUploaderInput = {
@@ -668,8 +668,8 @@ export type FileUncheckedCreateWithoutUploaderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionUncheckedCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutUploaderInput = {
@@ -725,8 +725,8 @@ export type FileCreateWithoutProjectInput = {
   updatedAt?: Date | string
   uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutProjectInput = {
@@ -740,8 +740,8 @@ export type FileUncheckedCreateWithoutProjectInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
-  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionUncheckedCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutProjectInput = {
@@ -857,8 +857,8 @@ export type FileCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
   uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
-  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutCommentsInput = {
@@ -872,8 +872,8 @@ export type FileUncheckedCreateWithoutCommentsInput = {
   uploadedById: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionUncheckedCreateNestedManyWithoutFileInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutCommentsInput = {
@@ -903,8 +903,8 @@ export type FileUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
   uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
-  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutCommentsInput = {
@@ -918,8 +918,8 @@ export type FileUncheckedUpdateWithoutCommentsInput = {
   uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUncheckedUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
 }
 
 export type FileCreateWithoutApprovalsInput = {
@@ -1021,8 +1021,8 @@ export type FileUpdateWithoutUploaderInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutUploaderInput = {
@@ -1036,8 +1036,8 @@ export type FileUncheckedUpdateWithoutUploaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUncheckedUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateManyWithoutUploaderInput = {
@@ -1075,8 +1075,8 @@ export type FileUpdateWithoutProjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutProjectInput = {
@@ -1090,8 +1090,8 @@ export type FileUncheckedUpdateWithoutProjectInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
-  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUncheckedUpdateManyWithoutFileNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateManyWithoutProjectInput = {
@@ -1113,14 +1113,14 @@ export type FileUncheckedUpdateManyWithoutProjectInput = {
 
 export type FileCountOutputType = {
   comments: number
-  approvals: number
   versions: number
+  approvals: number
 }
 
 export type FileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | FileCountOutputTypeCountCommentsArgs
-  approvals?: boolean | FileCountOutputTypeCountApprovalsArgs
   versions?: boolean | FileCountOutputTypeCountVersionsArgs
+  approvals?: boolean | FileCountOutputTypeCountApprovalsArgs
 }
 
 /**
@@ -1143,15 +1143,15 @@ export type FileCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.E
 /**
  * FileCountOutputType without action
  */
-export type FileCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ApprovalWhereInput
+export type FileCountOutputTypeCountVersionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileVersionWhereInput
 }
 
 /**
  * FileCountOutputType without action
  */
-export type FileCountOutputTypeCountVersionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FileVersionWhereInput
+export type FileCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApprovalWhereInput
 }
 
 
@@ -1169,8 +1169,8 @@ export type FileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.File$commentsArgs<ExtArgs>
-  approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
   versions?: boolean | Prisma.File$versionsArgs<ExtArgs>
+  approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.FileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["file"]>
 
@@ -1222,8 +1222,8 @@ export type FileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.File$commentsArgs<ExtArgs>
-  approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
   versions?: boolean | Prisma.File$versionsArgs<ExtArgs>
+  approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
   _count?: boolean | Prisma.FileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1241,8 +1241,8 @@ export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     project: Prisma.$ProjectPayload<ExtArgs>
     uploader: Prisma.$WorkspaceMemberPayload<ExtArgs>
     comments: Prisma.$CommentsPayload<ExtArgs>[]
-    approvals: Prisma.$ApprovalPayload<ExtArgs>[]
     versions: Prisma.$FileVersionPayload<ExtArgs>[]
+    approvals: Prisma.$ApprovalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1652,8 +1652,8 @@ export interface Prisma__FileClient<T, Null = never, ExtArgs extends runtime.Typ
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   uploader<T extends Prisma.WorkspaceMemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMemberDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.File$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  approvals<T extends Prisma.File$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   versions<T extends Prisma.File$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvals<T extends Prisma.File$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2118,30 +2118,6 @@ export type File$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * File.approvals
- */
-export type File$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Approval
-   */
-  select?: Prisma.ApprovalSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Approval
-   */
-  omit?: Prisma.ApprovalOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ApprovalInclude<ExtArgs> | null
-  where?: Prisma.ApprovalWhereInput
-  orderBy?: Prisma.ApprovalOrderByWithRelationInput | Prisma.ApprovalOrderByWithRelationInput[]
-  cursor?: Prisma.ApprovalWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ApprovalScalarFieldEnum | Prisma.ApprovalScalarFieldEnum[]
-}
-
-/**
  * File.versions
  */
 export type File$versionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2163,6 +2139,30 @@ export type File$versionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.FileVersionScalarFieldEnum | Prisma.FileVersionScalarFieldEnum[]
+}
+
+/**
+ * File.approvals
+ */
+export type File$approvalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Approval
+   */
+  select?: Prisma.ApprovalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Approval
+   */
+  omit?: Prisma.ApprovalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApprovalInclude<ExtArgs> | null
+  where?: Prisma.ApprovalWhereInput
+  orderBy?: Prisma.ApprovalOrderByWithRelationInput | Prisma.ApprovalOrderByWithRelationInput[]
+  cursor?: Prisma.ApprovalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApprovalScalarFieldEnum | Prisma.ApprovalScalarFieldEnum[]
 }
 
 /**
