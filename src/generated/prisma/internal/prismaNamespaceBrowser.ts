@@ -59,6 +59,7 @@ export const ModelName = {
   Project: 'Project',
   Task: 'Task',
   File: 'File',
+  FileVersion: 'FileVersion',
   Comments: 'Comments',
   Approval: 'Approval'
 } as const
@@ -197,6 +198,20 @@ export const FileScalarFieldEnum = {
 export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
 
 
+export const FileVersionScalarFieldEnum = {
+  id: 'id',
+  fileId: 'fileId',
+  version: 'version',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  createdAt: 'createdAt'
+} as const
+
+export type FileVersionScalarFieldEnum = (typeof FileVersionScalarFieldEnum)[keyof typeof FileVersionScalarFieldEnum]
+
+
 export const CommentsScalarFieldEnum = {
   id: 'id',
   body: 'body',
@@ -218,6 +233,7 @@ export const ApprovalScalarFieldEnum = {
   note: 'note',
   projectId: 'projectId',
   fileId: 'fileId',
+  fileVersionId: 'fileVersionId',
   clientId: 'clientId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
