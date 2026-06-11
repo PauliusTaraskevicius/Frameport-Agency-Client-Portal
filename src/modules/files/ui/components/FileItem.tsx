@@ -8,7 +8,12 @@ import Image from "next/image";
 import { AiOutlineFilePdf } from "react-icons/ai";
 import { useDeleteFile } from "../../api/use-delete-file";
 import { Button } from "@/components/ui/button";
-import { Ellipsis, MessageCircleMore, Trash2Icon } from "lucide-react";
+import {
+  DownloadIcon,
+  Ellipsis,
+  MessageCircleMore,
+  Trash2Icon,
+} from "lucide-react";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import {
@@ -21,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGetFileComments } from "../../api/use-get-file-comments";
 import { File } from "@/generated/prisma/client";
+import { useDownloadFile } from "../../hooks/use-download-file";
 
 interface FileItemProps {
   file: File;
@@ -30,6 +36,7 @@ interface FileItemProps {
 
 export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
   const workspaceId = useWorkspaceId();
+  const downloadFile = useDownloadFile();
 
   const { data: comments } = useGetFileComments({
     fileId: file.id,
@@ -79,17 +86,31 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => onDelete(file.id)}>
+                    <DropdownMenuItem
+                      onClick={() => downloadFile(file.id)}
+                      className="cursor-pointer"
+                    >
+                      <DownloadIcon className="size-4" />
+                      Download
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onDelete(file.id)}
+                      className="cursor-pointer"
+                    >
                       <Trash2Icon className="size-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <MessageCircleMore className="size-4" /> Comments{" "}
-                      {(comments?.length ?? 0) > 0 && `(${comments?.length})`}
-                    </DropdownMenuItem>
+                    <Link
+                      href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/files/${file.id}`}
+                    >
+                      <DropdownMenuItem className="cursor-pointer">
+                        <MessageCircleMore className="size-4" /> Comments{" "}
+                        {(comments?.length ?? 0) > 0 && `(${comments?.length})`}
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -123,6 +144,13 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => downloadFile(file.id)}
+                      className="cursor-pointer"
+                    >
+                      <DownloadIcon className="size-4" />
+                      Download
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleDelete(file.id)}
                       className="cursor-pointer"

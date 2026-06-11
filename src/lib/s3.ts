@@ -51,3 +51,18 @@ export async function deleteS3Object(key: string): Promise<void> {
   });
   await s3.send(command);
 }
+
+export async function generateDownloadUrl(
+  key: string,
+  fileName: string,
+): Promise<string> {
+  // RFC 5987 encoding supports the full UTF-8 range (e.g. Lithuanian, Polish, etc.)
+  // The basic filename= param is ISO-8859-1 only, so we use filename*= for non-ASCII names
+  const encoded = encodeURIComponent(fileName);
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET_NAME!,
+    Key: key,
+    ResponseContentDisposition: `attachment; filename*=UTF-8''${encoded}`,
+  });
+  return getSignedUrl(s3, command, { expiresIn: 60 });
+}
