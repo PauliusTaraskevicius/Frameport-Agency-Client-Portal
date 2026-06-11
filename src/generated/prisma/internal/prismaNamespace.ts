@@ -392,6 +392,7 @@ export const ModelName = {
   Project: 'Project',
   Task: 'Task',
   File: 'File',
+  FileVersion: 'FileVersion',
   Comments: 'Comments',
   Approval: 'Approval'
 } as const
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "invitation" | "client" | "project" | "task" | "file" | "comments" | "approval"
+    modelProps: "user" | "workspace" | "workspaceMember" | "invitation" | "client" | "project" | "task" | "file" | "fileVersion" | "comments" | "approval"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1005,6 +1006,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FileVersion: {
+      payload: Prisma.$FileVersionPayload<ExtArgs>
+      fields: Prisma.FileVersionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FileVersionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FileVersionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        findFirst: {
+          args: Prisma.FileVersionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FileVersionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        findMany: {
+          args: Prisma.FileVersionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>[]
+        }
+        create: {
+          args: Prisma.FileVersionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        createMany: {
+          args: Prisma.FileVersionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FileVersionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>[]
+        }
+        delete: {
+          args: Prisma.FileVersionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        update: {
+          args: Prisma.FileVersionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        deleteMany: {
+          args: Prisma.FileVersionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FileVersionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FileVersionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>[]
+        }
+        upsert: {
+          args: Prisma.FileVersionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileVersionPayload>
+        }
+        aggregate: {
+          args: Prisma.FileVersionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFileVersion>
+        }
+        groupBy: {
+          args: Prisma.FileVersionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileVersionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FileVersionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileVersionCountAggregateOutputType> | number
+        }
+      }
+    }
     Comments: {
       payload: Prisma.$CommentsPayload<ExtArgs>
       fields: Prisma.CommentsFieldRefs
@@ -1310,6 +1385,20 @@ export const FileScalarFieldEnum = {
 export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
 
 
+export const FileVersionScalarFieldEnum = {
+  id: 'id',
+  fileId: 'fileId',
+  version: 'version',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  createdAt: 'createdAt'
+} as const
+
+export type FileVersionScalarFieldEnum = (typeof FileVersionScalarFieldEnum)[keyof typeof FileVersionScalarFieldEnum]
+
+
 export const CommentsScalarFieldEnum = {
   id: 'id',
   body: 'body',
@@ -1331,6 +1420,7 @@ export const ApprovalScalarFieldEnum = {
   note: 'note',
   projectId: 'projectId',
   fileId: 'fileId',
+  fileVersionId: 'fileVersionId',
   clientId: 'clientId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1611,6 +1701,7 @@ export type GlobalOmitConfig = {
   project?: Prisma.ProjectOmit
   task?: Prisma.TaskOmit
   file?: Prisma.FileOmit
+  fileVersion?: Prisma.FileVersionOmit
   comments?: Prisma.CommentsOmit
   approval?: Prisma.ApprovalOmit
 }

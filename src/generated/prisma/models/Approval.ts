@@ -30,6 +30,7 @@ export type ApprovalMinAggregateOutputType = {
   note: string | null
   projectId: string | null
   fileId: string | null
+  fileVersionId: string | null
   clientId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +42,7 @@ export type ApprovalMaxAggregateOutputType = {
   note: string | null
   projectId: string | null
   fileId: string | null
+  fileVersionId: string | null
   clientId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +54,7 @@ export type ApprovalCountAggregateOutputType = {
   note: number
   projectId: number
   fileId: number
+  fileVersionId: number
   clientId: number
   createdAt: number
   updatedAt: number
@@ -65,6 +68,7 @@ export type ApprovalMinAggregateInputType = {
   note?: true
   projectId?: true
   fileId?: true
+  fileVersionId?: true
   clientId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +80,7 @@ export type ApprovalMaxAggregateInputType = {
   note?: true
   projectId?: true
   fileId?: true
+  fileVersionId?: true
   clientId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +92,7 @@ export type ApprovalCountAggregateInputType = {
   note?: true
   projectId?: true
   fileId?: true
+  fileVersionId?: true
   clientId?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +177,7 @@ export type ApprovalGroupByOutputType = {
   note: string | null
   projectId: string
   fileId: string | null
+  fileVersionId: string | null
   clientId: string
   createdAt: Date
   updatedAt: Date
@@ -203,12 +210,14 @@ export type ApprovalWhereInput = {
   note?: Prisma.StringNullableFilter<"Approval"> | string | null
   projectId?: Prisma.StringFilter<"Approval"> | string
   fileId?: Prisma.StringNullableFilter<"Approval"> | string | null
+  fileVersionId?: Prisma.StringNullableFilter<"Approval"> | string | null
   clientId?: Prisma.StringFilter<"Approval"> | string
   createdAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   file?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  fileVersion?: Prisma.XOR<Prisma.FileVersionNullableScalarRelationFilter, Prisma.FileVersionWhereInput> | null
 }
 
 export type ApprovalOrderByWithRelationInput = {
@@ -217,12 +226,14 @@ export type ApprovalOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrder
   fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
   file?: Prisma.FileOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
+  fileVersion?: Prisma.FileVersionOrderByWithRelationInput
 }
 
 export type ApprovalWhereUniqueInput = Prisma.AtLeast<{
@@ -234,12 +245,14 @@ export type ApprovalWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"Approval"> | string | null
   projectId?: Prisma.StringFilter<"Approval"> | string
   fileId?: Prisma.StringNullableFilter<"Approval"> | string | null
+  fileVersionId?: Prisma.StringNullableFilter<"Approval"> | string | null
   clientId?: Prisma.StringFilter<"Approval"> | string
   createdAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   file?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  fileVersion?: Prisma.XOR<Prisma.FileVersionNullableScalarRelationFilter, Prisma.FileVersionWhereInput> | null
 }, "id">
 
 export type ApprovalOrderByWithAggregationInput = {
@@ -248,6 +261,7 @@ export type ApprovalOrderByWithAggregationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrder
   fileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -265,6 +279,7 @@ export type ApprovalScalarWhereWithAggregatesInput = {
   note?: Prisma.StringNullableWithAggregatesFilter<"Approval"> | string | null
   projectId?: Prisma.StringWithAggregatesFilter<"Approval"> | string
   fileId?: Prisma.StringNullableWithAggregatesFilter<"Approval"> | string | null
+  fileVersionId?: Prisma.StringNullableWithAggregatesFilter<"Approval"> | string | null
   clientId?: Prisma.StringWithAggregatesFilter<"Approval"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Approval"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Approval"> | Date | string
@@ -279,6 +294,7 @@ export type ApprovalCreateInput = {
   project: Prisma.ProjectCreateNestedOneWithoutApprovalsInput
   file?: Prisma.FileCreateNestedOneWithoutApprovalsInput
   client: Prisma.ClientCreateNestedOneWithoutApprovalsInput
+  fileVersion?: Prisma.FileVersionCreateNestedOneWithoutApprovalsInput
 }
 
 export type ApprovalUncheckedCreateInput = {
@@ -287,6 +303,7 @@ export type ApprovalUncheckedCreateInput = {
   note?: string | null
   projectId: string
   fileId?: string | null
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -301,6 +318,7 @@ export type ApprovalUpdateInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutApprovalsNestedInput
   file?: Prisma.FileUpdateOneWithoutApprovalsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutApprovalsNestedInput
+  fileVersion?: Prisma.FileVersionUpdateOneWithoutApprovalsNestedInput
 }
 
 export type ApprovalUncheckedUpdateInput = {
@@ -309,6 +327,7 @@ export type ApprovalUncheckedUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -320,6 +339,7 @@ export type ApprovalCreateManyInput = {
   note?: string | null
   projectId: string
   fileId?: string | null
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -339,6 +359,7 @@ export type ApprovalUncheckedUpdateManyInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,6 +381,7 @@ export type ApprovalCountOrderByAggregateInput = {
   note?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  fileVersionId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -371,6 +393,7 @@ export type ApprovalMaxOrderByAggregateInput = {
   note?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  fileVersionId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -382,6 +405,7 @@ export type ApprovalMinOrderByAggregateInput = {
   note?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   fileId?: Prisma.SortOrder
+  fileVersionId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -513,6 +537,48 @@ export type ApprovalUncheckedUpdateManyWithoutFileNestedInput = {
   deleteMany?: Prisma.ApprovalScalarWhereInput | Prisma.ApprovalScalarWhereInput[]
 }
 
+export type ApprovalCreateNestedManyWithoutFileVersionInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput> | Prisma.ApprovalCreateWithoutFileVersionInput[] | Prisma.ApprovalUncheckedCreateWithoutFileVersionInput[]
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutFileVersionInput | Prisma.ApprovalCreateOrConnectWithoutFileVersionInput[]
+  createMany?: Prisma.ApprovalCreateManyFileVersionInputEnvelope
+  connect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+}
+
+export type ApprovalUncheckedCreateNestedManyWithoutFileVersionInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput> | Prisma.ApprovalCreateWithoutFileVersionInput[] | Prisma.ApprovalUncheckedCreateWithoutFileVersionInput[]
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutFileVersionInput | Prisma.ApprovalCreateOrConnectWithoutFileVersionInput[]
+  createMany?: Prisma.ApprovalCreateManyFileVersionInputEnvelope
+  connect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+}
+
+export type ApprovalUpdateManyWithoutFileVersionNestedInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput> | Prisma.ApprovalCreateWithoutFileVersionInput[] | Prisma.ApprovalUncheckedCreateWithoutFileVersionInput[]
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutFileVersionInput | Prisma.ApprovalCreateOrConnectWithoutFileVersionInput[]
+  upsert?: Prisma.ApprovalUpsertWithWhereUniqueWithoutFileVersionInput | Prisma.ApprovalUpsertWithWhereUniqueWithoutFileVersionInput[]
+  createMany?: Prisma.ApprovalCreateManyFileVersionInputEnvelope
+  set?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  disconnect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  delete?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  connect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  update?: Prisma.ApprovalUpdateWithWhereUniqueWithoutFileVersionInput | Prisma.ApprovalUpdateWithWhereUniqueWithoutFileVersionInput[]
+  updateMany?: Prisma.ApprovalUpdateManyWithWhereWithoutFileVersionInput | Prisma.ApprovalUpdateManyWithWhereWithoutFileVersionInput[]
+  deleteMany?: Prisma.ApprovalScalarWhereInput | Prisma.ApprovalScalarWhereInput[]
+}
+
+export type ApprovalUncheckedUpdateManyWithoutFileVersionNestedInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput> | Prisma.ApprovalCreateWithoutFileVersionInput[] | Prisma.ApprovalUncheckedCreateWithoutFileVersionInput[]
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutFileVersionInput | Prisma.ApprovalCreateOrConnectWithoutFileVersionInput[]
+  upsert?: Prisma.ApprovalUpsertWithWhereUniqueWithoutFileVersionInput | Prisma.ApprovalUpsertWithWhereUniqueWithoutFileVersionInput[]
+  createMany?: Prisma.ApprovalCreateManyFileVersionInputEnvelope
+  set?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  disconnect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  delete?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  connect?: Prisma.ApprovalWhereUniqueInput | Prisma.ApprovalWhereUniqueInput[]
+  update?: Prisma.ApprovalUpdateWithWhereUniqueWithoutFileVersionInput | Prisma.ApprovalUpdateWithWhereUniqueWithoutFileVersionInput[]
+  updateMany?: Prisma.ApprovalUpdateManyWithWhereWithoutFileVersionInput | Prisma.ApprovalUpdateManyWithWhereWithoutFileVersionInput[]
+  deleteMany?: Prisma.ApprovalScalarWhereInput | Prisma.ApprovalScalarWhereInput[]
+}
+
 export type EnumApprovalStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApprovalStatus
 }
@@ -525,6 +591,7 @@ export type ApprovalCreateWithoutClientInput = {
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutApprovalsInput
   file?: Prisma.FileCreateNestedOneWithoutApprovalsInput
+  fileVersion?: Prisma.FileVersionCreateNestedOneWithoutApprovalsInput
 }
 
 export type ApprovalUncheckedCreateWithoutClientInput = {
@@ -533,6 +600,7 @@ export type ApprovalUncheckedCreateWithoutClientInput = {
   note?: string | null
   projectId: string
   fileId?: string | null
+  fileVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -572,6 +640,7 @@ export type ApprovalScalarWhereInput = {
   note?: Prisma.StringNullableFilter<"Approval"> | string | null
   projectId?: Prisma.StringFilter<"Approval"> | string
   fileId?: Prisma.StringNullableFilter<"Approval"> | string | null
+  fileVersionId?: Prisma.StringNullableFilter<"Approval"> | string | null
   clientId?: Prisma.StringFilter<"Approval"> | string
   createdAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Approval"> | Date | string
@@ -585,6 +654,7 @@ export type ApprovalCreateWithoutProjectInput = {
   updatedAt?: Date | string
   file?: Prisma.FileCreateNestedOneWithoutApprovalsInput
   client: Prisma.ClientCreateNestedOneWithoutApprovalsInput
+  fileVersion?: Prisma.FileVersionCreateNestedOneWithoutApprovalsInput
 }
 
 export type ApprovalUncheckedCreateWithoutProjectInput = {
@@ -592,6 +662,7 @@ export type ApprovalUncheckedCreateWithoutProjectInput = {
   status?: $Enums.ApprovalStatus
   note?: string | null
   fileId?: string | null
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -631,6 +702,7 @@ export type ApprovalCreateWithoutFileInput = {
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutApprovalsInput
   client: Prisma.ClientCreateNestedOneWithoutApprovalsInput
+  fileVersion?: Prisma.FileVersionCreateNestedOneWithoutApprovalsInput
 }
 
 export type ApprovalUncheckedCreateWithoutFileInput = {
@@ -638,6 +710,7 @@ export type ApprovalUncheckedCreateWithoutFileInput = {
   status?: $Enums.ApprovalStatus
   note?: string | null
   projectId: string
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -669,12 +742,61 @@ export type ApprovalUpdateManyWithWhereWithoutFileInput = {
   data: Prisma.XOR<Prisma.ApprovalUpdateManyMutationInput, Prisma.ApprovalUncheckedUpdateManyWithoutFileInput>
 }
 
+export type ApprovalCreateWithoutFileVersionInput = {
+  id?: string
+  status?: $Enums.ApprovalStatus
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  project: Prisma.ProjectCreateNestedOneWithoutApprovalsInput
+  file?: Prisma.FileCreateNestedOneWithoutApprovalsInput
+  client: Prisma.ClientCreateNestedOneWithoutApprovalsInput
+}
+
+export type ApprovalUncheckedCreateWithoutFileVersionInput = {
+  id?: string
+  status?: $Enums.ApprovalStatus
+  note?: string | null
+  projectId: string
+  fileId?: string | null
+  clientId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ApprovalCreateOrConnectWithoutFileVersionInput = {
+  where: Prisma.ApprovalWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput>
+}
+
+export type ApprovalCreateManyFileVersionInputEnvelope = {
+  data: Prisma.ApprovalCreateManyFileVersionInput | Prisma.ApprovalCreateManyFileVersionInput[]
+  skipDuplicates?: boolean
+}
+
+export type ApprovalUpsertWithWhereUniqueWithoutFileVersionInput = {
+  where: Prisma.ApprovalWhereUniqueInput
+  update: Prisma.XOR<Prisma.ApprovalUpdateWithoutFileVersionInput, Prisma.ApprovalUncheckedUpdateWithoutFileVersionInput>
+  create: Prisma.XOR<Prisma.ApprovalCreateWithoutFileVersionInput, Prisma.ApprovalUncheckedCreateWithoutFileVersionInput>
+}
+
+export type ApprovalUpdateWithWhereUniqueWithoutFileVersionInput = {
+  where: Prisma.ApprovalWhereUniqueInput
+  data: Prisma.XOR<Prisma.ApprovalUpdateWithoutFileVersionInput, Prisma.ApprovalUncheckedUpdateWithoutFileVersionInput>
+}
+
+export type ApprovalUpdateManyWithWhereWithoutFileVersionInput = {
+  where: Prisma.ApprovalScalarWhereInput
+  data: Prisma.XOR<Prisma.ApprovalUpdateManyMutationInput, Prisma.ApprovalUncheckedUpdateManyWithoutFileVersionInput>
+}
+
 export type ApprovalCreateManyClientInput = {
   id?: string
   status?: $Enums.ApprovalStatus
   note?: string | null
   projectId: string
   fileId?: string | null
+  fileVersionId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -687,6 +809,7 @@ export type ApprovalUpdateWithoutClientInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutApprovalsNestedInput
   file?: Prisma.FileUpdateOneWithoutApprovalsNestedInput
+  fileVersion?: Prisma.FileVersionUpdateOneWithoutApprovalsNestedInput
 }
 
 export type ApprovalUncheckedUpdateWithoutClientInput = {
@@ -695,6 +818,7 @@ export type ApprovalUncheckedUpdateWithoutClientInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -705,6 +829,7 @@ export type ApprovalUncheckedUpdateManyWithoutClientInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -714,6 +839,7 @@ export type ApprovalCreateManyProjectInput = {
   status?: $Enums.ApprovalStatus
   note?: string | null
   fileId?: string | null
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -727,6 +853,7 @@ export type ApprovalUpdateWithoutProjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   file?: Prisma.FileUpdateOneWithoutApprovalsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutApprovalsNestedInput
+  fileVersion?: Prisma.FileVersionUpdateOneWithoutApprovalsNestedInput
 }
 
 export type ApprovalUncheckedUpdateWithoutProjectInput = {
@@ -734,6 +861,7 @@ export type ApprovalUncheckedUpdateWithoutProjectInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -744,6 +872,7 @@ export type ApprovalUncheckedUpdateManyWithoutProjectInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -754,6 +883,7 @@ export type ApprovalCreateManyFileInput = {
   status?: $Enums.ApprovalStatus
   note?: string | null
   projectId: string
+  fileVersionId?: string | null
   clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -767,6 +897,7 @@ export type ApprovalUpdateWithoutFileInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutApprovalsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutApprovalsNestedInput
+  fileVersion?: Prisma.FileVersionUpdateOneWithoutApprovalsNestedInput
 }
 
 export type ApprovalUncheckedUpdateWithoutFileInput = {
@@ -774,6 +905,7 @@ export type ApprovalUncheckedUpdateWithoutFileInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -784,6 +916,51 @@ export type ApprovalUncheckedUpdateManyWithoutFileInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  fileVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApprovalCreateManyFileVersionInput = {
+  id?: string
+  status?: $Enums.ApprovalStatus
+  note?: string | null
+  projectId: string
+  fileId?: string | null
+  clientId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ApprovalUpdateWithoutFileVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  project?: Prisma.ProjectUpdateOneRequiredWithoutApprovalsNestedInput
+  file?: Prisma.FileUpdateOneWithoutApprovalsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutApprovalsNestedInput
+}
+
+export type ApprovalUncheckedUpdateWithoutFileVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ApprovalUncheckedUpdateManyWithoutFileVersionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -797,12 +974,14 @@ export type ApprovalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   note?: boolean
   projectId?: boolean
   fileId?: boolean
+  fileVersionId?: boolean
   clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
 
 export type ApprovalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -811,12 +990,14 @@ export type ApprovalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   note?: boolean
   projectId?: boolean
   fileId?: boolean
+  fileVersionId?: boolean
   clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
 
 export type ApprovalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -825,12 +1006,14 @@ export type ApprovalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   note?: boolean
   projectId?: boolean
   fileId?: boolean
+  fileVersionId?: boolean
   clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
 
 export type ApprovalSelectScalar = {
@@ -839,26 +1022,30 @@ export type ApprovalSelectScalar = {
   note?: boolean
   projectId?: boolean
   fileId?: boolean
+  fileVersionId?: boolean
   clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "note" | "projectId" | "fileId" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["approval"]>
+export type ApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "note" | "projectId" | "fileId" | "fileVersionId" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["approval"]>
 export type ApprovalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }
 export type ApprovalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }
 export type ApprovalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   file?: boolean | Prisma.Approval$fileArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  fileVersion?: boolean | Prisma.Approval$fileVersionArgs<ExtArgs>
 }
 
 export type $ApprovalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -867,6 +1054,7 @@ export type $ApprovalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     project: Prisma.$ProjectPayload<ExtArgs>
     file: Prisma.$FilePayload<ExtArgs> | null
     client: Prisma.$ClientPayload<ExtArgs>
+    fileVersion: Prisma.$FileVersionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -874,6 +1062,7 @@ export type $ApprovalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     note: string | null
     projectId: string
     fileId: string | null
+    fileVersionId: string | null
     clientId: string
     createdAt: Date
     updatedAt: Date
@@ -1274,6 +1463,7 @@ export interface Prisma__ApprovalClient<T, Null = never, ExtArgs extends runtime
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   file<T extends Prisma.Approval$fileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Approval$fileArgs<ExtArgs>>): Prisma.Prisma__FileClient<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  fileVersion<T extends Prisma.Approval$fileVersionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Approval$fileVersionArgs<ExtArgs>>): Prisma.Prisma__FileVersionClient<runtime.Types.Result.GetResult<Prisma.$FileVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1308,6 +1498,7 @@ export interface ApprovalFieldRefs {
   readonly note: Prisma.FieldRef<"Approval", 'String'>
   readonly projectId: Prisma.FieldRef<"Approval", 'String'>
   readonly fileId: Prisma.FieldRef<"Approval", 'String'>
+  readonly fileVersionId: Prisma.FieldRef<"Approval", 'String'>
   readonly clientId: Prisma.FieldRef<"Approval", 'String'>
   readonly createdAt: Prisma.FieldRef<"Approval", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Approval", 'DateTime'>
@@ -1728,6 +1919,25 @@ export type Approval$fileArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.FileInclude<ExtArgs> | null
   where?: Prisma.FileWhereInput
+}
+
+/**
+ * Approval.fileVersion
+ */
+export type Approval$fileVersionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileVersion
+   */
+  select?: Prisma.FileVersionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileVersion
+   */
+  omit?: Prisma.FileVersionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileVersionInclude<ExtArgs> | null
+  where?: Prisma.FileVersionWhereInput
 }
 
 /**

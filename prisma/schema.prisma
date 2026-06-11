@@ -202,8 +202,26 @@ model File {
 
   comments  Comments[]
   approvals Approval[]
+  versions  FileVersion[]
 
   @@index([projectId])
+}
+
+model FileVersion {
+  id        String   @id @default(uuid())
+  fileId    String
+  version   Int      @default(1)
+  key       String   @unique
+  url       String   @db.Text
+  mimeType  String?
+  size      Int? // size in bytes
+  createdAt DateTime @default(now())
+
+  file      File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  approvals Approval[] // approve a  specific version
+
+  @@unique([fileId, version])
+  @@index([fileId])
 }
 
 model Comments {
@@ -240,20 +258,23 @@ enum ApprovalStatus {
 }
 
 model Approval {
-  id        String         @id @default(uuid())
-  status    ApprovalStatus @default(PENDING)
-  note      String?        @db.Text
-  projectId String
-  fileId    String?
-  clientId  String // who is approving
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id            String         @id @default(uuid())
+  status        ApprovalStatus @default(PENDING)
+  note          String?        @db.Text
+  projectId     String
+  fileId        String?
+  fileVersionId String?
+  clientId      String // who is approving
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  file    File?   @relation(fields: [fileId], references: [id], onDelete: SetNull)
-  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  file        File?        @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  client      Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  fileVersion FileVersion? @relation(fields: [fileVersionId], references: [id])
 
   @@index([projectId])
   @@index([fileId])
+  @@index([fileVersionId])
   @@index([clientId])
 }

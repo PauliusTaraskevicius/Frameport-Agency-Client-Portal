@@ -82,6 +82,11 @@ export type Task = Prisma.TaskModel
  */
 export type File = Prisma.FileModel
 /**
+ * Model FileVersion
+ * 
+ */
+export type FileVersion = Prisma.FileVersionModel
+/**
  * Model Comments
  * 
  */
