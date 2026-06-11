@@ -10,6 +10,9 @@ import { useGetFileComments } from "../../api/use-get-file-comments";
 import { useCreateComment } from "../../api/use-create-comment";
 import { useDeleteComment } from "../../api/use-delete-comment";
 import { useUpdateComment } from "../../api/use-update-comment";
+import { useDownloadFile } from "../../hooks/use-download-file";
+import { DownloadIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ClientFileIdPageProps {
   params: {
@@ -20,6 +23,8 @@ interface ClientFileIdPageProps {
 }
 
 const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
+  const downloadFile = useDownloadFile();
+
   const { data: file, isLoading: isFileLoading } = useGetFile({
     fileId: params.fileId,
   });
@@ -55,17 +60,35 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
     <div className="h-full w-full flex-col items-center justify-center">
       <div className="mx-auto flex w-[600px] flex-col items-center justify-center">
         {file.mimeType === "application/pdf" ? (
-          <div className="bg-muted flex h-96 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md">
+          <div className="group bg-muted relative flex h-96 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md">
             <AiOutlineFilePdf className="size-24 text-red-500" />
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => downloadFile(file.id)}
+              className="absolute top-2 right-2 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              <DownloadIcon className="size-4" />
+            </Button>
           </div>
         ) : (
-          <Image
-            src={file.url}
-            alt={file.name}
-            width={600}
-            height={400}
-            className="mb-4 rounded"
-          />
+          <div className="group relative w-full">
+            <Image
+              src={file.url}
+              alt={file.name}
+              width={600}
+              height={400}
+              className="mb-4 rounded"
+            />
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => downloadFile(file.id)}
+              className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+            >
+              <DownloadIcon className="size-4" />
+            </Button>
+          </div>
         )}
         <h1 className="mb-4 text-center text-2xl font-bold">{file.name}</h1>
         <div className="w-[600px]">
