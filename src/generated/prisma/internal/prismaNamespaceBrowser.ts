@@ -234,6 +234,8 @@ export const ApprovalScalarFieldEnum = {
   projectId: 'projectId',
   fileVersionId: 'fileVersionId',
   clientId: 'clientId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   fileId: 'fileId'
 } as const
 

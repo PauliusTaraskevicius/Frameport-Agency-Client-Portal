@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGetFileComments } from "../../api/use-get-file-comments";
 import { File } from "@/generated/prisma/client";
-import { useDownloadFile } from "../../hooks/use-download-file";
+import { useDownloadFile } from "../../api/use-download-file";
 
 interface FileItemProps {
   file: File;
