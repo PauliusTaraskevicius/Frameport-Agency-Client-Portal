@@ -10,7 +10,7 @@ import { useGetFileComments } from "../../api/use-get-file-comments";
 import { useCreateComment } from "../../api/use-create-comment";
 import { useDeleteComment } from "../../api/use-delete-comment";
 import { useUpdateComment } from "../../api/use-update-comment";
-import { useDownloadFile } from "../../hooks/use-download-file";
+import { useDownloadFile } from "../../api/use-download-file";
 import { DownloadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -84,7 +84,7 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
               size="icon"
               variant="outline"
               onClick={() => downloadFile(file.id)}
-              className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+              className="absolute top-2 right-2 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
             >
               <DownloadIcon className="size-4" />
             </Button>
