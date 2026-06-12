@@ -3,16 +3,15 @@
 import { PageError } from "@/components/PageError";
 import { useGetFile } from "../../api/use-get-file";
 import { PageLoader } from "@/components/PageLoader";
-import Image from "next/image";
-import { AiOutlineFilePdf } from "react-icons/ai";
+
 import { CommentsSection } from "@/components/comments/CommentsSection";
 import { useGetFileComments } from "../../api/use-get-file-comments";
 import { useCreateComment } from "../../api/use-create-comment";
 import { useDeleteComment } from "../../api/use-delete-comment";
 import { useUpdateComment } from "../../api/use-update-comment";
 import { useDownloadFile } from "../../api/use-download-file";
-import { DownloadIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { FileVersionTabs } from "./FileVersionTabs";
 
 interface ClientFileIdPageProps {
   params: {
@@ -48,6 +47,8 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
     params.projectId,
   );
 
+  const isClient = file?.isClient;
+
   if (isFileLoading || isCommentsLoading) {
     return <PageLoader />;
   }
@@ -59,40 +60,14 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
   return (
     <div className="h-full w-full flex-col items-center justify-center">
       <div className="mx-auto flex w-[600px] flex-col items-center justify-center">
-        {file.mimeType === "application/pdf" ? (
-          <div className="group bg-muted relative flex h-96 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md">
-            <AiOutlineFilePdf className="size-24 text-red-500" />
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={() => downloadFile(file.id)}
-              className="absolute top-2 right-2 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
-            >
-              <DownloadIcon className="size-4" />
-            </Button>
-          </div>
-        ) : (
-          <div className="group relative w-full">
-            <Image
-              src={file.url}
-              alt={file.name}
-              width={600}
-              height={400}
-              className="mb-4 rounded"
-            />
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={() => downloadFile(file.id)}
-              className="absolute top-2 right-2 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
-            >
-              <DownloadIcon className="size-4" />
-            </Button>
-          </div>
-        )}
+        <FileVersionTabs
+          fileId={params.fileId}
+          projectId={params.projectId}
+          projectClientId={file.project.clientId}
+          isClient={file.isClient}
+        />
         <h1 className="mb-4 text-center text-2xl font-bold">{file.name}</h1>
         <div className="w-[600px]">
-          {" "}
           <CommentsSection
             comments={comments ?? []}
             onSubmit={async (body, parentId) => {
