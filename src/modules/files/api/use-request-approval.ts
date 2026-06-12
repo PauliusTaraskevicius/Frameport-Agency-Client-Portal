@@ -5,14 +5,12 @@ export const useRequestApproval = (fileId: string) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const requestApproval = useMutation(
+  return useMutation(
     trpc.files.requestApproval.mutationOptions({
       onSuccess: () =>
         queryClient.invalidateQueries(
-          trpc.files.getOne.queryOptions({ fileId }),
+          trpc.files.getVersions.queryOptions({ fileId }),
         ),
     }),
   );
-
-  return requestApproval;
 };

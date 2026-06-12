@@ -203,7 +203,41 @@ export const filesRouter = createTRPCRouter({
         },
       });
 
-      return versions;
+      return Promise.all(
+        versions.map(async (v) => ({
+          ...v,
+          url: await generatePresignedGetUrl(v.key),
+        })),
+      );
+    }),
+
+  getVersionDownloadUrl: protectedProcedure
+    .input(z.object({ fileVersionId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const version = await prisma.fileVersion.findUnique({
+        where: { id: input.fileVersionId },
+        include: { file: { include: { project: true } } },
+      });
+
+      if (!version) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const member = await prisma.workspaceMember.findFirst({
+        where: {
+          workspaceId: version.file.project.workspaceId,
+          userId: ctx.auth.userId,
+        },
+      });
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: version.file.projectId } },
+        },
+      });
+      if (!member && !client) throw new TRPCError({ code: "FORBIDDEN" });
+
+      return {
+        url: await generateDownloadUrl(version.key, version.file.name),
+      };
     }),
 
   getDownloadUrl: protectedProcedure
@@ -590,6 +624,7 @@ export const filesRouter = createTRPCRouter({
       return {
         ...file,
         url: await generatePresignedGetUrl(file.key),
+        isClient: !member,
       };
     }),
 
