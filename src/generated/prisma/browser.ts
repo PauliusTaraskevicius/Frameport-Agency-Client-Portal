@@ -72,3 +72,8 @@ export type Comments = Prisma.CommentsModel
  * 
  */
 export type Approval = Prisma.ApprovalModel
+/**
+ * Model ActivityLog
+ * 
+ */
+export type ActivityLog = Prisma.ActivityLogModel

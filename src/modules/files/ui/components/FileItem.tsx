@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { AiOutlineFilePdf } from "react-icons/ai";
-import { useDeleteFile } from "../../api/use-delete-file";
 import { Button } from "@/components/ui/button";
 import {
   DownloadIcon,
@@ -11,7 +10,6 @@ import {
   MessageCircleMore,
   Trash2Icon,
 } from "lucide-react";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import {
   DropdownMenu,
@@ -39,19 +37,6 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
 
   const { data: comments } = useGetFileComments({ fileId: file.id, projectId });
   const { data: versions } = useGetVersions({ fileId: file.id });
-
-  const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete File",
-    "This action cannot be undone.",
-  );
-
-  const deleteFileMutation = useDeleteFile({ projectId });
-
-  const handleDelete = async (fileId: string) => {
-    const ok = await confirmDelete();
-    if (!ok) return;
-    deleteFileMutation.mutate({ fileId });
-  };
 
   const latestApprovalStatus = versions?.[0]?.approvals?.[0]?.status;
   const fileHref = `/dashboard/workspaces/${workspaceId}/projects/${projectId}/files/${file.id}`;
@@ -99,7 +84,6 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
 
   return (
     <>
-      <DeleteDialog />
       <div className="w-full sm:w-64">
         <div className="bg-muted flex h-48 w-full items-center justify-center overflow-hidden rounded-md">
           {file.mimeType === "application/pdf" ? (
