@@ -195,6 +195,7 @@ export type WorkspaceMemberWhereInput = {
   tasks?: Prisma.TaskListRelationFilter
   files?: Prisma.FileListRelationFilter
   comments?: Prisma.CommentsListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }
 
 export type WorkspaceMemberOrderByWithRelationInput = {
@@ -209,6 +210,7 @@ export type WorkspaceMemberOrderByWithRelationInput = {
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   files?: Prisma.FileOrderByRelationAggregateInput
   comments?: Prisma.CommentsOrderByRelationAggregateInput
+  activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
 }
 
 export type WorkspaceMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -227,6 +229,7 @@ export type WorkspaceMemberWhereUniqueInput = Prisma.AtLeast<{
   tasks?: Prisma.TaskListRelationFilter
   files?: Prisma.FileListRelationFilter
   comments?: Prisma.CommentsListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }, "id" | "userId_workspaceId">
 
 export type WorkspaceMemberOrderByWithAggregationInput = {
@@ -263,6 +266,7 @@ export type WorkspaceMemberCreateInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateInput = {
@@ -275,6 +279,7 @@ export type WorkspaceMemberUncheckedCreateInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUpdateInput = {
@@ -287,6 +292,7 @@ export type WorkspaceMemberUpdateInput = {
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateInput = {
@@ -299,6 +305,7 @@ export type WorkspaceMemberUncheckedUpdateInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberCreateManyInput = {
@@ -510,6 +517,22 @@ export type WorkspaceMemberUpdateOneWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutCommentsInput, Prisma.WorkspaceMemberUpdateWithoutCommentsInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutCommentsInput>
 }
 
+export type WorkspaceMemberCreateNestedOneWithoutActivityLogsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutActivityLogsInput
+  connect?: Prisma.WorkspaceMemberWhereUniqueInput
+}
+
+export type WorkspaceMemberUpdateOneWithoutActivityLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutActivityLogsInput
+  upsert?: Prisma.WorkspaceMemberUpsertWithoutActivityLogsInput
+  disconnect?: Prisma.WorkspaceMemberWhereInput | boolean
+  delete?: Prisma.WorkspaceMemberWhereInput | boolean
+  connect?: Prisma.WorkspaceMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.WorkspaceMemberUpdateWithoutActivityLogsInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutActivityLogsInput>
+}
+
 export type WorkspaceMemberCreateWithoutUserInput = {
   id?: string
   role?: $Enums.WorkspaceRole
@@ -519,6 +542,7 @@ export type WorkspaceMemberCreateWithoutUserInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutUserInput = {
@@ -530,6 +554,7 @@ export type WorkspaceMemberUncheckedCreateWithoutUserInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutUserInput = {
@@ -579,6 +604,7 @@ export type WorkspaceMemberCreateWithoutWorkspaceInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutWorkspaceInput = {
@@ -590,6 +616,7 @@ export type WorkspaceMemberUncheckedCreateWithoutWorkspaceInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutWorkspaceInput = {
@@ -627,6 +654,7 @@ export type WorkspaceMemberCreateWithoutTasksInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
   files?: Prisma.FileCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutTasksInput = {
@@ -638,6 +666,7 @@ export type WorkspaceMemberUncheckedCreateWithoutTasksInput = {
   updatedAt?: Date | string
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutTasksInput = {
@@ -665,6 +694,7 @@ export type WorkspaceMemberUpdateWithoutTasksInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
   files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutTasksInput = {
@@ -676,6 +706,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutTasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberCreateWithoutFilesInput = {
@@ -687,6 +718,7 @@ export type WorkspaceMemberCreateWithoutFilesInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutFilesInput = {
@@ -698,6 +730,7 @@ export type WorkspaceMemberUncheckedCreateWithoutFilesInput = {
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutFilesInput = {
@@ -725,6 +758,7 @@ export type WorkspaceMemberUpdateWithoutFilesInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutFilesInput = {
@@ -736,6 +770,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutFilesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberCreateWithoutCommentsInput = {
@@ -747,6 +782,7 @@ export type WorkspaceMemberCreateWithoutCommentsInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileCreateNestedManyWithoutUploaderInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberUncheckedCreateWithoutCommentsInput = {
@@ -758,6 +794,7 @@ export type WorkspaceMemberUncheckedCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type WorkspaceMemberCreateOrConnectWithoutCommentsInput = {
@@ -785,6 +822,7 @@ export type WorkspaceMemberUpdateWithoutCommentsInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutCommentsInput = {
@@ -796,6 +834,71 @@ export type WorkspaceMemberUncheckedUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type WorkspaceMemberCreateWithoutActivityLogsInput = {
+  id?: string
+  role?: $Enums.WorkspaceRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutMembersInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileCreateNestedManyWithoutUploaderInput
+  comments?: Prisma.CommentsCreateNestedManyWithoutAuthorInput
+}
+
+export type WorkspaceMemberUncheckedCreateWithoutActivityLogsInput = {
+  id?: string
+  role?: $Enums.WorkspaceRole
+  userId: string
+  workspaceId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssigneeInput
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUploaderInput
+  comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type WorkspaceMemberCreateOrConnectWithoutActivityLogsInput = {
+  where: Prisma.WorkspaceMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedCreateWithoutActivityLogsInput>
+}
+
+export type WorkspaceMemberUpsertWithoutActivityLogsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceMemberUpdateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedUpdateWithoutActivityLogsInput>
+  create: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedCreateWithoutActivityLogsInput>
+  where?: Prisma.WorkspaceMemberWhereInput
+}
+
+export type WorkspaceMemberUpdateToOneWithWhereWithoutActivityLogsInput = {
+  where?: Prisma.WorkspaceMemberWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceMemberUpdateWithoutActivityLogsInput, Prisma.WorkspaceMemberUncheckedUpdateWithoutActivityLogsInput>
+}
+
+export type WorkspaceMemberUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWorkspaceRoleFieldUpdateOperationsInput | $Enums.WorkspaceRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMembersNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
+  comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+}
+
+export type WorkspaceMemberUncheckedUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumWorkspaceRoleFieldUpdateOperationsInput | $Enums.WorkspaceRole
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
+  comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type WorkspaceMemberCreateManyUserInput = {
@@ -815,6 +918,7 @@ export type WorkspaceMemberUpdateWithoutUserInput = {
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutUserInput = {
@@ -826,6 +930,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutUserInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateManyWithoutUserInput = {
@@ -853,6 +958,7 @@ export type WorkspaceMemberUpdateWithoutWorkspaceInput = {
   tasks?: Prisma.TaskUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateWithoutWorkspaceInput = {
@@ -864,6 +970,7 @@ export type WorkspaceMemberUncheckedUpdateWithoutWorkspaceInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAssigneeNestedInput
   files?: Prisma.FileUncheckedUpdateManyWithoutUploaderNestedInput
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutAuthorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -883,12 +990,14 @@ export type WorkspaceMemberCountOutputType = {
   tasks: number
   files: number
   comments: number
+  activityLogs: number
 }
 
 export type WorkspaceMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | WorkspaceMemberCountOutputTypeCountTasksArgs
   files?: boolean | WorkspaceMemberCountOutputTypeCountFilesArgs
   comments?: boolean | WorkspaceMemberCountOutputTypeCountCommentsArgs
+  activityLogs?: boolean | WorkspaceMemberCountOutputTypeCountActivityLogsArgs
 }
 
 /**
@@ -922,6 +1031,13 @@ export type WorkspaceMemberCountOutputTypeCountCommentsArgs<ExtArgs extends runt
   where?: Prisma.CommentsWhereInput
 }
 
+/**
+ * WorkspaceMemberCountOutputType without action
+ */
+export type WorkspaceMemberCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityLogWhereInput
+}
+
 
 export type WorkspaceMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -935,6 +1051,7 @@ export type WorkspaceMemberSelect<ExtArgs extends runtime.Types.Extensions.Inter
   tasks?: boolean | Prisma.WorkspaceMember$tasksArgs<ExtArgs>
   files?: boolean | Prisma.WorkspaceMember$filesArgs<ExtArgs>
   comments?: boolean | Prisma.WorkspaceMember$commentsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.WorkspaceMember$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspaceMember"]>
 
@@ -976,6 +1093,7 @@ export type WorkspaceMemberInclude<ExtArgs extends runtime.Types.Extensions.Inte
   tasks?: boolean | Prisma.WorkspaceMember$tasksArgs<ExtArgs>
   files?: boolean | Prisma.WorkspaceMember$filesArgs<ExtArgs>
   comments?: boolean | Prisma.WorkspaceMember$commentsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.WorkspaceMember$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceMemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -995,6 +1113,7 @@ export type $WorkspaceMemberPayload<ExtArgs extends runtime.Types.Extensions.Int
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     files: Prisma.$FilePayload<ExtArgs>[]
     comments: Prisma.$CommentsPayload<ExtArgs>[]
+    activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1402,6 +1521,7 @@ export interface Prisma__WorkspaceMemberClient<T, Null = never, ExtArgs extends 
   tasks<T extends Prisma.WorkspaceMember$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   files<T extends Prisma.WorkspaceMember$filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.WorkspaceMember$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activityLogs<T extends Prisma.WorkspaceMember$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMember$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1907,6 +2027,30 @@ export type WorkspaceMember$commentsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.CommentsScalarFieldEnum | Prisma.CommentsScalarFieldEnum[]
+}
+
+/**
+ * WorkspaceMember.activityLogs
+ */
+export type WorkspaceMember$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityLog
+   */
+  select?: Prisma.ActivityLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityLog
+   */
+  omit?: Prisma.ActivityLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityLogInclude<ExtArgs> | null
+  where?: Prisma.ActivityLogWhereInput
+  orderBy?: Prisma.ActivityLogOrderByWithRelationInput | Prisma.ActivityLogOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
 }
 
 /**
