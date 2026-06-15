@@ -33,6 +33,8 @@ export async function generatePresignedUrl(
   const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 600 });
   const publicUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
+  
+
   return { key, presignedUrl, publicUrl };
 }
 
