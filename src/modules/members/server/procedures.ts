@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { MemberRole } from "../types";
+import { logActivity } from "@/lib/activity";
 
 export const membersRouter = createTRPCRouter({
   getMany: protectedProcedure
@@ -92,6 +93,16 @@ export const membersRouter = createTRPCRouter({
         },
       });
 
+      // Log member removal activity
+      await logActivity({
+        action: "member.removed",
+        entityType: "Member",
+        entityId: input.userId,
+        workspaceId: input.workspaceId,
+        memberId: currentMember.id,
+        metadata: { removedUserId: input.userId },
+      });
+
       return { success: true };
     }),
 
@@ -169,6 +180,16 @@ export const membersRouter = createTRPCRouter({
         data: {
           role: input.role,
         },
+      });
+
+      // Log role change activity
+      await logActivity({
+        action: "member.role_changed",
+        entityType: "Member",
+        entityId: input.userId,
+        workspaceId: input.workspaceId,
+        memberId: currentMember.id,
+        metadata: { from: targetMember?.role, to: input.role },
       });
 
       return { success: true };

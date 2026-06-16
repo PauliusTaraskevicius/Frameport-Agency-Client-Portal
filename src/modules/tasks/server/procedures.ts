@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-
+import { logActivity } from "@/lib/activity";
 import z from "zod";
 import { TaskStatus } from "../types";
 
@@ -281,6 +281,19 @@ export const tasksRouter = createTRPCRouter({
             projectId: input.projectId,
           },
         });
+
+        if (input.status && input.status !== task.status) {
+          await logActivity({
+            action: "task.status_changed",
+            entityType: "Task",
+            entityId: input.taskId,
+            workspaceId: project.workspaceId,
+            projectId: task.projectId,
+            memberId: member.id,
+            metadata: { from: task.status, to: input.status },
+          });
+        }
+
         return updatedTask;
       } catch (error) {
         if (
@@ -309,6 +322,7 @@ export const tasksRouter = createTRPCRouter({
         },
         select: {
           projectId: true,
+          title: true,
         },
       });
       if (!task) {
@@ -349,6 +363,16 @@ export const tasksRouter = createTRPCRouter({
         where: {
           id: input.taskId,
         },
+      });
+
+      await logActivity({
+        action: "task.deleted",
+        entityType: "Task",
+        entityId: input.taskId,
+        workspaceId: project.workspaceId,
+        projectId: task.projectId,
+        memberId: member.id,
+        metadata: { title: task.title },
       });
 
       return { success: true };
@@ -447,6 +471,16 @@ export const tasksRouter = createTRPCRouter({
             status: input.status,
             position: newPosition,
           },
+        });
+
+        await logActivity({
+          action: "task.created",
+          entityType: "Task",
+          entityId: task.id,
+          workspaceId: project.workspaceId,
+          projectId: input.projectId,
+          memberId: member.id,
+          metadata: { title: input.title, status: input.status },
         });
 
         return task;
@@ -615,8 +649,11 @@ export const tasksRouter = createTRPCRouter({
         where: {
           id: { in: input.map((t) => t.id) },
         },
+        // FIX: include id + status so we can map old status and find tasks by id
         select: {
+          id: true,
           projectId: true,
+          status: true,
         },
       });
 
@@ -632,7 +669,7 @@ export const tasksRouter = createTRPCRouter({
 
       const projects = await prisma.project.findMany({
         where: { id: { in: projectIds } },
-        select: { workspaceId: true },
+        select: { id: true, workspaceId: true },
       });
 
       const workspaceIds = [...new Set(projects.map((p) => p.workspaceId))];
@@ -664,6 +701,31 @@ export const tasksRouter = createTRPCRouter({
       );
 
       await prisma.$transaction(updates);
+
+      const taskStatusMap = new Map(tasks.map((t) => [t.id, t.status]));
+
+      const changedTasks = input.filter((item) => {
+        const oldStatus = taskStatusMap.get(item.id);
+        return oldStatus && oldStatus !== item.status;
+      });
+
+      await Promise.all(
+        changedTasks.map((item) => {
+      
+          const taskInfo = tasks.find((t) => t.id === item.id)!;
+          const projectInfo = projects.find(
+            (p) => p.id === taskInfo.projectId,
+          )!;
+          return logActivity({
+            action: "task.status_changed",
+            entityType: "Task",
+            entityId: item.id,
+            workspaceId: projectInfo.workspaceId,
+            projectId: taskInfo.projectId,
+            metadata: { from: taskStatusMap.get(item.id), to: item.status },
+          });
+        }),
+      );
 
       return { success: true };
     }),

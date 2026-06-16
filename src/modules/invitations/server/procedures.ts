@@ -11,6 +11,7 @@ import { addDays } from "date-fns";
 import { sendInvitationEmail } from "../utils";
 import { InvitationStatus } from "../types";
 import { MemberRole } from "@/modules/members/types";
+import { logActivity } from "@/lib/activity";
 
 export const invitationRouter = createTRPCRouter({
   create: protectedProcedure
@@ -88,6 +89,16 @@ export const invitationRouter = createTRPCRouter({
         email: input.email,
         token: invitation.token,
         workspaceId: input.workspaceId,
+      });
+
+      // Log member invitation activity
+      await logActivity({
+        action: "member.invited",
+        entityType: "Member",
+        entityId: invitation.id,
+        workspaceId: input.workspaceId,
+        memberId: membership.id,
+        metadata: { email: input.email, role: MemberRole.MEMBER },
       });
 
       return invitation;
