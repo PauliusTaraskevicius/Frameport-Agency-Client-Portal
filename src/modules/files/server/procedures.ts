@@ -10,6 +10,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { Status } from "../types";
+import { logActivity } from "@/lib/activity";
 
 export const filesRouter = createTRPCRouter({
   submitForApproval: protectedProcedure
@@ -54,10 +55,24 @@ export const filesRouter = createTRPCRouter({
         });
       }
 
-      return prisma.approval.update({
+      const updated = await prisma.approval.update({
         where: { id: input.approvalId },
-        data: { status: input.status, note: input.note },
+        data: {
+          status: input.status,
+          note: input.note,
+        },
       });
+
+      await logActivity({
+        action: "approval.submitted",
+        entityType: "Approval",
+        entityId: input.approvalId,
+        workspaceId: project.workspaceId,
+        projectId: project.id,
+        metadata: { status: input.status },
+      });
+
+      return updated;
     }),
 
   requestApproval: protectedProcedure
@@ -90,7 +105,7 @@ export const filesRouter = createTRPCRouter({
       if (existing)
         throw new TRPCError({ code: "CONFLICT", message: "Already pending" });
 
-      return prisma.approval.create({
+      const approval = await prisma.approval.create({
         data: {
           projectId: input.projectId,
           fileVersionId: input.fileVersionId,
@@ -98,6 +113,21 @@ export const filesRouter = createTRPCRouter({
           status: "PENDING",
         },
       });
+
+      await logActivity({
+        action: "approval.requested",
+        entityType: "Approval",
+        entityId: approval.id,
+        workspaceId: member.workspaceId,
+        projectId: input.projectId,
+        memberId: member.id,
+        metadata: {
+          fileVersionId: input.fileVersionId,
+          clientId: input.clientId,
+        },
+      });
+
+      return approval;
     }),
 
   addVersion: protectedProcedure
@@ -140,7 +170,7 @@ export const filesRouter = createTRPCRouter({
 
       const nextVersion = (file.versions[0]?.version ?? 0) + 1;
 
-      return prisma.$transaction([
+      const result = await prisma.$transaction([
         prisma.fileVersion.create({
           data: {
             fileId: input.fileId,
@@ -151,12 +181,23 @@ export const filesRouter = createTRPCRouter({
             size: input.size,
           },
         }),
-        // keep File.key/url pointing to latest
         prisma.file.update({
           where: { id: input.fileId },
           data: { key: input.key, url: input.url },
         }),
       ]);
+
+      await logActivity({
+        action: "file.version_added",
+        entityType: "File",
+        entityId: input.fileId,
+        workspaceId: file.project.workspaceId,
+        projectId: file.projectId,
+        memberId: member.id,
+        metadata: { version: nextVersion, key: input.key },
+      });
+
+      return result;
     }),
 
   getVersions: protectedProcedure
@@ -527,7 +568,7 @@ export const filesRouter = createTRPCRouter({
       if (!member)
         throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
 
-      return prisma.$transaction(
+      const files = await prisma.$transaction(
         input.files.map((f) =>
           prisma.file.create({
             data: {
@@ -551,6 +592,26 @@ export const filesRouter = createTRPCRouter({
           }),
         ),
       );
+
+      await Promise.all(
+        files.map((file) =>
+          logActivity({
+            action: "file.uploaded",
+            entityType: "File",
+            entityId: file.id,
+            workspaceId: project.workspaceId,
+            projectId: input.projectId,
+            memberId: member.id,
+            metadata: {
+              fileName: file.name,
+              mimeType: file.mimeType,
+              size: file.size,
+            },
+          }),
+        ),
+      );
+
+      return files;
     }),
 
   getMany: protectedProcedure
@@ -662,6 +723,16 @@ export const filesRouter = createTRPCRouter({
 
       await prisma.file.delete({
         where: { id: input.fileId },
+      });
+
+      await logActivity({
+        action: "file.deleted",
+        entityType: "File",
+        entityId: input.fileId,
+        workspaceId: file.project.workspaceId,
+        projectId: file.projectId,
+        memberId: member.id,
+        metadata: { fileName: file.name },
       });
 
       return { success: true };
