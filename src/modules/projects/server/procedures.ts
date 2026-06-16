@@ -4,6 +4,7 @@ import { MemberRole } from "@/modules/members/types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { startOfMonth, endOfMonth, subMonths } from "date-fns";
+import { logActivity } from "@/lib/activity";
 
 import z from "zod";
 
@@ -35,6 +36,17 @@ export const projectsRouter = createTRPCRouter({
             workspaceId: input.workspaceId,
             clientId: input.clientId,
           },
+        });
+
+        // Log project creation activity
+        await logActivity({
+          action: "project.created",
+          entityType: "Project",
+          entityId: project.id,
+          workspaceId: input.workspaceId,
+          projectId: project.id,
+          memberId: member.id,
+          metadata: { name: input.name },
         });
 
         return project;
@@ -188,6 +200,17 @@ export const projectsRouter = createTRPCRouter({
           },
         });
 
+        // Log project update activity
+        await logActivity({
+          action: "project.updated",
+          entityType: "Project",
+          entityId: input.projectId,
+          workspaceId: project.workspaceId,
+          projectId: input.projectId,
+          memberId: member.id,
+          metadata: { name: input.name },
+        });
+
         return updatedProject;
       } catch (error) {
         if (
@@ -252,6 +275,17 @@ export const projectsRouter = createTRPCRouter({
           id: input.projectId,
         },
       });
+
+      // Log project deletion activity
+      await logActivity({
+        action: "project.deleted",
+        entityType: "Project",
+        entityId: input.projectId,
+        workspaceId: project.workspaceId,
+        memberId: member.id,
+        metadata: { name: project.name },
+      });
+
       return { success: true };
     }),
   getProjectAnalytics: protectedProcedure

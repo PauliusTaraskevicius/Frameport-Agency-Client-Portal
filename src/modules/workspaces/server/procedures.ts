@@ -5,6 +5,7 @@ import { createWorkspaceSchema, updateWorkspaceSchema } from "../schema";
 import { z } from "zod";
 import { MemberRole } from "@/modules/members/types";
 import { TaskStatus } from "@/generated/prisma/browser";
+import { logActivity } from "@/lib/activity";
 
 import { startOfMonth, endOfMonth, subMonths } from "date-fns";
 
@@ -21,12 +22,22 @@ export const workspaceRouter = createTRPCRouter({
           },
         });
 
-        await prisma.workspaceMember.create({
+        const ownerMember = await prisma.workspaceMember.create({
           data: {
             userId: ctx.auth.userId,
             workspaceId: workspace.id,
             role: MemberRole.OWNER,
           },
+        });
+
+        // Log workspace creation activity
+        await logActivity({
+          action: "workspace.created",
+          entityType: "Workspace",
+          entityId: workspace.id,
+          workspaceId: workspace.id,
+          memberId: ownerMember.id,
+          metadata: { name: input.name },
         });
 
         return workspace;
@@ -130,6 +141,16 @@ export const workspaceRouter = createTRPCRouter({
           },
         });
 
+        // Log workspace update activity
+        await logActivity({
+          action: "workspace.updated",
+          entityType: "Workspace",
+          entityId: input.id,
+          workspaceId: input.id,
+          memberId: member.id,
+          metadata: { name: input.name },
+        });
+
         return updatedWorkspace;
       } catch (error) {
         if (
@@ -170,6 +191,15 @@ export const workspaceRouter = createTRPCRouter({
           message: "You do not have permission to delete this workspace",
         });
       }
+
+      // Log workspace deletion activity
+      await logActivity({
+        action: "workspace.deleted",
+        entityType: "Workspace",
+        entityId: input.id,
+        workspaceId: input.id,
+        memberId: member.id,
+      });
 
       await prisma.workspace.delete({
         where: {

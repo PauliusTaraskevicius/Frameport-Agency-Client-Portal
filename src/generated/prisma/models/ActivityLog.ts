@@ -174,7 +174,7 @@ export type ActivityLogGroupByOutputType = {
   entityId: string
   metadata: runtime.JsonValue | null
   memberId: string | null
-  workspaceId: string
+  workspaceId: string | null
   projectId: string | null
   createdAt: Date
   _count: ActivityLogCountAggregateOutputType | null
@@ -207,10 +207,10 @@ export type ActivityLogWhereInput = {
   entityId?: Prisma.StringFilter<"ActivityLog"> | string
   metadata?: Prisma.JsonNullableFilter<"ActivityLog">
   memberId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
-  workspaceId?: Prisma.StringFilter<"ActivityLog"> | string
+  workspaceId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   projectId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
-  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  workspace?: Prisma.XOR<Prisma.WorkspaceNullableScalarRelationFilter, Prisma.WorkspaceWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   member?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
 }
@@ -222,7 +222,7 @@ export type ActivityLogOrderByWithRelationInput = {
   entityId?: Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   memberId?: Prisma.SortOrderInput | Prisma.SortOrder
-  workspaceId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
@@ -240,10 +240,10 @@ export type ActivityLogWhereUniqueInput = Prisma.AtLeast<{
   entityId?: Prisma.StringFilter<"ActivityLog"> | string
   metadata?: Prisma.JsonNullableFilter<"ActivityLog">
   memberId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
-  workspaceId?: Prisma.StringFilter<"ActivityLog"> | string
+  workspaceId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   projectId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
-  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  workspace?: Prisma.XOR<Prisma.WorkspaceNullableScalarRelationFilter, Prisma.WorkspaceWhereInput> | null
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   member?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
 }, "id">
@@ -255,7 +255,7 @@ export type ActivityLogOrderByWithAggregationInput = {
   entityId?: Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   memberId?: Prisma.SortOrderInput | Prisma.SortOrder
-  workspaceId?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ActivityLogCountOrderByAggregateInput
@@ -273,7 +273,7 @@ export type ActivityLogScalarWhereWithAggregatesInput = {
   entityId?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"ActivityLog">
   memberId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
-  workspaceId?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
+  workspaceId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
   projectId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ActivityLog"> | Date | string
 }
@@ -285,7 +285,7 @@ export type ActivityLogCreateInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
+  workspace?: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
   project?: Prisma.ProjectCreateNestedOneWithoutActivityLogsInput
   member?: Prisma.WorkspaceMemberCreateNestedOneWithoutActivityLogsInput
 }
@@ -297,7 +297,7 @@ export type ActivityLogUncheckedCreateInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: string | null
-  workspaceId: string
+  workspaceId?: string | null
   projectId?: string | null
   createdAt?: Date | string
 }
@@ -309,7 +309,7 @@ export type ActivityLogUpdateInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutActivityLogsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneWithoutActivityLogsNestedInput
   project?: Prisma.ProjectUpdateOneWithoutActivityLogsNestedInput
   member?: Prisma.WorkspaceMemberUpdateOneWithoutActivityLogsNestedInput
 }
@@ -321,7 +321,7 @@ export type ActivityLogUncheckedUpdateInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,7 +333,7 @@ export type ActivityLogCreateManyInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: string | null
-  workspaceId: string
+  workspaceId?: string | null
   projectId?: string | null
   createdAt?: Date | string
 }
@@ -354,7 +354,7 @@ export type ActivityLogUncheckedUpdateManyInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -587,7 +587,7 @@ export type ActivityLogScalarWhereInput = {
   entityId?: Prisma.StringFilter<"ActivityLog"> | string
   metadata?: Prisma.JsonNullableFilter<"ActivityLog">
   memberId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
-  workspaceId?: Prisma.StringFilter<"ActivityLog"> | string
+  workspaceId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   projectId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
 }
@@ -599,7 +599,7 @@ export type ActivityLogCreateWithoutMemberInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
+  workspace?: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
   project?: Prisma.ProjectCreateNestedOneWithoutActivityLogsInput
 }
 
@@ -609,7 +609,7 @@ export type ActivityLogUncheckedCreateWithoutMemberInput = {
   entityType: string
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  workspaceId: string
+  workspaceId?: string | null
   projectId?: string | null
   createdAt?: Date | string
 }
@@ -647,7 +647,7 @@ export type ActivityLogCreateWithoutProjectInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
+  workspace?: Prisma.WorkspaceCreateNestedOneWithoutActivityLogsInput
   member?: Prisma.WorkspaceMemberCreateNestedOneWithoutActivityLogsInput
 }
 
@@ -658,7 +658,7 @@ export type ActivityLogUncheckedCreateWithoutProjectInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: string | null
-  workspaceId: string
+  workspaceId?: string | null
   createdAt?: Date | string
 }
 
@@ -738,7 +738,7 @@ export type ActivityLogCreateManyMemberInput = {
   entityType: string
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  workspaceId: string
+  workspaceId?: string | null
   projectId?: string | null
   createdAt?: Date | string
 }
@@ -750,7 +750,7 @@ export type ActivityLogUpdateWithoutMemberInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutActivityLogsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneWithoutActivityLogsNestedInput
   project?: Prisma.ProjectUpdateOneWithoutActivityLogsNestedInput
 }
 
@@ -760,7 +760,7 @@ export type ActivityLogUncheckedUpdateWithoutMemberInput = {
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -771,7 +771,7 @@ export type ActivityLogUncheckedUpdateManyWithoutMemberInput = {
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -783,7 +783,7 @@ export type ActivityLogCreateManyProjectInput = {
   entityId: string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: string | null
-  workspaceId: string
+  workspaceId?: string | null
   createdAt?: Date | string
 }
 
@@ -794,7 +794,7 @@ export type ActivityLogUpdateWithoutProjectInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutActivityLogsNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneWithoutActivityLogsNestedInput
   member?: Prisma.WorkspaceMemberUpdateOneWithoutActivityLogsNestedInput
 }
 
@@ -805,7 +805,7 @@ export type ActivityLogUncheckedUpdateWithoutProjectInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -816,7 +816,7 @@ export type ActivityLogUncheckedUpdateManyWithoutProjectInput = {
   entityId?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   memberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -832,7 +832,7 @@ export type ActivityLogSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   workspaceId?: boolean
   projectId?: boolean
   createdAt?: boolean
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -847,7 +847,7 @@ export type ActivityLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   workspaceId?: boolean
   projectId?: boolean
   createdAt?: boolean
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -862,7 +862,7 @@ export type ActivityLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   workspaceId?: boolean
   projectId?: boolean
   createdAt?: boolean
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -881,17 +881,17 @@ export type ActivityLogSelectScalar = {
 
 export type ActivityLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "action" | "entityType" | "entityId" | "metadata" | "memberId" | "workspaceId" | "projectId" | "createdAt", ExtArgs["result"]["activityLog"]>
 export type ActivityLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }
 export type ActivityLogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }
 export type ActivityLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.ActivityLog$workspaceArgs<ExtArgs>
   project?: boolean | Prisma.ActivityLog$projectArgs<ExtArgs>
   member?: boolean | Prisma.ActivityLog$memberArgs<ExtArgs>
 }
@@ -899,7 +899,7 @@ export type ActivityLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $ActivityLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ActivityLog"
   objects: {
-    workspace: Prisma.$WorkspacePayload<ExtArgs>
+    workspace: Prisma.$WorkspacePayload<ExtArgs> | null
     project: Prisma.$ProjectPayload<ExtArgs> | null
     member: Prisma.$WorkspaceMemberPayload<ExtArgs> | null
   }
@@ -910,7 +910,7 @@ export type $ActivityLogPayload<ExtArgs extends runtime.Types.Extensions.Interna
     entityId: string
     metadata: runtime.JsonValue | null
     memberId: string | null
-    workspaceId: string
+    workspaceId: string | null
     projectId: string | null
     createdAt: Date
   }, ExtArgs["result"]["activityLog"]>
@@ -1307,7 +1307,7 @@ readonly fields: ActivityLogFieldRefs;
  */
 export interface Prisma__ActivityLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workspace<T extends Prisma.ActivityLog$workspaceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$workspaceArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   project<T extends Prisma.ActivityLog$projectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$projectArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   member<T extends Prisma.ActivityLog$memberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$memberArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1746,6 +1746,25 @@ export type ActivityLogDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many ActivityLogs to delete.
    */
   limit?: number
+}
+
+/**
+ * ActivityLog.workspace
+ */
+export type ActivityLog$workspaceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Workspace
+   */
+  select?: Prisma.WorkspaceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Workspace
+   */
+  omit?: Prisma.WorkspaceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceWhereInput
 }
 
 /**

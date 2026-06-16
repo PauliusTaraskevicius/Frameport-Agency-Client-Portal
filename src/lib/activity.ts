@@ -17,6 +17,7 @@ export type ActivityAction =
   | "project.updated"
   | "project.deleted"
   | "project.status_changed"
+  | "workspace.created"
   | "workspace.updated"
   | "workspace.deleted";
 

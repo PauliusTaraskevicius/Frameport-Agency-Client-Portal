@@ -445,6 +445,11 @@ export type WorkspaceScalarRelationFilter = {
   isNot?: Prisma.WorkspaceWhereInput
 }
 
+export type WorkspaceNullableScalarRelationFilter = {
+  is?: Prisma.WorkspaceWhereInput | null
+  isNot?: Prisma.WorkspaceWhereInput | null
+}
+
 export type WorkspaceCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserInput, Prisma.WorkspaceUncheckedCreateWithoutUserInput> | Prisma.WorkspaceCreateWithoutUserInput[] | Prisma.WorkspaceUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserInput | Prisma.WorkspaceCreateOrConnectWithoutUserInput[]
@@ -553,10 +558,12 @@ export type WorkspaceCreateNestedOneWithoutActivityLogsInput = {
   connect?: Prisma.WorkspaceWhereUniqueInput
 }
 
-export type WorkspaceUpdateOneRequiredWithoutActivityLogsNestedInput = {
+export type WorkspaceUpdateOneWithoutActivityLogsNestedInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutActivityLogsInput, Prisma.WorkspaceUncheckedCreateWithoutActivityLogsInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutActivityLogsInput
   upsert?: Prisma.WorkspaceUpsertWithoutActivityLogsInput
+  disconnect?: Prisma.WorkspaceWhereInput | boolean
+  delete?: Prisma.WorkspaceWhereInput | boolean
   connect?: Prisma.WorkspaceWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.WorkspaceUpdateWithoutActivityLogsInput>, Prisma.WorkspaceUncheckedUpdateWithoutActivityLogsInput>
 }
