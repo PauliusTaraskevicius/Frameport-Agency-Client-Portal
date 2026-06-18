@@ -4,6 +4,11 @@ import { TRPCError } from "@trpc/server";
 import { logActivity } from "@/lib/activity";
 import z from "zod";
 import { TaskStatus } from "../types";
+import {
+  resolveRolePermissions,
+  resolveProjectPermissions,
+  requireTeamMember,
+} from "@/lib/permissions";
 
 export const tasksRouter = createTRPCRouter({
   createComment: protectedProcedure
@@ -96,8 +101,15 @@ export const tasksRouter = createTRPCRouter({
           workspace: { projects: { some: { id: input.projectId } } },
         },
       });
-      if (comment.authorId !== member?.id)
-        throw new TRPCError({ code: "FORBIDDEN" });
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      if (!isAuthor) throw new TRPCError({ code: "FORBIDDEN" });
 
       await prisma.comments.delete({ where: { id: input.commentId } });
     }),
@@ -122,7 +134,15 @@ export const tasksRouter = createTRPCRouter({
           workspace: { projects: { some: { id: input.projectId } } },
         },
       });
-      if (comment.authorId !== member?.id) {
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      if (!isAuthor) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
@@ -252,20 +272,8 @@ export const tasksRouter = createTRPCRouter({
         }
       }
 
-      // Check if user is a member of the workspace
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: project.workspaceId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to update this task",
-        });
-      }
+      const role = await resolveProjectPermissions(ctx, task.projectId);
+      requireTeamMember(role);
 
       try {
         const updatedTask = await prisma.task.update({
@@ -282,14 +290,14 @@ export const tasksRouter = createTRPCRouter({
           },
         });
 
-        if (input.status && input.status !== task.status) {
+        if (input.status && input.status !== task.status && role.member) {
           await logActivity({
             action: "task.status_changed",
             entityType: "Task",
             entityId: input.taskId,
             workspaceId: project.workspaceId,
             projectId: task.projectId,
-            memberId: member.id,
+            memberId: role.member.id,
             metadata: { from: task.status, to: input.status },
           });
         }
@@ -344,20 +352,8 @@ export const tasksRouter = createTRPCRouter({
         });
       }
 
-      // Check if user is a member of the workspace
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: project.workspaceId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to delete this task",
-        });
-      }
+      const role = await resolveProjectPermissions(ctx, task.projectId);
+      requireTeamMember(role);
 
       await prisma.task.delete({
         where: {
@@ -365,15 +361,17 @@ export const tasksRouter = createTRPCRouter({
         },
       });
 
-      await logActivity({
-        action: "task.deleted",
-        entityType: "Task",
-        entityId: input.taskId,
-        workspaceId: project.workspaceId,
-        projectId: task.projectId,
-        memberId: member.id,
-        metadata: { title: task.title },
-      });
+      if (role.member) {
+        await logActivity({
+          action: "task.deleted",
+          entityType: "Task",
+          entityId: input.taskId,
+          workspaceId: project.workspaceId,
+          projectId: task.projectId,
+          memberId: role.member.id,
+          metadata: { title: task.title },
+        });
+      }
 
       return { success: true };
     }),
@@ -414,20 +412,8 @@ export const tasksRouter = createTRPCRouter({
         });
       }
 
-      // Check if user is a member of the workspace
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: project.workspaceId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to create tasks in this project",
-        });
-      }
+      const role = await resolveRolePermissions(ctx, project.workspaceId);
+      requireTeamMember(role);
 
       // Get the highest priority task in the project
       const highestPriorityTask = await prisma.task.findFirst({
@@ -479,7 +465,7 @@ export const tasksRouter = createTRPCRouter({
           entityId: task.id,
           workspaceId: project.workspaceId,
           projectId: input.projectId,
-          memberId: member.id,
+          memberId: role.member!.id,
           metadata: { title: input.title, status: input.status },
         });
 
@@ -511,27 +497,17 @@ export const tasksRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // Check if user is a member of the workspace
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: input.workspaceId,
-        },
-      });
+      const role = await resolveRolePermissions(ctx, input.workspaceId);
 
-      if (!member) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to view tasks in this workspace",
-        });
-      }
+      // Clients can only view tasks for projects they are assigned to
+      const projectFilter = role.client
+        ? { project: { workspaceId: input.workspaceId, clientId: role.client.id } }
+        : { project: { workspaceId: input.workspaceId } };
 
       try {
         const tasks = await prisma.task.findMany({
           where: {
-            project: {
-              workspaceId: input.workspaceId,
-            },
+            ...projectFilter,
             ...(input.projectId && { projectId: input.projectId }),
             ...(input.assigneeId && { assigneeId: input.assigneeId }),
             ...(input.status && { status: input.status }),
@@ -560,14 +536,16 @@ export const tasksRouter = createTRPCRouter({
 
         return tasks.map((task) => ({
           ...task,
-          assignee: {
-            ...task.assignee,
-            user: {
-              name: [task.assignee.user.firstName, task.assignee.user.lastName]
-                .filter(Boolean)
-                .join(" "),
-            },
-          },
+          assignee: task.assignee
+            ? {
+                ...task.assignee,
+                user: {
+                  name: [task.assignee.user.firstName, task.assignee.user.lastName]
+                    .filter(Boolean)
+                    .join(" "),
+                },
+              }
+            : null,
         }));
       } catch (error) {
         throw new TRPCError({
@@ -602,31 +580,20 @@ export const tasksRouter = createTRPCRouter({
         });
       }
 
-      // Check if user is a member of the workspace
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: task.project.workspaceId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to view this task",
-        });
-      }
+      await resolveProjectPermissions(ctx, task.projectId);
 
       return {
         ...task,
-        assignee: {
-          ...task.assignee,
-          user: {
-            name: [task.assignee.user.firstName, task.assignee.user.lastName]
-              .filter(Boolean)
-              .join(" "),
-          },
-        },
+        assignee: task.assignee
+          ? {
+              ...task.assignee,
+              user: {
+                name: [task.assignee.user.firstName, task.assignee.user.lastName]
+                  .filter(Boolean)
+                  .join(" "),
+              },
+            }
+          : null,
       };
     }),
   bulk: protectedProcedure
@@ -674,20 +641,9 @@ export const tasksRouter = createTRPCRouter({
 
       const workspaceIds = [...new Set(projects.map((p) => p.workspaceId))];
 
-      // Verify the user is a member of every workspace involved
-      const memberCount = await prisma.workspaceMember.count({
-        where: {
-          userId: ctx.auth.userId,
-          workspaceId: { in: workspaceIds },
-        },
-      });
-
-      if (memberCount !== workspaceIds.length) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message:
-            "You do not have permission to update one or more of these tasks",
-        });
+      for (const workspaceId of workspaceIds) {
+        const role = await resolveRolePermissions(ctx, workspaceId);
+        requireTeamMember(role);
       }
 
       const updates = input.map((task) =>

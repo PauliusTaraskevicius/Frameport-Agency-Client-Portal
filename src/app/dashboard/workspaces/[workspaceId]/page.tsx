@@ -11,7 +11,12 @@ const WorkspaceIdPage = async () => {
     redirect("/sign-in");
   }
 
-  return <ClientWorkspaceIdPage />;
+  return (
+    <>
+      <InvitationButton />
+      <ClientWorkspaceIdPage />
+    </>
+  );
 };
 
 export default WorkspaceIdPage;

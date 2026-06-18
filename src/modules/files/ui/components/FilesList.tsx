@@ -11,9 +11,10 @@ import { FileItem } from "./FileItem";
 
 interface FilesListProps {
   projectId: string;
+  isClient?: boolean;
 }
 
-export const FilesList = ({ projectId }: FilesListProps) => {
+export const FilesList = ({ projectId, isClient }: FilesListProps) => {
   const trpc = useTRPC();
 
   const { data: files } = useQuery(
@@ -44,6 +45,7 @@ export const FilesList = ({ projectId }: FilesListProps) => {
           file={file}
           projectId={projectId}
           onDelete={handleDelete}
+          isClient={isClient}
         />
       ))}
     </div>

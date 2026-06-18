@@ -55,7 +55,7 @@ export const UpdateTaskForm = ({
       description: initialValues.description || undefined,
       status: initialValues.status,
       projectId: initialValues.projectId,
-      assigneeId: initialValues.assigneeId,
+      assigneeId: initialValues.assigneeId || undefined,
       dueDate: initialValues.dueDate,
     },
   });

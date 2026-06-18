@@ -28,8 +28,9 @@ interface ClientProjectIdPageProps {
     projectId: string;
     workspaceId: string;
   };
+  isClient?: boolean;
 }
-export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
+export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
   const [showUpload, setShowUpload] = useState(false);
 
@@ -59,31 +60,33 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
               <Button variant="outline">Actions</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  className="flex items-center"
-                  onClick={() => setShowUpload((v) => !v)}
-                >
-                  {" "}
-                  {showUpload ? (
-                    <X className="mr-1 size-4" />
-                  ) : (
-                    <FileIcon className="mr-1 size-4" />
-                  )}
-                  {showUpload ? "Close" : "Add files"}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  {" "}
-                  <Link
+              {!isClient && (
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
                     className="flex items-center"
-                    href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+                    onClick={() => setShowUpload((v) => !v)}
                   >
-                    <PencilIcon className="mr-1 size-4" />
-                    Edit Project
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
+                    {" "}
+                    {showUpload ? (
+                      <X className="mr-1 size-4" />
+                    ) : (
+                      <FileIcon className="mr-1 size-4" />
+                    )}
+                    {showUpload ? "Close" : "Add files"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    {" "}
+                    <Link
+                      className="flex items-center"
+                      href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+                    >
+                      <PencilIcon className="mr-1 size-4" />
+                      Edit Project
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              )}
+              {(!isClient || getFiles.data?.length) && <DropdownMenuSeparator />}
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   {" "}
@@ -100,26 +103,30 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
           </DropdownMenu>
         ) : (
           <div className="flex items-center gap-x-2">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => setShowUpload((v) => !v)}
-            >
-              {showUpload ? (
-                <X className="mr-1 size-4" />
-              ) : (
-                <FileIcon className="mr-1 size-4" />
-              )}
-              {showUpload ? "Close" : "Add files"}
-            </Button>
-            <Button variant="secondary" size="sm" asChild>
-              <Link
-                href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
-              >
-                <PencilIcon className="mr-1 size-4" />
-                Edit Project
-              </Link>
-            </Button>
+            {!isClient && (
+              <>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowUpload((v) => !v)}
+                >
+                  {showUpload ? (
+                    <X className="mr-1 size-4" />
+                  ) : (
+                    <FileIcon className="mr-1 size-4" />
+                  )}
+                  {showUpload ? "Close" : "Add files"}
+                </Button>
+                <Button variant="secondary" size="sm" asChild>
+                  <Link
+                    href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+                  >
+                    <PencilIcon className="mr-1 size-4" />
+                    Edit Project
+                  </Link>
+                </Button>
+              </>
+            )}
             <Button asChild variant="outline" size="sm">
               <Link
                 href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/files`}
@@ -132,7 +139,7 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
         )}
       </div>
 
-      {showUpload && (
+      {showUpload && !isClient && (
         <div className="rounded-lg border p-4">
           <p className="mb-3 text-sm font-medium">Upload files</p>
           <FileUpload
@@ -146,7 +153,7 @@ export const ClientProjectIdPage = ({ params }: ClientProjectIdPageProps) => {
         <Analytics data={getProjectAnalytics.data} />
       ) : null}
 
-      <TasksViewSwitcher hideProjectFilter projectId={projectId} />
+      <TasksViewSwitcher hideProjectFilter projectId={projectId} isClient={isClient} />
     </div>
   );
 };

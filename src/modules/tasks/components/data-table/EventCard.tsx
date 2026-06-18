@@ -15,7 +15,7 @@ import {
 interface EventCardProps {
   id: string;
   title: string;
-  assignee: WorkspaceMember & { user: { name: string } };
+  assignee: (WorkspaceMember & { user: { name: string } }) | null;
   project: Project;
   status: TaskStatus;
 }

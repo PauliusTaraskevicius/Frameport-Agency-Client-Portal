@@ -44,7 +44,9 @@ export const CommentItem = ({
     comment.client?.avatarUrl ??
     "/default-avatar.png";
 
-  const isOwn = comment.author?.user.clerkUserId === currentUserId;
+  const isOwn =
+    comment.author?.user.clerkUserId === currentUserId ||
+    comment.client?.userId === currentUserId;
 
   const handleSave = () => {
     onUpdate?.(comment.id, value);

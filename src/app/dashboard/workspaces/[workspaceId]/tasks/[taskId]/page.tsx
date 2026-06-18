@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ClientTaskIdPage } from "@/modules/tasks/components/ClientTaskIdPage";
+import { ClientTaskIdPage } from "@/modules/workspaces/tasks/components/ClientTaskIdPage";
 
 interface TaskIdPageProps {
   params: Promise<{

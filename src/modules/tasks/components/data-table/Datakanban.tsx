@@ -26,9 +26,11 @@ interface DataKanbanProps {
   onChange: (
     tasks: { id: string; status: TaskStatus; position: number }[],
   ) => void;
+  disabled?: boolean;
+  isClient?: boolean;
 }
 
-export const DataKanban = ({ data, onChange }: DataKanbanProps) => {
+export const DataKanban = ({ data, onChange, disabled, isClient }: DataKanbanProps) => {
   const [tasks, setTasks] = useState<TaskState>(() => {
     const initialTasks: TaskState = {
       [TaskStatus.TODO]: [],
@@ -70,6 +72,7 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => {
   }, [data]);
 
   const onDragEnd = useCallback((result: DropResult) => {
+    if (disabled) return;
     if (!result.destination) return;
 
     const { source, destination } = result;
@@ -180,7 +183,7 @@ export const DataKanban = ({ data, onChange }: DataKanbanProps) => {
                             {...provided.dragHandleProps}
                             ref={provided.innerRef}
                           >
-                            <KanbanCard task={task} />
+                            <KanbanCard task={task} isClient={isClient} />
                           </div>
                         )}
                       </Draggable>

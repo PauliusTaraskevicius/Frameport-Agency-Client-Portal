@@ -217,7 +217,7 @@ export type FileGroupByOutputType = {
   mimeType: string | null
   size: number | null
   projectId: string
-  uploadedById: string
+  uploadedById: string | null
   createdAt: Date
   updatedAt: Date
   _count: FileCountAggregateOutputType | null
@@ -253,11 +253,11 @@ export type FileWhereInput = {
   mimeType?: Prisma.StringNullableFilter<"File"> | string | null
   size?: Prisma.IntNullableFilter<"File"> | number | null
   projectId?: Prisma.StringFilter<"File"> | string
-  uploadedById?: Prisma.StringFilter<"File"> | string
+  uploadedById?: Prisma.StringNullableFilter<"File"> | string | null
   createdAt?: Prisma.DateTimeFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"File"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
-  uploader?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
+  uploader?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
   versions?: Prisma.FileVersionListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
@@ -271,7 +271,7 @@ export type FileOrderByWithRelationInput = {
   mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   size?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  uploadedById?: Prisma.SortOrder
+  uploadedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
@@ -292,11 +292,11 @@ export type FileWhereUniqueInput = Prisma.AtLeast<{
   mimeType?: Prisma.StringNullableFilter<"File"> | string | null
   size?: Prisma.IntNullableFilter<"File"> | number | null
   projectId?: Prisma.StringFilter<"File"> | string
-  uploadedById?: Prisma.StringFilter<"File"> | string
+  uploadedById?: Prisma.StringNullableFilter<"File"> | string | null
   createdAt?: Prisma.DateTimeFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"File"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
-  uploader?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
+  uploader?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
   versions?: Prisma.FileVersionListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
@@ -310,7 +310,7 @@ export type FileOrderByWithAggregationInput = {
   mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   size?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  uploadedById?: Prisma.SortOrder
+  uploadedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FileCountOrderByAggregateInput
@@ -331,7 +331,7 @@ export type FileScalarWhereWithAggregatesInput = {
   mimeType?: Prisma.StringNullableWithAggregatesFilter<"File"> | string | null
   size?: Prisma.IntNullableWithAggregatesFilter<"File"> | number | null
   projectId?: Prisma.StringWithAggregatesFilter<"File"> | string
-  uploadedById?: Prisma.StringWithAggregatesFilter<"File"> | string
+  uploadedById?: Prisma.StringNullableWithAggregatesFilter<"File"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"File"> | Date | string
 }
@@ -346,7 +346,7 @@ export type FileCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
-  uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
+  uploader?: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
@@ -360,7 +360,7 @@ export type FileUncheckedCreateInput = {
   mimeType?: string | null
   size?: number | null
   projectId: string
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
@@ -378,7 +378,7 @@ export type FileUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
-  uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
+  uploader?: Prisma.WorkspaceMemberUpdateOneWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
@@ -392,7 +392,7 @@ export type FileUncheckedUpdateInput = {
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
@@ -408,7 +408,7 @@ export type FileCreateManyInput = {
   mimeType?: string | null
   size?: number | null
   projectId: string
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -432,7 +432,7 @@ export type FileUncheckedUpdateManyInput = {
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -709,7 +709,7 @@ export type FileScalarWhereInput = {
   mimeType?: Prisma.StringNullableFilter<"File"> | string | null
   size?: Prisma.IntNullableFilter<"File"> | number | null
   projectId?: Prisma.StringFilter<"File"> | string
-  uploadedById?: Prisma.StringFilter<"File"> | string
+  uploadedById?: Prisma.StringNullableFilter<"File"> | string | null
   createdAt?: Prisma.DateTimeFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"File"> | Date | string
 }
@@ -723,7 +723,7 @@ export type FileCreateWithoutProjectInput = {
   size?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
+  uploader?: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
@@ -736,7 +736,7 @@ export type FileUncheckedCreateWithoutProjectInput = {
   url: string
   mimeType?: string | null
   size?: number | null
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
@@ -780,7 +780,7 @@ export type FileCreateWithoutVersionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
-  uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
+  uploader?: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
@@ -793,7 +793,7 @@ export type FileUncheckedCreateWithoutVersionsInput = {
   mimeType?: string | null
   size?: number | null
   projectId: string
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
@@ -826,7 +826,7 @@ export type FileUpdateWithoutVersionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
-  uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
+  uploader?: Prisma.WorkspaceMemberUpdateOneWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
@@ -839,7 +839,7 @@ export type FileUncheckedUpdateWithoutVersionsInput = {
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
@@ -856,7 +856,7 @@ export type FileCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
-  uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
+  uploader?: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutFileInput
 }
@@ -869,7 +869,7 @@ export type FileUncheckedCreateWithoutCommentsInput = {
   mimeType?: string | null
   size?: number | null
   projectId: string
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.FileVersionUncheckedCreateNestedManyWithoutFileInput
@@ -902,7 +902,7 @@ export type FileUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
-  uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
+  uploader?: Prisma.WorkspaceMemberUpdateOneWithoutFilesNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
 }
@@ -915,7 +915,7 @@ export type FileUncheckedUpdateWithoutCommentsInput = {
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.FileVersionUncheckedUpdateManyWithoutFileNestedInput
@@ -932,7 +932,7 @@ export type FileCreateWithoutApprovalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutFilesInput
-  uploader: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
+  uploader?: Prisma.WorkspaceMemberCreateNestedOneWithoutFilesInput
   comments?: Prisma.CommentsCreateNestedManyWithoutFileInput
   versions?: Prisma.FileVersionCreateNestedManyWithoutFileInput
 }
@@ -945,7 +945,7 @@ export type FileUncheckedCreateWithoutApprovalsInput = {
   mimeType?: string | null
   size?: number | null
   projectId: string
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutFileInput
@@ -978,7 +978,7 @@ export type FileUpdateWithoutApprovalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutFilesNestedInput
-  uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
+  uploader?: Prisma.WorkspaceMemberUpdateOneWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
 }
@@ -991,7 +991,7 @@ export type FileUncheckedUpdateWithoutApprovalsInput = {
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
@@ -1059,7 +1059,7 @@ export type FileCreateManyProjectInput = {
   url: string
   mimeType?: string | null
   size?: number | null
-  uploadedById: string
+  uploadedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1073,7 +1073,7 @@ export type FileUpdateWithoutProjectInput = {
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  uploader?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput
+  uploader?: Prisma.WorkspaceMemberUpdateOneWithoutFilesNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutFileNestedInput
   versions?: Prisma.FileVersionUpdateManyWithoutFileNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutFileNestedInput
@@ -1086,7 +1086,7 @@ export type FileUncheckedUpdateWithoutProjectInput = {
   url?: Prisma.StringFieldUpdateOperationsInput | string
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutFileNestedInput
@@ -1101,7 +1101,7 @@ export type FileUncheckedUpdateManyWithoutProjectInput = {
   url?: Prisma.StringFieldUpdateOperationsInput | string
   mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  uploadedById?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1167,7 +1167,7 @@ export type FileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
   comments?: boolean | Prisma.File$commentsArgs<ExtArgs>
   versions?: boolean | Prisma.File$versionsArgs<ExtArgs>
   approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
@@ -1186,7 +1186,7 @@ export type FileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
 }, ExtArgs["result"]["file"]>
 
 export type FileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1201,7 +1201,7 @@ export type FileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
 }, ExtArgs["result"]["file"]>
 
 export type FileSelectScalar = {
@@ -1220,7 +1220,7 @@ export type FileSelectScalar = {
 export type FileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "key" | "url" | "mimeType" | "size" | "projectId" | "uploadedById" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
 export type FileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
   comments?: boolean | Prisma.File$commentsArgs<ExtArgs>
   versions?: boolean | Prisma.File$versionsArgs<ExtArgs>
   approvals?: boolean | Prisma.File$approvalsArgs<ExtArgs>
@@ -1228,18 +1228,18 @@ export type FileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 }
 export type FileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
 }
 export type FileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  uploader?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  uploader?: boolean | Prisma.File$uploaderArgs<ExtArgs>
 }
 
 export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "File"
   objects: {
     project: Prisma.$ProjectPayload<ExtArgs>
-    uploader: Prisma.$WorkspaceMemberPayload<ExtArgs>
+    uploader: Prisma.$WorkspaceMemberPayload<ExtArgs> | null
     comments: Prisma.$CommentsPayload<ExtArgs>[]
     versions: Prisma.$FileVersionPayload<ExtArgs>[]
     approvals: Prisma.$ApprovalPayload<ExtArgs>[]
@@ -1252,7 +1252,7 @@ export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     mimeType: string | null
     size: number | null
     projectId: string
-    uploadedById: string
+    uploadedById: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["file"]>
@@ -1650,7 +1650,7 @@ readonly fields: FileFieldRefs;
 export interface Prisma__FileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  uploader<T extends Prisma.WorkspaceMemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMemberDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  uploader<T extends Prisma.File$uploaderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$uploaderArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.File$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   versions<T extends Prisma.File$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvals<T extends Prisma.File$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2091,6 +2091,25 @@ export type FileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Files to delete.
    */
   limit?: number
+}
+
+/**
+ * File.uploader
+ */
+export type File$uploaderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceMember
+   */
+  select?: Prisma.WorkspaceMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceMember
+   */
+  omit?: Prisma.WorkspaceMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceMemberInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceMemberWhereInput
 }
 
 /**
