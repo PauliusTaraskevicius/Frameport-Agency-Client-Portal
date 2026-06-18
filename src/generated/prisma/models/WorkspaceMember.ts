@@ -375,11 +375,6 @@ export type WorkspaceMemberMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type WorkspaceMemberScalarRelationFilter = {
-  is?: Prisma.WorkspaceMemberWhereInput
-  isNot?: Prisma.WorkspaceMemberWhereInput
-}
-
 export type WorkspaceMemberNullableScalarRelationFilter = {
   is?: Prisma.WorkspaceMemberWhereInput | null
   isNot?: Prisma.WorkspaceMemberWhereInput | null
@@ -479,10 +474,12 @@ export type WorkspaceMemberCreateNestedOneWithoutTasksInput = {
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
 }
 
-export type WorkspaceMemberUpdateOneRequiredWithoutTasksNestedInput = {
+export type WorkspaceMemberUpdateOneWithoutTasksNestedInput = {
   create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutTasksInput, Prisma.WorkspaceMemberUncheckedCreateWithoutTasksInput>
   connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutTasksInput
   upsert?: Prisma.WorkspaceMemberUpsertWithoutTasksInput
+  disconnect?: Prisma.WorkspaceMemberWhereInput | boolean
+  delete?: Prisma.WorkspaceMemberWhereInput | boolean
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutTasksInput, Prisma.WorkspaceMemberUpdateWithoutTasksInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutTasksInput>
 }
@@ -493,10 +490,12 @@ export type WorkspaceMemberCreateNestedOneWithoutFilesInput = {
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
 }
 
-export type WorkspaceMemberUpdateOneRequiredWithoutFilesNestedInput = {
+export type WorkspaceMemberUpdateOneWithoutFilesNestedInput = {
   create?: Prisma.XOR<Prisma.WorkspaceMemberCreateWithoutFilesInput, Prisma.WorkspaceMemberUncheckedCreateWithoutFilesInput>
   connectOrCreate?: Prisma.WorkspaceMemberCreateOrConnectWithoutFilesInput
   upsert?: Prisma.WorkspaceMemberUpsertWithoutFilesInput
+  disconnect?: Prisma.WorkspaceMemberWhereInput | boolean
+  delete?: Prisma.WorkspaceMemberWhereInput | boolean
   connect?: Prisma.WorkspaceMemberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceMemberUpdateToOneWithWhereWithoutFilesInput, Prisma.WorkspaceMemberUpdateWithoutFilesInput>, Prisma.WorkspaceMemberUncheckedUpdateWithoutFilesInput>
 }

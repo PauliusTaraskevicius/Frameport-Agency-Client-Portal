@@ -2,6 +2,10 @@ import { prisma } from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import {
+  resolveRolePermissions,
+  resolveProjectPermissions,
+} from "@/lib/permissions";
 
 export const activityRouter = createTRPCRouter({
   // Workspace-wide feed — shows everything that happened in the workspace.
@@ -15,16 +19,16 @@ export const activityRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspaceId: input.workspaceId,
-          userId: ctx.auth.userId,
-        },
-      });
+      const role = await resolveRolePermissions(ctx, input.workspaceId);
 
-      if (!member) {
-        if (!member) throw new TRPCError({ code: "FORBIDDEN" });
+      // Clients do not have access to workspace-wide feeds
+      if (role.isClient) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Clients cannot view workspace-wide activity",
+        });
       }
+
       // Fetch one extra item to know if there's a next page
       const logs = await prisma.activityLog.findMany({
         where: {
@@ -63,15 +67,7 @@ export const activityRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const project = await prisma.project.findUnique({
-        where: { id: input.projectId },
-      });
-      if (!project) throw new TRPCError({ code: "NOT_FOUND" });
-
-      const member = await prisma.workspaceMember.findFirst({
-        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
-      });
-      if (!member) throw new TRPCError({ code: "FORBIDDEN" });
+      await resolveProjectPermissions(ctx, input.projectId);
 
       const logs = await prisma.activityLog.findMany({
         where: { projectId: input.projectId },

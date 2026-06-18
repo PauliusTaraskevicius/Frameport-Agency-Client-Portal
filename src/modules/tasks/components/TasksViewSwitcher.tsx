@@ -11,7 +11,7 @@ import { useQueryState } from "nuqs";
 import { DataFilters } from "./data-table/DataFilters";
 import { useTasksFilters } from "../hooks/use-tasks-filters";
 import { DataTable } from "./data-table/data-table";
-import { columns } from "./data-table/columns";
+import { getColumns } from "./data-table/columns";
 import { DataKanban } from "./data-table/Datakanban";
 import { useCallback } from "react";
 import { TaskStatus } from "../types";
@@ -24,12 +24,14 @@ interface TasksViewSwitcherProps {
   hideProjectFilter?: boolean;
   projectId?: string;
   myTasksByDefault?: boolean;
+  isClient?: boolean;
 }
 
 export const TasksViewSwitcher = ({
   hideProjectFilter,
   projectId: projectIdProp,
   myTasksByDefault,
+  isClient,
 }: TasksViewSwitcherProps) => {
   const [{ status, assigneeId, projectId: filterProjectId, dueDate, showAll }] =
     useTasksFilters();
@@ -65,6 +67,7 @@ export const TasksViewSwitcher = ({
 
   const onKanbanChange = useCallback(
     (tasks: { id: string; status: TaskStatus; position: number }[]) => {
+      if (isClient) return;
       bulkUpdate.mutate(
         tasks.map((task) => ({
           id: task.id,
@@ -73,7 +76,7 @@ export const TasksViewSwitcher = ({
         })),
       );
     },
-    [bulkUpdate],
+    [bulkUpdate, isClient],
   );
 
   return (
@@ -95,14 +98,16 @@ export const TasksViewSwitcher = ({
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button
-            size="sm"
-            className="flex w-full items-center justify-center text-center lg:w-auto"
-            onClick={() => open()}
-          >
-            <PlusIcon className="size-4" />
-            New
-          </Button>
+          {!isClient && (
+            <Button
+              size="sm"
+              className="flex w-full items-center justify-center text-center lg:w-auto"
+              onClick={() => open()}
+            >
+              <PlusIcon className="size-4" />
+              New
+            </Button>
+          )}
         </div>
         <DottedSeparator className="my-4" />
         <DataFilters hideProjectFilter={hideProjectFilter} myTasksByDefault={myTasksByDefault} />
@@ -114,10 +119,10 @@ export const TasksViewSwitcher = ({
         ) : (
           <>
             <TabsContent value="table" className="mt-0">
-              <DataTable columns={columns} data={tasks ?? []} />
+              <DataTable columns={getColumns(isClient)} data={tasks ?? []} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
-              <DataKanban data={tasks ?? []} onChange={onKanbanChange} />
+              <DataKanban data={tasks ?? []} onChange={onKanbanChange} disabled={isClient} isClient={isClient} />
             </TabsContent>
             <TabsContent value="calendar" className="mt-0 h-full pb-4">
               <DataCalendar data={tasks ?? []} />

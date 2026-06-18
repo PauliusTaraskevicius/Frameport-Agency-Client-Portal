@@ -30,7 +30,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
     return <PageError message="Project not found." />;
   }
 
-  return <ClientProjectIdPage params={{ projectId, workspaceId }} />;
+  return <ClientProjectIdPage params={{ projectId, workspaceId }} isClient={!member && !!client} />;
 };
 
 export default ProjectIdPage;

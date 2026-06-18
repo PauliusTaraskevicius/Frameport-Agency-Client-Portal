@@ -29,9 +29,10 @@ interface FileItemProps {
   file: File;
   projectId: string;
   onDelete: (fileId: string) => void;
+  isClient?: boolean;
 }
 
-export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
+export const FileItem = ({ file, projectId, onDelete, isClient }: FileItemProps) => {
   const workspaceId = useWorkspaceId();
   const downloadFile = useDownloadFile();
 
@@ -52,7 +53,7 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
           <Ellipsis className="size-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+        <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuItem
             onClick={() => downloadFile(file.id)}
@@ -61,13 +62,15 @@ export const FileItem = ({ file, projectId, onDelete }: FileItemProps) => {
             <DownloadIcon className="size-4" />
             Download
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onDelete(file.id)}
-            className="cursor-pointer"
-          >
-            <Trash2Icon className="size-4" />
-            Delete
-          </DropdownMenuItem>
+          {!isClient && (
+            <DropdownMenuItem
+              onClick={() => onDelete(file.id)}
+              className="cursor-pointer"
+            >
+              <Trash2Icon className="size-4" />
+              Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

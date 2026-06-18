@@ -11,6 +11,11 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { Status } from "../types";
 import { logActivity } from "@/lib/activity";
+import {
+  resolveProjectPermissions,
+  resolveRolePermissions,
+  requireTeamMember,
+} from "@/lib/permissions";
 
 export const filesRouter = createTRPCRouter({
   submitForApproval: protectedProcedure
@@ -84,14 +89,13 @@ export const filesRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspace: { projects: { some: { id: input.projectId } } },
-          userId: ctx.auth.userId,
-        },
+      const project = await prisma.project.findUnique({
+        where: { id: input.projectId },
       });
+      if (!project) throw new TRPCError({ code: "NOT_FOUND" });
 
-      if (!member) throw new TRPCError({ code: "FORBIDDEN" });
+      const role = await resolveRolePermissions(ctx, project.workspaceId);
+      requireTeamMember(role);
 
       // prevent duplicate pending approval for same version
       const existing = await prisma.approval.findFirst({
@@ -118,9 +122,9 @@ export const filesRouter = createTRPCRouter({
         action: "approval.requested",
         entityType: "Approval",
         entityId: approval.id,
-        workspaceId: member.workspaceId,
+        workspaceId: project.workspaceId,
         projectId: input.projectId,
-        memberId: member.id,
+        memberId: role.member!.id,
         metadata: {
           fileVersionId: input.fileVersionId,
           clientId: input.clientId,
@@ -156,17 +160,8 @@ export const filesRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
       }
 
-      // only team members can upload revisions
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspaceId: file.project.workspaceId,
-          userId: ctx.auth.userId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
-      }
+      const role = await resolveRolePermissions(ctx, file.project.workspaceId);
+      requireTeamMember(role);
 
       const nextVersion = (file.versions[0]?.version ?? 0) + 1;
 
@@ -193,7 +188,7 @@ export const filesRouter = createTRPCRouter({
         entityId: input.fileId,
         workspaceId: file.project.workspaceId,
         projectId: file.projectId,
-        memberId: member.id,
+        memberId: role.member!.id,
         metadata: { version: nextVersion, key: input.key },
       });
 
@@ -406,8 +401,15 @@ export const filesRouter = createTRPCRouter({
           workspace: { projects: { some: { id: input.projectId } } },
         },
       });
-      if (comment.authorId !== member?.id)
-        throw new TRPCError({ code: "FORBIDDEN" });
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      if (!isAuthor) throw new TRPCError({ code: "FORBIDDEN" });
 
       // Cascade on parentId handles reply deletion
       await prisma.comments.delete({ where: { id: input.commentId } });
@@ -433,7 +435,15 @@ export const filesRouter = createTRPCRouter({
           workspace: { projects: { some: { id: input.projectId } } },
         },
       });
-      if (comment.authorId !== member?.id) {
+      const client = await prisma.client.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+          projects: { some: { id: input.projectId } },
+        },
+      });
+
+      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      if (!isAuthor) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
 
@@ -521,11 +531,8 @@ export const filesRouter = createTRPCRouter({
           message: "Project not found",
         });
 
-      const member = await prisma.workspaceMember.findFirst({
-        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
-      });
-      if (!member)
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      const role = await resolveRolePermissions(ctx, project.workspaceId);
+      requireTeamMember(role);
 
       return Promise.all(
         input.files.map((f) =>
@@ -562,11 +569,8 @@ export const filesRouter = createTRPCRouter({
           message: "Project not found",
         });
 
-      const member = await prisma.workspaceMember.findFirst({
-        where: { workspaceId: project.workspaceId, userId: ctx.auth.userId },
-      });
-      if (!member)
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      const role = await resolveRolePermissions(ctx, project.workspaceId);
+      requireTeamMember(role);
 
       const files = await prisma.$transaction(
         input.files.map((f) =>
@@ -578,7 +582,7 @@ export const filesRouter = createTRPCRouter({
               mimeType: f.mimeType,
               size: f.size,
               projectId: input.projectId,
-              uploadedById: member.id,
+              uploadedById: role.member!.id,
               versions: {
                 create: {
                   version: 1,
@@ -601,7 +605,7 @@ export const filesRouter = createTRPCRouter({
             entityId: file.id,
             workspaceId: project.workspaceId,
             projectId: input.projectId,
-            memberId: member.id,
+            memberId: role.member!.id,
             metadata: {
               fileName: file.name,
               mimeType: file.mimeType,
@@ -699,19 +703,13 @@ export const filesRouter = createTRPCRouter({
       if (!file)
         throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
 
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspaceId: file.project.workspaceId,
-          userId: ctx.auth.userId,
-        },
-      });
-      if (!member)
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      const role = await resolveRolePermissions(ctx, file.project.workspaceId);
+      requireTeamMember(role);
 
       if (
-        member.role !== MemberRole.OWNER &&
-        member.role !== MemberRole.ADMIN &&
-        member.role !== MemberRole.MEMBER
+        role.member!.role !== MemberRole.OWNER &&
+        role.member!.role !== MemberRole.ADMIN &&
+        role.member!.role !== MemberRole.MEMBER
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -731,7 +729,7 @@ export const filesRouter = createTRPCRouter({
         entityId: input.fileId,
         workspaceId: file.project.workspaceId,
         projectId: file.projectId,
-        memberId: member.id,
+        memberId: role.member!.id,
         metadata: { fileName: file.name },
       });
 

@@ -3,8 +3,9 @@ import { Sidebar } from "@/components/Sidebar";
 import { CreateWorkspaceModal } from "@/modules/workspaces/ui/components/CreateWorkspaceModal";
 import { CreateInvitationModal } from "@/modules/invitations/ui/components/CreateInvitationModal";
 import { CreateProjectModal } from "@/modules/projects/ui/components/CreateProjectModal";
-import { CreateTaskModal } from "@/modules/tasks/components/CreateTaskModal";
 import { UpdateTaskModal } from "@/modules/tasks/components/UpdateTaskModal";
+import { CreateTaskModal } from "@/modules/tasks/components/CreateTaskModal";
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

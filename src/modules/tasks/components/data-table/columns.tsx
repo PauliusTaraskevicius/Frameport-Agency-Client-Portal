@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatStatus } from "@/lib/utils";
 import { TaskActions } from "../TaskAction";
 
-export const columns: ColumnDef<Task>[] = [
+export const getColumns = (isClient?: boolean): ColumnDef<Task>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Task>[] = [
 
       return (
         <div className="flex items-center gap-x-2 text-sm font-medium">
-          <p className="line-clamp-1">{assignee.user.name}</p>
+          <p className="line-clamp-1">{assignee ? assignee.user.name : "Unassigned"}</p>
         </div>
       );
     },
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Task>[] = [
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
 
-      return <TaskDate value={dueDate} />;
+      return <TaskDate value={dueDate.toISOString()} />;
     },
   },
   {
@@ -126,7 +126,7 @@ export const columns: ColumnDef<Task>[] = [
       const projectId = row.original.project.id;
 
       return (
-        <TaskActions id={id} projectId={projectId}>
+        <TaskActions id={id} projectId={projectId} isClient={isClient}>
           <Button variant="ghost" className="size-8 p-0">
             <MoreVertical className="size-4" />
           </Button>

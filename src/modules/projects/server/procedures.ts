@@ -5,6 +5,11 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { logActivity } from "@/lib/activity";
+import {
+  resolveProjectPermissions,
+  resolveRolePermissions,
+  requireTeamMember,
+} from "@/lib/permissions";
 
 import z from "zod";
 
@@ -22,11 +27,8 @@ export const projectsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const member = await prisma.workspaceMember.findFirst({
-        where: { workspaceId: input.workspaceId, userId: ctx.auth.userId },
-      });
-      if (!member)
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+      const role = await resolveRolePermissions(ctx, input.workspaceId);
+      requireTeamMember(role);
 
       try {
         const project = await prisma.project.create({
@@ -45,7 +47,7 @@ export const projectsRouter = createTRPCRouter({
           entityId: project.id,
           workspaceId: input.workspaceId,
           projectId: project.id,
-          memberId: member.id,
+          memberId: role.member!.id,
           metadata: { name: input.name },
         });
 
@@ -178,16 +180,8 @@ export const projectsRouter = createTRPCRouter({
         });
       }
 
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspaceId: project.workspaceId,
-          userId: ctx.auth.userId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
-      }
+      const role = await resolveProjectPermissions(ctx, input.projectId);
+      requireTeamMember(role);
 
       try {
         const updatedProject = await prisma.project.update({
@@ -207,7 +201,7 @@ export const projectsRouter = createTRPCRouter({
           entityId: input.projectId,
           workspaceId: project.workspaceId,
           projectId: input.projectId,
-          memberId: member.id,
+          memberId: role.member!.id,
           metadata: { name: input.name },
         });
 
@@ -245,24 +239,12 @@ export const projectsRouter = createTRPCRouter({
         });
       }
 
-      // Check membership using the project's workspaceId
-      const member = await prisma.workspaceMember.findFirst({
-        where: {
-          workspaceId: project.workspaceId,
-          userId: ctx.auth.userId,
-        },
-      });
-
-      if (!member) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Project not found",
-        });
-      }
+      const role = await resolveProjectPermissions(ctx, input.projectId);
+      requireTeamMember(role);
 
       if (
-        member.role !== MemberRole.OWNER &&
-        member.role !== MemberRole.ADMIN
+        role.member!.role !== MemberRole.OWNER &&
+        role.member!.role !== MemberRole.ADMIN
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -282,7 +264,7 @@ export const projectsRouter = createTRPCRouter({
         entityType: "Project",
         entityId: input.projectId,
         workspaceId: project.workspaceId,
-        memberId: member.id,
+        memberId: role.member!.id,
         metadata: { name: project.name },
       });
 

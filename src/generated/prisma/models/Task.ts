@@ -219,7 +219,7 @@ export type TaskGroupByOutputType = {
   updatedAt: Date
   dueDate: Date
   projectId: string
-  assigneeId: string
+  assigneeId: string | null
   _count: TaskCountAggregateOutputType | null
   _avg: TaskAvgAggregateOutputType | null
   _sum: TaskSumAggregateOutputType | null
@@ -255,9 +255,9 @@ export type TaskWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   dueDate?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringFilter<"Task"> | string
-  assigneeId?: Prisma.StringFilter<"Task"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Task"> | string | null
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
-  assignee?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
+  assignee?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
 }
 
@@ -271,7 +271,7 @@ export type TaskOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  assigneeId?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
   assignee?: Prisma.WorkspaceMemberOrderByWithRelationInput
   comments?: Prisma.CommentsOrderByRelationAggregateInput
@@ -290,9 +290,9 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   dueDate?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringFilter<"Task"> | string
-  assigneeId?: Prisma.StringFilter<"Task"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Task"> | string | null
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
-  assignee?: Prisma.XOR<Prisma.WorkspaceMemberScalarRelationFilter, Prisma.WorkspaceMemberWhereInput>
+  assignee?: Prisma.XOR<Prisma.WorkspaceMemberNullableScalarRelationFilter, Prisma.WorkspaceMemberWhereInput> | null
   comments?: Prisma.CommentsListRelationFilter
 }, "id">
 
@@ -306,7 +306,7 @@ export type TaskOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  assigneeId?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TaskCountOrderByAggregateInput
   _avg?: Prisma.TaskAvgOrderByAggregateInput
   _max?: Prisma.TaskMaxOrderByAggregateInput
@@ -327,7 +327,7 @@ export type TaskScalarWhereWithAggregatesInput = {
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
   dueDate?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
   projectId?: Prisma.StringWithAggregatesFilter<"Task"> | string
-  assigneeId?: Prisma.StringWithAggregatesFilter<"Task"> | string
+  assigneeId?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
 }
 
 export type TaskCreateInput = {
@@ -340,7 +340,7 @@ export type TaskCreateInput = {
   updatedAt?: Date | string
   dueDate: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutTasksInput
-  assignee: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
+  assignee?: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
   comments?: Prisma.CommentsCreateNestedManyWithoutTaskInput
 }
 
@@ -354,7 +354,7 @@ export type TaskUncheckedCreateInput = {
   updatedAt?: Date | string
   dueDate: Date | string
   projectId: string
-  assigneeId: string
+  assigneeId?: string | null
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -368,7 +368,7 @@ export type TaskUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutTasksNestedInput
-  assignee?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutTasksNestedInput
+  assignee?: Prisma.WorkspaceMemberUpdateOneWithoutTasksNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutTaskNestedInput
 }
 
@@ -382,7 +382,7 @@ export type TaskUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -396,7 +396,7 @@ export type TaskCreateManyInput = {
   updatedAt?: Date | string
   dueDate: Date | string
   projectId: string
-  assigneeId: string
+  assigneeId?: string | null
 }
 
 export type TaskUpdateManyMutationInput = {
@@ -420,7 +420,7 @@ export type TaskUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TaskListRelationFilter = {
@@ -662,7 +662,7 @@ export type TaskScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   dueDate?: Prisma.DateTimeFilter<"Task"> | Date | string
   projectId?: Prisma.StringFilter<"Task"> | string
-  assigneeId?: Prisma.StringFilter<"Task"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Task"> | string | null
 }
 
 export type TaskCreateWithoutProjectInput = {
@@ -674,7 +674,7 @@ export type TaskCreateWithoutProjectInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   dueDate: Date | string
-  assignee: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
+  assignee?: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
   comments?: Prisma.CommentsCreateNestedManyWithoutTaskInput
 }
 
@@ -687,7 +687,7 @@ export type TaskUncheckedCreateWithoutProjectInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   dueDate: Date | string
-  assigneeId: string
+  assigneeId?: string | null
   comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -727,7 +727,7 @@ export type TaskCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   dueDate: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutTasksInput
-  assignee: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
+  assignee?: Prisma.WorkspaceMemberCreateNestedOneWithoutTasksInput
 }
 
 export type TaskUncheckedCreateWithoutCommentsInput = {
@@ -740,7 +740,7 @@ export type TaskUncheckedCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   dueDate: Date | string
   projectId: string
-  assigneeId: string
+  assigneeId?: string | null
 }
 
 export type TaskCreateOrConnectWithoutCommentsInput = {
@@ -769,7 +769,7 @@ export type TaskUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutTasksNestedInput
-  assignee?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutTasksNestedInput
+  assignee?: Prisma.WorkspaceMemberUpdateOneWithoutTasksNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutCommentsInput = {
@@ -782,7 +782,7 @@ export type TaskUncheckedUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TaskCreateManyAssigneeInput = {
@@ -844,7 +844,7 @@ export type TaskCreateManyProjectInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   dueDate: Date | string
-  assigneeId: string
+  assigneeId?: string | null
 }
 
 export type TaskUpdateWithoutProjectInput = {
@@ -856,7 +856,7 @@ export type TaskUpdateWithoutProjectInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignee?: Prisma.WorkspaceMemberUpdateOneRequiredWithoutTasksNestedInput
+  assignee?: Prisma.WorkspaceMemberUpdateOneWithoutTasksNestedInput
   comments?: Prisma.CommentsUpdateManyWithoutTaskNestedInput
 }
 
@@ -869,7 +869,7 @@ export type TaskUncheckedUpdateWithoutProjectInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.CommentsUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -882,7 +882,7 @@ export type TaskUncheckedUpdateManyWithoutProjectInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -928,7 +928,7 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   projectId?: boolean
   assigneeId?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
   comments?: boolean | Prisma.Task$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
@@ -945,7 +945,7 @@ export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   projectId?: boolean
   assigneeId?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
 export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -960,7 +960,7 @@ export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   projectId?: boolean
   assigneeId?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
 export type TaskSelectScalar = {
@@ -979,24 +979,24 @@ export type TaskSelectScalar = {
 export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "position" | "createdAt" | "updatedAt" | "dueDate" | "projectId" | "assigneeId", ExtArgs["result"]["task"]>
 export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
   comments?: boolean | Prisma.Task$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
 }
 export type TaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.WorkspaceMemberDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Task$assigneeArgs<ExtArgs>
 }
 
 export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Task"
   objects: {
     project: Prisma.$ProjectPayload<ExtArgs>
-    assignee: Prisma.$WorkspaceMemberPayload<ExtArgs>
+    assignee: Prisma.$WorkspaceMemberPayload<ExtArgs> | null
     comments: Prisma.$CommentsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1009,7 +1009,7 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updatedAt: Date
     dueDate: Date
     projectId: string
-    assigneeId: string
+    assigneeId: string | null
   }, ExtArgs["result"]["task"]>
   composites: {}
 }
@@ -1405,7 +1405,7 @@ readonly fields: TaskFieldRefs;
 export interface Prisma__TaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  assignee<T extends Prisma.WorkspaceMemberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceMemberDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignee<T extends Prisma.Task$assigneeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$assigneeArgs<ExtArgs>>): Prisma.Prisma__WorkspaceMemberClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.Task$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1844,6 +1844,25 @@ export type TaskDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Tasks to delete.
    */
   limit?: number
+}
+
+/**
+ * Task.assignee
+ */
+export type Task$assigneeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceMember
+   */
+  select?: Prisma.WorkspaceMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceMember
+   */
+  omit?: Prisma.WorkspaceMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceMemberInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceMemberWhereInput
 }
 
 /**

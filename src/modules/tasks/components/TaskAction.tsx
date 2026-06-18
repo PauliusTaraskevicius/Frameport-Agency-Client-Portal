@@ -17,9 +17,10 @@ interface TaskActionsProps {
   id: string;
   projectId: string;
   children: React.ReactNode;
+  isClient?: boolean;
 }
 
-export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
+export const TaskActions = ({ id, projectId, children, isClient }: TaskActionsProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
@@ -64,23 +65,27 @@ export const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
             <ExternalLink className="mr-2 size-4 stroke-2" />
             Open Project
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              open(id);
-            }}
-            className="p-2.5 font-medium"
-          >
-            <PencilIcon className="mr-2 size-4 stroke-2" />
-            Edit Task
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={onDelete}
-            disabled={deleteTaskMutation.isPending}
-            className="p-2.5 font-medium text-amber-700 focus:text-amber-700"
-          >
-            <TrashIcon className="mr-2 size-4 stroke-2" />
-            Delete Task
-          </DropdownMenuItem>
+          {!isClient && (
+            <>
+              <DropdownMenuItem
+                onClick={() => {
+                  open(id);
+                }}
+                className="p-2.5 font-medium"
+              >
+                <PencilIcon className="mr-2 size-4 stroke-2" />
+                Edit Task
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={onDelete}
+                disabled={deleteTaskMutation.isPending}
+                className="p-2.5 font-medium text-amber-700 focus:text-amber-700"
+              >
+                <TrashIcon className="mr-2 size-4 stroke-2" />
+                Delete Task
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -1,4 +1,6 @@
 import { FilesList } from "@/modules/files/ui/components/FilesList";
+import { isMemberClient } from "@/modules/projects/hooks/is-member-client";
+import { PageError } from "@/components/PageError";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -17,7 +19,13 @@ const FilesPage = async ({ params }: FilesPageProps) => {
     redirect("/sign-in");
   }
 
-  return <FilesList projectId={projectId} />;
+  const { member, client } = await isMemberClient(workspaceId, projectId, userId);
+
+  if (!member && !client) {
+    return <PageError message="Project not found." />;
+  }
+
+  return <FilesList projectId={projectId} isClient={!member && !!client} />;
 };
 
 export default FilesPage;

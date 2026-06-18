@@ -48,7 +48,7 @@ export const MembersList = () => {
 
   const handleUpdateMember = async (
     userId: string,
-    role: MemberRole.OWNER | MemberRole.ADMIN | MemberRole.MEMBER,
+    role: MemberRole.OWNER | MemberRole.ADMIN | MemberRole.MEMBER | MemberRole.CLIENT,
   ) => {
     updateMemberMutation.mutate({ workspaceId, userId, role });
   };
@@ -116,6 +116,18 @@ export const MembersList = () => {
                         disabled={updateMemberMutation.isPending}
                       >
                         Set as Member
+                      </DropdownMenuItem>
+                    )}
+
+                    {member.role !== MemberRole.CLIENT && (
+                      <DropdownMenuItem
+                        className="font-medium"
+                        onClick={() =>
+                          handleUpdateMember(member.userId, MemberRole.CLIENT)
+                        }
+                        disabled={updateMemberMutation.isPending}
+                      >
+                        Set as Client
                       </DropdownMenuItem>
                     )}
 

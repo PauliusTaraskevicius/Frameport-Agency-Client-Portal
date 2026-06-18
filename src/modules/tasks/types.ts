@@ -18,11 +18,11 @@ export type Task = {
   position: number;
   dueDate: Date;
   projectId: string;
-  assigneeId: string;
+  assigneeId: string | null;
   project: Project;
-  assignee: WorkspaceMember & {
+  assignee: (WorkspaceMember & {
     user: {
       name: string;
     }
-  }
+  }) | null
 };
