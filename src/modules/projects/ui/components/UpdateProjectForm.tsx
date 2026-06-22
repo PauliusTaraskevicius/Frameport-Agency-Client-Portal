@@ -30,6 +30,8 @@ import { useDeleteProject } from "../../api/use-delete-project";
 import { DottedSeparator } from "@/components/DottedSeparator";
 import { Project } from "@/generated/prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
+import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 
 interface UpdateProjectFormProps {
   onCancel?: () => void;
@@ -61,6 +63,9 @@ export const UpdateProjectForm = ({
     workspaceId: initialValues.workspaceId,
   });
 
+  const workspaceId = useWorkspaceId();
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+
   const handleDelete = async () => {
     const ok = await confirmDelete();
 
@@ -76,12 +81,15 @@ export const UpdateProjectForm = ({
     });
   };
 
+  const isClient = roleQuery.data?.isClient ?? false;
+
   return (
     <div className="flex flex-col gap-y-4">
       <DeleteDialog />
       <Card className="h-full w-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center space-y-0 gap-x-4 p-7">
           <Button
+            className="cursor-pointer"
             size="sm"
             variant="secondary"
             onClick={
@@ -145,14 +153,15 @@ export const UpdateProjectForm = ({
                   variant="secondary"
                   onClick={onCancel}
                   disabled={updateProjectMutation.isPending}
-                  className={cn(!onCancel && "invisible")}
+                  className={cn(!onCancel && "invisible cursor-pointer")}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={updateProjectMutation.isPending}
+                  disabled={updateProjectMutation.isPending || isClient}
+                  className="cursor-pointer"
                 >
                   Save Changes
                 </Button>
@@ -177,7 +186,8 @@ export const UpdateProjectForm = ({
               type="button"
               disabled={
                 updateProjectMutation.isPending ||
-                deleteProjectMutation.isPending
+                deleteProjectMutation.isPending ||
+                isClient
               }
               onClick={handleDelete}
             >

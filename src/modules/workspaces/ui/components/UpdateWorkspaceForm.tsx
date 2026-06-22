@@ -79,14 +79,15 @@ export const UpdateWorkspaceForm = ({
   const updateWorkspaceMutation = useUpdateWorkspace();
   const deleteWorkspaceMutation = useDeleteWorkspace();
   const resetInvitationMutation = useResetInvitation({ id: initialValues.id });
-  const revokeInvitationMutation = useRevokeInvitation({ id: initialValues.id });
+  const revokeInvitationMutation = useRevokeInvitation({
+    id: initialValues.id,
+  });
 
   const pendingInvitations = useQuery(
     trpc.invitations.getByWorkspace.queryOptions({
       workspaceId: initialValues.id,
     }),
   );
-
 
   const handleCancelInvitation = async (token: string) => {
     const ok = await confirmRevoke();
@@ -126,6 +127,7 @@ export const UpdateWorkspaceForm = ({
       <Card className="h-full w-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center space-y-0 gap-x-4 p-7">
           <Button
+            className="cursor-pointer"
             size="sm"
             variant="secondary"
             onClick={

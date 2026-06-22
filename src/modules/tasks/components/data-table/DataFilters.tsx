@@ -16,6 +16,8 @@ import { useTasksFilters } from "../../hooks/use-tasks-filters";
 import { DatePicker } from "@/components/DatePicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@clerk/nextjs";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
+import { cn } from "@/lib/utils";
 
 interface DataFiltersProps {
   hideProjectFilter?: boolean;
@@ -35,6 +37,8 @@ export const DataFilters = ({
     useGetMembers(workspaceId);
 
   const currentMember = members?.find((m) => m.userId === userId);
+
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
 
   const isLoading = isLoadingProjects || isLoadingMembers;
 
@@ -74,6 +78,8 @@ export const DataFilters = ({
   const onProjectChange = (value: string) => {
     setFilters({ projectId: value === "all" ? null : (value as string) });
   };
+
+  const isClient = roleQuery.data?.isClient ?? false;
 
   if (isLoading) {
     return null;
@@ -161,7 +167,7 @@ export const DataFilters = ({
           </span>
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className={cn("flex items-center gap-2", isClient && 'invisible')}>
           <Checkbox checked={isMyTasksOnly} onCheckedChange={onMyTasksChange} />
           <span className="text-muted-foreground text-sm">
             {isMyTasksOnly ? "Show all tasks" : "Show my tasks only"}

@@ -6,10 +6,22 @@ import { z } from "zod";
 import { MemberRole } from "@/modules/members/types";
 import { TaskStatus } from "@/generated/prisma/browser";
 import { logActivity } from "@/lib/activity";
-
+import { resolveRolePermissions } from "@/lib/permissions";
 import { startOfMonth, endOfMonth, subMonths } from "date-fns";
 
 export const workspaceRouter = createTRPCRouter({
+  getRole: protectedProcedure
+    .input(z.object({ workspaceId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const role = await resolveRolePermissions(ctx, input.workspaceId);
+      return {
+        isClient: role.isClient,
+        role: role.member?.role ?? null,
+        isOwner: role.isOwner,
+        isAdmin: role.isAdmin,
+      };
+    }),
+
   create: protectedProcedure
     .input(createWorkspaceSchema)
     .mutation(async ({ ctx, input }) => {

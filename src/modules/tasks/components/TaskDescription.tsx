@@ -8,6 +8,7 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { Task } from "../types";
 import { useUpdateTask } from "../api/use-update-task";
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface TaskDescriptionProps {
   task: Task;
@@ -15,6 +16,8 @@ interface TaskDescriptionProps {
 
 export const TaskDescription = ({ task }: TaskDescriptionProps) => {
   const workspaceId = useWorkspaceId();
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
 
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(task.description || "");
@@ -36,18 +39,22 @@ export const TaskDescription = ({ task }: TaskDescriptionProps) => {
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Overview</p>
 
-        {isEditing ? (
-          <XIcon
-            className="mr-2 size-4"
+        <div className="flex items-center gap-x-2">
+          <Button
+            disabled={isClient}
+            variant="ghost"
             onClick={() => setIsEditing((prev) => !prev)}
-          />
-        ) : (
-          <PencilIcon
-            className="mr-2 size-4"
-            onClick={() => setIsEditing((prev) => !prev)}
-          />
-        )}
-        {isEditing ? "Cancel" : "Edit"}
+            className="cursor-pointer"
+          >
+            {isEditing ? (
+              <XIcon className="mr-2 size-4" />
+            ) : (
+              <PencilIcon className="mr-2 size-4" />
+            )}
+
+            {isEditing ? "Cancel" : "Edit"}
+          </Button>
+        </div>
       </div>
       <DottedSeparator className="my-4" />
       {isEditing ? (

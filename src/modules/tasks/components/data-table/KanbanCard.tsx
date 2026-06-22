@@ -16,7 +16,7 @@ export const KanbanCard = ({ task, isClient }: KanbanCardProps) => {
       <div className="flex items-center justify-between gap-x-2">
         <p className="line-clamp-2 text-sm">{task.title}</p>
         <TaskActions id={task.id} projectId={task.projectId} isClient={isClient}>
-          <MoreHorizontal className="size-4.5 shrink-0 stroke-1 text-neutral-700 transition hover:opacity-75" />
+          <MoreHorizontal className="size-4.5 shrink-0 stroke-1 text-neutral-700 transition hover:opacity-75 cursor-pointer" />
         </TaskActions>
       </div>
       <DottedSeparator />

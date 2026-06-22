@@ -12,6 +12,7 @@ import {
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import { useDeleteTask } from "../api/use-delete-task";
 import { useUpdateTaskModal } from "../hooks/use-update-task-modal";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface TaskActionsProps {
   id: string;
@@ -20,7 +21,12 @@ interface TaskActionsProps {
   isClient?: boolean;
 }
 
-export const TaskActions = ({ id, projectId, children, isClient }: TaskActionsProps) => {
+export const TaskActions = ({
+  id,
+  projectId,
+  children,
+  isClient,
+}: TaskActionsProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
@@ -40,6 +46,9 @@ export const TaskActions = ({ id, projectId, children, isClient }: TaskActionsPr
     deleteTaskMutation.mutate({ taskId: id });
   };
 
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClientRole = roleQuery.data?.isClient ?? false;
+
   const onOpenTask = () => {
     router.push(`/dashboard/workspaces/${workspaceId}/tasks/${id}`);
   };
@@ -54,13 +63,13 @@ export const TaskActions = ({ id, projectId, children, isClient }: TaskActionsPr
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem onClick={onOpenTask} className="p-2.5 font-medium">
+          <DropdownMenuItem onClick={onOpenTask} className="p-2.5 font-medium cursor-pointer">
             <ExternalLink className="mr-2 size-4 stroke-2" />
             Task Details
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onOpenProject}
-            className="p-2.5 font-medium"
+            className="p-2.5 font-medium cursor-pointer"
           >
             <ExternalLink className="mr-2 size-4 stroke-2" />
             Open Project
@@ -71,15 +80,16 @@ export const TaskActions = ({ id, projectId, children, isClient }: TaskActionsPr
                 onClick={() => {
                   open(id);
                 }}
-                className="p-2.5 font-medium"
+                className="p-2.5 font-medium cursor-pointer"
+                disabled={isClientRole}
               >
                 <PencilIcon className="mr-2 size-4 stroke-2" />
                 Edit Task
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={onDelete}
-                disabled={deleteTaskMutation.isPending}
-                className="p-2.5 font-medium text-amber-700 focus:text-amber-700"
+                disabled={deleteTaskMutation.isPending || isClientRole}
+                className="p-2.5 font-medium text-amber-700 focus:text-amber-700 cursor-pointer"
               >
                 <TrashIcon className="mr-2 size-4 stroke-2" />
                 Delete Task
