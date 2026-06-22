@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useDeleteTask } from "../api/use-delete-task";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useRouter } from "next/navigation";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface TaskBreadcrumbsProps {
   project: Project;
@@ -26,6 +27,8 @@ export const TaskBreadcrumbs = ({ task, project }: TaskBreadcrumbsProps) => {
     workspaceId,
     projectId: project.id,
   });
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
 
   const onDelete = async () => {
     const ok = await confirm();
@@ -49,11 +52,11 @@ export const TaskBreadcrumbs = ({ task, project }: TaskBreadcrumbsProps) => {
       <ChevronRightIcon className="text-muted-foreground size-4 lg:size-5" />
       <p className="text-sm font-semibold lg:text-lg">{task.title}</p>
       <Button
-        className="ml-auto"
+        className="ml-auto cursor-pointer"
         variant="destructive"
         size="sm"
         onClick={onDelete}
-        disabled={useDeleteTaskMutation.isPending}
+        disabled={useDeleteTaskMutation.isPending || isClient}
       >
         <TrashIcon className="size-4 lg:mr-2" />
         <span className="hidden lg:block">Delete Task</span>

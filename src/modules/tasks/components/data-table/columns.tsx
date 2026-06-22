@@ -124,10 +124,11 @@ export const getColumns = (isClient?: boolean): ColumnDef<Task>[] => [
     cell: ({ row }) => {
       const id = row.original.id;
       const projectId = row.original.project.id;
+      
 
       return (
         <TaskActions id={id} projectId={projectId} isClient={isClient}>
-          <Button variant="ghost" className="size-8 p-0">
+          <Button variant="ghost" className="size-8 p-0 cursor-pointer">
             <MoreVertical className="size-4" />
           </Button>
         </TaskActions>

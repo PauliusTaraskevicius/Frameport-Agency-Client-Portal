@@ -18,10 +18,10 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface ClientProjectIdPageProps {
   params: {
@@ -30,12 +30,15 @@ interface ClientProjectIdPageProps {
   };
   isClient?: boolean;
 }
-export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPageProps) => {
+export const ClientProjectIdPage = ({
+  params,
+  isClient,
+}: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
   const [showUpload, setShowUpload] = useState(false);
 
   const isMobile = useIsMobile();
-
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
   const getProject = useGetProject({ projectId });
   const getProjectAnalytics = useGetProjectAnalytics({ projectId });
   const getFiles = useGetFiles({ projectId });
@@ -44,6 +47,8 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
     return null;
   }
 
+  const isClientRole = roleQuery.data?.isClient ?? false;
+  
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
@@ -74,7 +79,7 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
                     )}
                     {showUpload ? "Close" : "Add files"}
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem disabled={isClientRole}>
                     {" "}
                     <Link
                       className="flex items-center"
@@ -86,7 +91,9 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               )}
-              {(!isClient || getFiles.data?.length) && <DropdownMenuSeparator />}
+              {(!isClient || getFiles.data?.length) && (
+                <DropdownMenuSeparator />
+              )}
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   {" "}
@@ -109,6 +116,7 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
                   variant="default"
                   size="sm"
                   onClick={() => setShowUpload((v) => !v)}
+                  className="cursor-pointer"
                 >
                   {showUpload ? (
                     <X className="mr-1 size-4" />
@@ -117,14 +125,22 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
                   )}
                   {showUpload ? "Close" : "Add files"}
                 </Button>
-                <Button variant="secondary" size="sm" asChild>
-                  <Link
-                    href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
-                  >
+
+                {isClientRole ? (
+                  <Button variant="secondary" size="sm" disabled>
                     <PencilIcon className="mr-1 size-4" />
                     Edit Project
-                  </Link>
-                </Button>
+                  </Button>
+                ) : (
+                  <Button variant="secondary" size="sm" asChild>
+                    <Link
+                      href={`/dashboard/workspaces/${workspaceId}/projects/${projectId}/settings`}
+                    >
+                      <PencilIcon className="mr-1 size-4" />
+                      Edit Project
+                    </Link>
+                  </Button>
+                )}
               </>
             )}
             <Button asChild variant="outline" size="sm">
@@ -153,7 +169,11 @@ export const ClientProjectIdPage = ({ params, isClient }: ClientProjectIdPagePro
         <Analytics data={getProjectAnalytics.data} />
       ) : null}
 
-      <TasksViewSwitcher hideProjectFilter projectId={projectId} isClient={isClient} />
+      <TasksViewSwitcher
+        hideProjectFilter
+        projectId={projectId}
+        isClient={isClient}
+      />
     </div>
   );
 };

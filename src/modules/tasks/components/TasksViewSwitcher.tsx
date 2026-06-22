@@ -19,6 +19,7 @@ import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks";
 import { DataCalendar } from "./data-table/DataCalendar";
 import { useAuth } from "@clerk/nextjs";
 import { useGetMembers } from "@/modules/members/api/use-get-members";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface TasksViewSwitcherProps {
   hideProjectFilter?: boolean;
@@ -40,7 +41,8 @@ export const TasksViewSwitcher = ({
   });
   const { userId } = useAuth();
   const workspaceId = useWorkspaceId();
- 
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClientRole = roleQuery.data?.isClient ?? false;
   const projectId = projectIdProp ?? filterProjectId;
 
   const { data: members } = useGetMembers(workspaceId);
@@ -88,21 +90,22 @@ export const TasksViewSwitcher = ({
       <div className="flex h-full flex-col overflow-auto p-4">
         <div className="flex flex-col items-center justify-between gap-y-2 lg:flex-row">
           <TabsList className="w-full lg:w-auto">
-            <TabsTrigger className="h-8 w-full lg:w-auto" value="table">
+            <TabsTrigger className="h-8 w-full lg:w-auto cursor-pointer" value="table">
               Table
             </TabsTrigger>
-            <TabsTrigger className="h-8 w-full lg:w-auto" value="kanban">
+            <TabsTrigger className="h-8 w-full lg:w-auto cursor-pointer" value="kanban">
               Kanban
             </TabsTrigger>
-            <TabsTrigger className="h-8 w-full lg:w-auto" value="calendar">
+            <TabsTrigger className="h-8 w-full lg:w-auto cursor-pointer" value="calendar">
               Calendar
             </TabsTrigger>
           </TabsList>
           {!isClient && (
             <Button
               size="sm"
-              className="flex w-full items-center justify-center text-center lg:w-auto"
+              className="flex w-full items-center justify-center text-center lg:w-auto cursor-pointer"
               onClick={() => open()}
+              disabled={isClientRole}
             >
               <PlusIcon className="size-4" />
               New
@@ -110,7 +113,10 @@ export const TasksViewSwitcher = ({
           )}
         </div>
         <DottedSeparator className="my-4" />
-        <DataFilters hideProjectFilter={hideProjectFilter} myTasksByDefault={myTasksByDefault} />
+        <DataFilters
+          hideProjectFilter={hideProjectFilter}
+          myTasksByDefault={myTasksByDefault}
+        />
         <DottedSeparator className="my-4" />
         {isLoadingTasks ? (
           <div className="flex h-50 w-full flex-col items-center justify-center rounded-lg border">
@@ -122,7 +128,12 @@ export const TasksViewSwitcher = ({
               <DataTable columns={getColumns(isClient)} data={tasks ?? []} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
-              <DataKanban data={tasks ?? []} onChange={onKanbanChange} disabled={isClient} isClient={isClient} />
+              <DataKanban
+                data={tasks ?? []}
+                onChange={onKanbanChange}
+                disabled={isClient}
+                isClient={isClient}
+              />
             </TabsContent>
             <TabsContent value="calendar" className="mt-0 h-full pb-4">
               <DataCalendar data={tasks ?? []} />

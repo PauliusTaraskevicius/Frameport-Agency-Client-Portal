@@ -19,7 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { Project } from "@/generated/prisma/browser";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
-import { WorkspaceMember } from "@/generated/prisma/client";
+import useGetRole from "../../api/use-get-role";
 
 export const ClientWorkspaceIdPage = () => {
   const workspaceId = useWorkspaceId();
@@ -30,15 +30,10 @@ export const ClientWorkspaceIdPage = () => {
 
   const getProjects = useGetProjects(workspaceId);
   const getMembers = useGetMembers(workspaceId);
-  // const { userId } = useAuth();
-  // const currentMember = getMembers.data?.find((m) => m.userId === userId);
 
   const getTasks = useGetTasks({
     workspaceId,
-    // assigneeId: currentMember?.id,
   });
-
-  const { open: createProject } = useCreateProjectModal();
 
   const isLoading =
     getWorkspaceAnalytics.isLoading ||
@@ -82,6 +77,8 @@ interface TaskListProps {
 export const TaskList = ({ tasks, total }: TaskListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createTask } = useCreateTaskModal();
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
 
   return (
     <div className="col-span-1 flex flex-col gap-y-4">
@@ -93,6 +90,7 @@ export const TaskList = ({ tasks, total }: TaskListProps) => {
             size="icon"
             onClick={() => createTask()}
             className="cursor-pointer"
+            disabled={isClient}
           >
             <PlusIcon className="size-4 text-neutral-400" />
           </Button>
@@ -126,7 +124,7 @@ export const TaskList = ({ tasks, total }: TaskListProps) => {
             No task found
           </li>
         </ul>
-        <Button variant="default" className="mt-4 w-full">
+        <Button variant="default" className="mt-4 w-full cursor-pointer">
           <Link href={`/dashboard/workspaces/${workspaceId}/tasks`}>
             Show All
           </Link>
@@ -143,6 +141,8 @@ interface ProjectListProps {
 export const ProjectList = ({ projects, total }: ProjectListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createProject } = useCreateProjectModal();
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
 
   return (
     <div className="col-span-1 flex flex-col gap-y-4">
@@ -153,6 +153,7 @@ export const ProjectList = ({ projects, total }: ProjectListProps) => {
             variant="secondary"
             size="icon"
             onClick={() => createProject()}
+            disabled={isClient}
             className="cursor-pointer"
           >
             <PlusIcon className="size-4 text-neutral-400" />

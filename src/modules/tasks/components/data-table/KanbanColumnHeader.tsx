@@ -1,15 +1,11 @@
 import { formatStatus } from "@/lib/utils";
 import { TaskStatus } from "../../types";
 
-import {
-  CircleCheckIcon,
-  CircleDashedIcon,
-  CircleIcon,
-  CircleDotIcon,
-  PlusIcon,
-} from "lucide-react";
+import { CircleIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCreateTaskModal } from "../../hooks/use-create-task-modal";
+import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface KanbanColumnHeaderProps {
   board: TaskStatus;
@@ -31,6 +27,10 @@ export const KanbanColumnHeader = ({
 
   const icon = statusIconMap[board];
 
+  const workspaceId = useWorkspaceId();
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
+
   return (
     <div className="flex items-center justify-between px-2 py-1.5">
       <div className="flex items-center gap-x-2">
@@ -40,7 +40,13 @@ export const KanbanColumnHeader = ({
           {taskCount}
         </div>
       </div>
-      <Button onClick={() => open(board)} variant="ghost" size="icon" className="size-5">
+      <Button
+        onClick={() => open(board)}
+        variant="ghost"
+        size="icon"
+        className="size-5"
+        disabled={isClient}
+      >
         <PlusIcon className="size-4 text-neutral-500" />
       </Button>
     </div>
