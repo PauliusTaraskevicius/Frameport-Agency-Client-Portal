@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useGetTasks } from "@/modules/tasks/api/use-get-tasks";
 import useGetWorkspaceAnalytics from "../../api/use-get-workspace-analytics";
 import { useWorkspaceId } from "../../hooks/use-workspace-id";
@@ -20,9 +21,13 @@ import { formatDistanceToNow } from "date-fns";
 import { Project } from "@/generated/prisma/browser";
 import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
 import useGetRole from "../../api/use-get-role";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
+import { useGetWorkspaceActivity } from "@/modules/activity/hooks/use-get-workspace-activity";
 
 export const ClientWorkspaceIdPage = () => {
   const workspaceId = useWorkspaceId();
+  const [activityPage, setActivityPage] = useState(1);
 
   const getWorkspaceAnalytics = useGetWorkspaceAnalytics({
     workspaceId,
@@ -30,10 +35,15 @@ export const ClientWorkspaceIdPage = () => {
 
   const getProjects = useGetProjects(workspaceId);
   const getMembers = useGetMembers(workspaceId);
-
-  const getTasks = useGetTasks({
+  const getTasks = useGetTasks({ workspaceId });
+  const getActivity = useGetWorkspaceActivity({
     workspaceId,
+    page: activityPage,
+    limit: 10,
   });
+
+  const roleQuery = useGetRole({ workspaceId: workspaceId });
+  const isClient = roleQuery.data?.isClient ?? false;
 
   const isLoading =
     getWorkspaceAnalytics.isLoading ||
@@ -56,15 +66,47 @@ export const ClientWorkspaceIdPage = () => {
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <Analytics data={getWorkspaceAnalytics.data} />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <TaskList tasks={getTasks.data} total={getTasks.data.length} />
-        <ProjectList
-          projects={getProjects.data}
-          total={getProjects.data.length}
-        />
-        <MembersList members={getMembers.data} total={getMembers.data.length} />
-      </div>
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview" className="h-8 w-full lg:w-auto cursor-pointer">
+            Overview
+          </TabsTrigger>
+          {!isClient && (
+            <TabsTrigger value="activity" className="h-8 w-full lg:w-auto cursor-pointer">
+              Activity
+            </TabsTrigger>
+          )}
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-4 space-y-4">
+          <Analytics data={getWorkspaceAnalytics.data} />
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            <TaskList tasks={getTasks.data} total={getTasks.data.length} />
+            <ProjectList
+              projects={getProjects.data}
+              total={getProjects.data.length}
+            />
+            <MembersList
+              members={getMembers.data}
+              total={getMembers.data.length}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-4">
+          <div className="bg-muted rounded-lg p-4">
+            <p className="mb-4 text-lg font-semibold">Activity</p>
+            <ActivityFeed
+              logs={getActivity.data?.logs ?? []}
+              totalPages={getActivity.data?.totalPages ?? 0}
+              currentPage={getActivity.data?.currentPage ?? 1}
+              onPageChange={setActivityPage}
+              isLoading={getActivity.isLoading}
+              error={getActivity.error}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

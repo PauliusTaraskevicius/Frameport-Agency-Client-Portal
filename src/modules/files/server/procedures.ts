@@ -70,11 +70,11 @@ export const filesRouter = createTRPCRouter({
 
       await logActivity({
         action: "approval.submitted",
-        entityType: "Approval",
-        entityId: input.approvalId,
+        entityType: "File",
+        entityId: approval.fileVersion!.file.id,
         workspaceId: project.workspaceId,
         projectId: project.id,
-        metadata: { status: input.status },
+        metadata: { status: input.status, fileName: approval.fileVersion!.file.name },
       });
 
       return updated;
@@ -109,6 +109,15 @@ export const filesRouter = createTRPCRouter({
       if (existing)
         throw new TRPCError({ code: "CONFLICT", message: "Already pending" });
 
+      const fileVersion = await prisma.fileVersion.findUnique({
+        where: { id: input.fileVersionId },
+        include: { file: true },
+      });
+
+      if (!fileVersion) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "File version not found" });
+      }
+
       const approval = await prisma.approval.create({
         data: {
           projectId: input.projectId,
@@ -120,12 +129,13 @@ export const filesRouter = createTRPCRouter({
 
       await logActivity({
         action: "approval.requested",
-        entityType: "Approval",
-        entityId: approval.id,
+        entityType: "File",
+        entityId: fileVersion.fileId,
         workspaceId: project.workspaceId,
         projectId: input.projectId,
         memberId: role.member!.id,
         metadata: {
+          fileName: fileVersion.file.name,
           fileVersionId: input.fileVersionId,
           clientId: input.clientId,
         },
@@ -189,7 +199,7 @@ export const filesRouter = createTRPCRouter({
         workspaceId: file.project.workspaceId,
         projectId: file.projectId,
         memberId: role.member!.id,
-        metadata: { version: nextVersion, key: input.key },
+        metadata: { fileName: file.name, version: nextVersion, key: input.key },
       });
 
       return result;
@@ -689,7 +699,7 @@ export const filesRouter = createTRPCRouter({
       return {
         ...file,
         url: await generatePresignedGetUrl(file.key),
-        isClient: !member,
+        isClient: !member || member.role === MemberRole.CLIENT,
       };
     }),
 

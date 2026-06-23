@@ -4,6 +4,8 @@ import { prisma } from "./db";
 export type ActivityAction =
   | "task.created"
   | "task.status_changed"
+  | "task.assignee_changed"
+  | "task.description_changed"
   | "task.deleted"
   | "file.uploaded"
   | "file.version_added"

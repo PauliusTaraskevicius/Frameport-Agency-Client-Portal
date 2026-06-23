@@ -22,6 +22,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useGetRole from "@/modules/workspaces/api/use-get-role";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
+import { useGetProjectActivity } from "@/modules/activity/hooks/use-get-project-activity";
 
 interface ClientProjectIdPageProps {
   params: {
@@ -36,19 +39,25 @@ export const ClientProjectIdPage = ({
 }: ClientProjectIdPageProps) => {
   const { projectId, workspaceId } = params;
   const [showUpload, setShowUpload] = useState(false);
+  const [activityPage, setActivityPage] = useState(1);
 
   const isMobile = useIsMobile();
   const roleQuery = useGetRole({ workspaceId: workspaceId });
   const getProject = useGetProject({ projectId });
   const getProjectAnalytics = useGetProjectAnalytics({ projectId });
   const getFiles = useGetFiles({ projectId });
+  const getActivity = useGetProjectActivity({
+    projectId,
+    page: activityPage,
+    limit: 10,
+  });
 
   if (!getProject.data || !getProjectAnalytics.data) {
     return null;
   }
 
   const isClientRole = roleQuery.data?.isClient ?? false;
-  
+
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
@@ -165,15 +174,50 @@ export const ClientProjectIdPage = ({
         </div>
       )}
 
-      {getProjectAnalytics.data ? (
-        <Analytics data={getProjectAnalytics.data} />
-      ) : null}
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger
+            value="overview"
+            className="h-8 w-full cursor-pointer lg:w-auto"
+          >
+            Overview
+          </TabsTrigger>
+          {!isClient && (
+            <TabsTrigger
+              value="activity"
+              className="h-8 w-full cursor-pointer lg:w-auto"
+            >
+              Activity
+            </TabsTrigger>
+          )}
+        </TabsList>
 
-      <TasksViewSwitcher
-        hideProjectFilter
-        projectId={projectId}
-        isClient={isClient}
-      />
+        <TabsContent value="overview" className="mt-4 space-y-4">
+          {getProjectAnalytics.data ? (
+            <Analytics data={getProjectAnalytics.data} />
+          ) : null}
+
+          <TasksViewSwitcher
+            hideProjectFilter
+            projectId={projectId}
+            isClient={isClient}
+          />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-4">
+          <div className="bg-muted rounded-lg p-4">
+            <p className="mb-4 text-lg font-semibold">Activity</p>
+            <ActivityFeed
+              logs={getActivity.data?.logs ?? []}
+              totalPages={getActivity.data?.totalPages ?? 0}
+              currentPage={getActivity.data?.currentPage ?? 1}
+              onPageChange={setActivityPage}
+              isLoading={getActivity.isLoading}
+              error={getActivity.error}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
