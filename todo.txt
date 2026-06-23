@@ -1,3 +1,4 @@
 - Delete, edit comment
-- Send notification for task, file assignee, when comment from client is created. 
-- Tasks, projects could only be created by the admin/owner.Members cannot create tasks, projects.
+- Send notification via email for task, file assignee, when comment from client is created. 
+- Approve button functionaly
+- invalidate activity queries

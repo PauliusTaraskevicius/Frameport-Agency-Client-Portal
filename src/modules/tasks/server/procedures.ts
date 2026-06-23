@@ -108,7 +108,8 @@ export const tasksRouter = createTRPCRouter({
         },
       });
 
-      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      const isAuthor =
+        comment.authorId === member?.id || comment.clientId === client?.id;
       if (!isAuthor) throw new TRPCError({ code: "FORBIDDEN" });
 
       await prisma.comments.delete({ where: { id: input.commentId } });
@@ -141,7 +142,8 @@ export const tasksRouter = createTRPCRouter({
         },
       });
 
-      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      const isAuthor =
+        comment.authorId === member?.id || comment.clientId === client?.id;
       if (!isAuthor) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
@@ -298,7 +300,51 @@ export const tasksRouter = createTRPCRouter({
             workspaceId: project.workspaceId,
             projectId: task.projectId,
             memberId: role.member.id,
-            metadata: { from: task.status, to: input.status },
+            metadata: {
+              title: task.title,
+              oldValue: task.status,
+              newValue: input.status,
+            },
+          });
+        }
+
+        if (
+          input.assigneeId !== undefined &&
+          input.assigneeId !== task.assigneeId &&
+          role.member
+        ) {
+          await logActivity({
+            action: "task.assignee_changed",
+            entityType: "Task",
+            entityId: input.taskId,
+            workspaceId: project.workspaceId,
+            projectId: task.projectId,
+            memberId: role.member.id,
+            metadata: {
+              title: task.title,
+              oldValue: task.assigneeId ?? "Unassigned",
+              newValue: input.assigneeId,
+            },
+          });
+        }
+
+        if (
+          input.description !== undefined &&
+          input.description !== task.description &&
+          role.member
+        ) {
+          await logActivity({
+            action: "task.description_changed",
+            entityType: "Task",
+            entityId: input.taskId,
+            workspaceId: project.workspaceId,
+            projectId: task.projectId,
+            memberId: role.member.id,
+            metadata: {
+              title: task.title,
+              oldValue: task.description ?? "",
+              newValue: input.description,
+            },
           });
         }
 
@@ -501,7 +547,12 @@ export const tasksRouter = createTRPCRouter({
 
       // Clients can only view tasks for projects they are assigned to
       const projectFilter = role.client
-        ? { project: { workspaceId: input.workspaceId, clientId: role.client.id } }
+        ? {
+            project: {
+              workspaceId: input.workspaceId,
+              clientId: role.client.id,
+            },
+          }
         : { project: { workspaceId: input.workspaceId } };
 
       try {
@@ -540,7 +591,10 @@ export const tasksRouter = createTRPCRouter({
             ? {
                 ...task.assignee,
                 user: {
-                  name: [task.assignee.user.firstName, task.assignee.user.lastName]
+                  name: [
+                    task.assignee.user.firstName,
+                    task.assignee.user.lastName,
+                  ]
                     .filter(Boolean)
                     .join(" "),
                 },
@@ -588,7 +642,10 @@ export const tasksRouter = createTRPCRouter({
           ? {
               ...task.assignee,
               user: {
-                name: [task.assignee.user.firstName, task.assignee.user.lastName]
+                name: [
+                  task.assignee.user.firstName,
+                  task.assignee.user.lastName,
+                ]
                   .filter(Boolean)
                   .join(" "),
               },
@@ -621,6 +678,7 @@ export const tasksRouter = createTRPCRouter({
           id: true,
           projectId: true,
           status: true,
+          title: true,
         },
       });
 
@@ -667,7 +725,6 @@ export const tasksRouter = createTRPCRouter({
 
       await Promise.all(
         changedTasks.map((item) => {
-      
           const taskInfo = tasks.find((t) => t.id === item.id)!;
           const projectInfo = projects.find(
             (p) => p.id === taskInfo.projectId,
@@ -678,7 +735,11 @@ export const tasksRouter = createTRPCRouter({
             entityId: item.id,
             workspaceId: projectInfo.workspaceId,
             projectId: taskInfo.projectId,
-            metadata: { from: taskStatusMap.get(item.id), to: item.status },
+            metadata: {
+              title: taskInfo.title,
+              oldValue: taskStatusMap.get(item.id),
+              newValue: item.status,
+            },
           });
         }),
       );

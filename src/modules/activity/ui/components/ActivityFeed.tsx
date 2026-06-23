@@ -28,6 +28,7 @@ interface ActivityFeedProps {
   onPageChange: (page: number) => void;
   isLoading?: boolean;
   emptyMessage?: string;
+  error?: { message: string } | null;
 }
 
 export const ActivityFeed = ({
@@ -37,6 +38,7 @@ export const ActivityFeed = ({
   onPageChange,
   isLoading,
   emptyMessage,
+  error,
 }: ActivityFeedProps) => {
   if (isLoading) {
     return (
@@ -46,10 +48,18 @@ export const ActivityFeed = ({
     );
   }
 
+  if (error) {
+    return (
+      <p className="text-destructive py-8 text-center text-sm">
+        {error.message}
+      </p>
+    );
+  }
+
   if (!logs.length) {
     return (
       <p className="text-muted-foreground py-8 text-center text-sm">
-        {emptyMessage}
+        {emptyMessage ?? "No activity yet"}
       </p>
     );
   }

@@ -100,14 +100,14 @@ export const activityRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const task = await prisma.task.findUnique({
         where: { id: input.taskId },
-        select: { id: true, workspaceId: true },
+        select: { id: true, project: { select: { workspaceId: true } } },
       });
 
       if (!task) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
       }
 
-      const role = await resolveRolePermissions(ctx, task.workspaceId);
+      const role = await resolveRolePermissions(ctx, task.project.workspaceId);
       requireTeamMember(role);
 
       const where = {
@@ -153,10 +153,10 @@ export const activityRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
       }
 
-      const role = await resolveRolePermissions(ctx, file.projectId);
+      await resolveProjectPermissions(ctx, file.projectId);
 
       const where = {
-        entityType: "Task",
+        entityType: "File",
         entityId: input.fileId,
       };
 

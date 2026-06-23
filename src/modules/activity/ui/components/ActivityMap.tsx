@@ -14,7 +14,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-
 export interface ActivityMeta {
   label: string;
   icon: React.ReactNode;
@@ -30,6 +29,14 @@ export const activityMetaMap: Record<string, ActivityMeta> = {
   "task.status_changed": {
     label: "changed task status",
     icon: <RefreshCcw className={iconClass} />,
+  },
+  "task.assignee_changed": {
+    label: "changed task assignee",
+    icon: <Users className={iconClass} />,
+  },
+  "task.description_changed": {
+    label: "changed task description",
+    icon: <Pencil className={iconClass} />,
   },
   "task.deleted": {
     label: "deleted a task",
