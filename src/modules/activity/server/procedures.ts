@@ -5,17 +5,21 @@ import z from "zod";
 import {
   resolveRolePermissions,
   resolveProjectPermissions,
+  requireTeamMember,
 } from "@/lib/permissions";
+
+const feedInput = z.object({
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(100).default(10),
+});
 
 export const activityRouter = createTRPCRouter({
   // Workspace-wide feed — shows everything that happened in the workspace.
   // Uses cursor pagination so the UI can load more on scroll.
   getWorkspaceFeed: protectedProcedure
     .input(
-      z.object({
+      feedInput.extend({
         workspaceId: z.string().min(1),
-        limit: z.number().min(1).max(100).default(30),
-        cursor: z.string().optional(), // For pagication
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -29,65 +33,152 @@ export const activityRouter = createTRPCRouter({
         });
       }
 
-      // Fetch one extra item to know if there's a next page
-      const logs = await prisma.activityLog.findMany({
-        where: {
-          workspaceId: input.workspaceId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        include: {
-          // Include member + user so the UI can show name/avatar
-          member: {
-            include: {
-              user: true,
+      const where = { workspaceId: input.workspaceId };
+
+      const [totalCount, logs] = await Promise.all([
+        prisma.activityLog.count({ where }),
+        prisma.activityLog.findMany({
+          where,
+          orderBy: { createdAt: "desc" },
+          skip: (input.page - 1) * input.limit,
+          take: input.limit,
+          include: {
+            member: {
+              include: {
+                user: true,
+              },
             },
           },
-        },
-      });
+        }),
+      ]);
 
-      let nextCursor: string | undefined = undefined;
-      if (logs.length > input.limit) {
-        nextCursor = logs.pop()!.id; // trim the extra item, expose its id as cursor
-      }
+      const totalPages = Math.ceil(totalCount / input.limit);
 
-      return { logs, nextCursor };
+      return { logs, totalCount, totalPages, currentPage: input.page };
     }),
 
   // Project-scoped feed — only logs tied to a specific project.
   getProjectFeed: protectedProcedure
     .input(
-      z.object({
+      feedInput.extend({
         projectId: z.string().min(1),
-        limit: z.number().int().min(1).max(100).default(30),
-        cursor: z.string().optional(), // pagination
       }),
     )
     .query(async ({ ctx, input }) => {
       await resolveProjectPermissions(ctx, input.projectId);
 
-      const logs = await prisma.activityLog.findMany({
-        where: { projectId: input.projectId },
-        orderBy: { createdAt: "desc" },
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        include: {
-          member: {
-            include: {
-              user: true,
+      const where = { projectId: input.projectId };
+
+      const [totalCount, logs] = await Promise.all([
+        prisma.activityLog.count({ where }),
+        prisma.activityLog.findMany({
+          where,
+          orderBy: { createdAt: "desc" },
+          skip: (input.page - 1) * input.limit,
+          take: input.limit,
+          include: {
+            member: {
+              include: {
+                user: true,
+              },
             },
           },
-        },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / input.limit);
+
+      return { logs, totalCount, totalPages, currentPage: input.page };
+    }),
+
+  getTaskFeed: protectedProcedure
+    .input(
+      feedInput.extend({
+        taskId: z.string().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const task = await prisma.task.findUnique({
+        where: { id: input.taskId },
+        select: { id: true, workspaceId: true },
       });
 
-      let nextCursor: string | undefined;
-      if (logs.length > input.limit) {
-        nextCursor = logs.pop()!.id;
+      if (!task) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Task not found" });
       }
 
-      return { logs, nextCursor };
+      const role = await resolveRolePermissions(ctx, task.workspaceId);
+      requireTeamMember(role);
+
+      const where = {
+        entityType: "Task",
+        entityId: input.taskId,
+      };
+
+      const [totalCount, logs] = await Promise.all([
+        prisma.activityLog.count({ where }),
+        prisma.activityLog.findMany({
+          where,
+          orderBy: { createdAt: "desc" },
+          skip: (input.page - 1) * input.limit,
+          take: input.limit,
+          include: {
+            member: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / input.limit);
+
+      return { logs, totalCount, totalPages, currentPage: input.page };
+    }),
+
+  getFileFeed: protectedProcedure
+    .input(
+      feedInput.extend({
+        fileId: z.string().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const file = await prisma.file.findUnique({
+        where: { id: input.fileId },
+        select: { id: true, projectId: true },
+      });
+
+      if (!file) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "File not found" });
+      }
+
+      const role = await resolveRolePermissions(ctx, file.projectId);
+
+      const where = {
+        entityType: "Task",
+        entityId: input.fileId,
+      };
+
+      const [totalCount, logs] = await Promise.all([
+        prisma.activityLog.count({ where }),
+        prisma.activityLog.findMany({
+          where,
+          orderBy: { createdAt: "desc" },
+          skip: (input.page - 1) * input.limit,
+          take: input.limit,
+          include: {
+            member: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / input.limit);
+
+      return { logs, totalCount, totalPages, currentPage: input.page };
     }),
 });
