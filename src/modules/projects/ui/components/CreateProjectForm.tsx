@@ -3,7 +3,7 @@
 import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -58,7 +58,6 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(createProjectSchema),
@@ -215,9 +214,6 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
       if (uploaded.length > 0) {
         try {
           await saveFiles.mutateAsync({ projectId, files: uploaded });
-          await queryClient.invalidateQueries({
-            queryKey: trpc.files.getMany.queryOptions({ projectId }).queryKey,
-          });
         } catch {
           toast.error("Files uploaded but failed to save records");
         }

@@ -13,7 +13,17 @@ export const useCreateProject = (workspaceId: string) => {
     trpc.projects.create.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(
-          trpc.projects.getMany.queryOptions({ workspaceId }),
+          trpc.projects.getMany.queryOptions({ workspaceId: data.workspaceId }),
+        );
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId: data.workspaceId,
+          }),
+        );
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId: data.id,
+          }),
         );
         toast.success("Project created successfully");
         router.push(`/dashboard/workspaces/${workspaceId}/projects/${data.id}`);

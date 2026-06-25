@@ -11,11 +11,37 @@ export const useDeleteFile = ({ projectId }: { projectId: string }) => {
 
   const deleteFile = useMutation(
     trpc.files.delete.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_data, variables) => {
         toast.success("File deleted successfully");
+
         queryClient.invalidateQueries(
           trpc.files.getMany.queryOptions({ projectId }),
         );
+
+        queryClient.invalidateQueries(
+          trpc.files.getOne.queryOptions({ fileId: variables.fileId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({ projectId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getFileFeed.queryOptions({
+            fileId: variables.fileId,
+          }),
+        );
+
+        const filesData = queryClient.getQueryData(
+          trpc.files.getMany.queryOptions({ projectId }).queryKey,
+        );
+        const workspaceId = filesData?.[0]?.project?.workspaceId;
+        if (workspaceId) {
+          queryClient.invalidateQueries(
+            trpc.activity.getWorkspaceFeed.queryOptions({ workspaceId }),
+          );
+        }
+
         router.refresh();
       },
       onError: (error) => {

@@ -11,9 +11,16 @@ export const useCreateWorkspace = () => {
 
   const createWorkspace = useMutation(
     trpc.workspaces.create.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         toast.success("Workspace created successfully");
         queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
+
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId: data.id,
+          }),
+        );
+
         router.push(`/dashboard/workspaces/${data.id}`);
       },
       onError: (error) => {

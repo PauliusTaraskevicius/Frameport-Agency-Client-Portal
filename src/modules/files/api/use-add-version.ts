@@ -7,10 +7,32 @@ export const useAddVersion = () => {
 
   const addVersion = useMutation(
     trpc.files.addVersion.mutationOptions({
-      onSuccess: (_, variables) =>
+      onSuccess: (data, variables) => {
+        const [, file] = data;
+        const projectId = file.projectId;
+
         queryClient.invalidateQueries(
           trpc.files.getVersions.queryOptions({ fileId: variables.fileId }),
-        ),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.files.getOne.queryOptions({ fileId: variables.fileId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.files.getMany.queryOptions({ projectId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({ projectId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getFileFeed.queryOptions({
+            fileId: variables.fileId,
+          }),
+        );
+      },
     }),
   );
 

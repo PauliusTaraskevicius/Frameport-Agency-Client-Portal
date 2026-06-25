@@ -11,11 +11,28 @@ export const useDeleteProject = ({ workspaceId }: { workspaceId: string }) => {
 
   const deleteProject = useMutation(
     trpc.projects.delete.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_data, variables) => {
         toast.success("Project deleted successfully");
         queryClient.invalidateQueries(
           trpc.projects.getMany.queryOptions({ workspaceId }),
         );
+
+        queryClient.invalidateQueries(
+          trpc.projects.getOne.queryOptions({ projectId: variables.projectId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId: variables.projectId,
+          }),
+        );
+
         router.push(`/dashboard/workspaces/${workspaceId}`);
       },
       onError: (error) => {
