@@ -13,6 +13,13 @@ export const useUpdateWorkspace = () => {
     trpc.workspaces.update.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(trpc.workspaces.getMany.queryOptions());
+
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId: data.id,
+          }),
+        );
+
         toast.success("Workspace updated successfully");
         router.push(`/dashboard/workspaces/${data.id}`);
       },

@@ -15,7 +15,7 @@ import { useDownloadFile } from "../../api/use-download-file";
 import { FileVersionTabs } from "./FileVersionTabs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
-import { useGetFileActivity } from "@/modules/activity/hooks/use-get-file-activity";
+import { useGetFileActivity } from "@/modules/activity/api/use-get-file-activity";
 
 interface ClientFileIdPageProps {
   params: {
@@ -80,7 +80,7 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
 
         <h1 className="mb-4 text-center text-2xl font-bold">{file.name}</h1>
 
-          <Tabs defaultValue="file" className="w-full">
+        <Tabs defaultValue="file" className="w-full">
           <TabsList className="w-full">
             <TabsTrigger value="file" className="flex-1">
               File
@@ -124,14 +124,14 @@ const ClientFileIdPage = ({ params }: ClientFileIdPageProps) => {
           <TabsContent value="activity" className="mt-4">
             <div className="bg-muted rounded-lg p-4">
               <p className="mb-4 text-lg font-semibold">Activity</p>
-            <ActivityFeed
-              logs={getActivity.data?.logs ?? []}
-              totalPages={getActivity.data?.totalPages ?? 0}
-              currentPage={getActivity.data?.currentPage ?? 1}
-              onPageChange={setActivityPage}
-              isLoading={getActivity.isLoading}
-              error={getActivity.error}
-            />
+              <ActivityFeed
+                logs={getActivity.data?.logs ?? []}
+                totalPages={getActivity.data?.totalPages ?? 0}
+                currentPage={getActivity.data?.currentPage ?? 1}
+                onPageChange={setActivityPage}
+                isLoading={getActivity.isLoading}
+                error={getActivity.error}
+              />
             </div>
           </TabsContent>
         </Tabs>

@@ -13,7 +13,7 @@ import { useGetTaskComments } from "../api/use-get-task-comments";
 import { useCreateComment } from "../api/use-create-comment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
-import { useGetTaskActivity } from "@/modules/activity/hooks/use-get-task-activity";
+import { useGetTaskActivity } from "@/modules/activity/api/use-get-task-activity";
 import useGetRole from "@/modules/workspaces/api/use-get-role";
 
 interface ClientTaskIdPageProps {
@@ -43,7 +43,9 @@ export const ClientTaskIdPage = ({ params }: ClientTaskIdPageProps) => {
     limit: 10,
   });
 
-  const roleQuery = useGetRole({ workspaceId: task?.project.workspaceId ?? "" });
+  const roleQuery = useGetRole({
+    workspaceId: task?.project.workspaceId ?? "",
+  });
   const isClient = roleQuery.data?.isClient ?? false;
 
   if (isTaskLoading || isCommentsLoading) {

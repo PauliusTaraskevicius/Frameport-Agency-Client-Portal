@@ -15,8 +15,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useGetPresignedUrls } from "../../api/use-get-presigned-urls";
 import { useAddVersion } from "../../api/use-add-version";
-import { useQueryClient } from "@tanstack/react-query";
-import { useTRPC } from "@/trpc/client";
 
 interface FileItem {
   file: File;
@@ -36,8 +34,6 @@ export const VersionUpload = ({
   onSuccess,
 }: VersionUploadProps) => {
   const [files, setFiles] = useState<FileItem[]>([]);
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const getPresignedUrls = useGetPresignedUrls();
   const addVersion = useAddVersion();
 
@@ -99,9 +95,6 @@ export const VersionUpload = ({
         mimeType: item.file.type,
         size: item.file.size,
       });
-      await queryClient.invalidateQueries(
-        trpc.files.getVersions.queryOptions({ fileId }),
-      );
       toast.success("New version uploaded");
       setFiles([]);
       onSuccess?.();

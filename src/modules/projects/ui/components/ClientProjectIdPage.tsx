@@ -24,7 +24,7 @@ import {
 import useGetRole from "@/modules/workspaces/api/use-get-role";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
-import { useGetProjectActivity } from "@/modules/activity/hooks/use-get-project-activity";
+import { useGetProjectActivity } from "@/modules/activity/api/use-get-project-activity";
 
 interface ClientProjectIdPageProps {
   params: {

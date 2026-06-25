@@ -4,8 +4,6 @@ import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { useTRPC } from "@/trpc/client";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   UploadCloud,
@@ -31,8 +29,6 @@ interface FileUploadProps {
 
 export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
   const [files, setFiles] = useState<FileItem[]>([]);
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
 
   const getPresignedUrls = useGetPresignedUrls();
 
@@ -187,9 +183,6 @@ export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
     if (uploaded.length) {
       try {
         await saveFiles.mutateAsync({ projectId, files: uploaded });
-        await queryClient.invalidateQueries({
-          queryKey: trpc.files.getMany.queryOptions({ projectId }).queryKey,
-        });
         toast.success(`${uploaded.length} file(s) uploaded`);
         setFiles((prev) => prev.filter((f) => f.status !== "done"));
         onSuccess?.();

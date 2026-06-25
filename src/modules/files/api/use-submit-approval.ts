@@ -7,10 +7,33 @@ export const useSubmitApproval = (fileId: string) => {
 
   const submitApproval = useMutation(
     trpc.files.submitForApproval.mutationOptions({
-      onSuccess: () =>
+      onSuccess: () => {
         queryClient.invalidateQueries(
           trpc.files.getOne.queryOptions({ fileId }),
-        ),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getFileFeed.queryOptions({ fileId }),
+        );
+
+        const fileData = queryClient.getQueryData(
+          trpc.files.getOne.queryOptions({ fileId }).queryKey,
+        );
+        const projectId = fileData?.project?.id;
+        const workspaceId = fileData?.project?.workspaceId;
+
+        if (projectId) {
+          queryClient.invalidateQueries(
+            trpc.activity.getProjectFeed.queryOptions({ projectId }),
+          );
+        }
+
+        if (workspaceId) {
+          queryClient.invalidateQueries(
+            trpc.activity.getWorkspaceFeed.queryOptions({ workspaceId }),
+          );
+        }
+      },
     }),
   );
 

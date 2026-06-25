@@ -23,7 +23,7 @@ import { ProjectAvatar } from "@/modules/projects/ui/components/ProjectAvatar";
 import useGetRole from "../../api/use-get-role";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityFeed } from "@/modules/activity/ui/components/ActivityFeed";
-import { useGetWorkspaceActivity } from "@/modules/activity/hooks/use-get-workspace-activity";
+import { useGetWorkspaceActivity } from "@/modules/activity/api/use-get-workspace-activity";
 
 export const ClientWorkspaceIdPage = () => {
   const workspaceId = useWorkspaceId();
@@ -68,11 +68,17 @@ export const ClientWorkspaceIdPage = () => {
     <div className="flex h-full flex-col space-y-4">
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview" className="h-8 w-full lg:w-auto cursor-pointer">
+          <TabsTrigger
+            value="overview"
+            className="h-8 w-full cursor-pointer lg:w-auto"
+          >
             Overview
           </TabsTrigger>
           {!isClient && (
-            <TabsTrigger value="activity" className="h-8 w-full lg:w-auto cursor-pointer">
+            <TabsTrigger
+              value="activity"
+              className="h-8 w-full cursor-pointer lg:w-auto"
+            >
               Activity
             </TabsTrigger>
           )}

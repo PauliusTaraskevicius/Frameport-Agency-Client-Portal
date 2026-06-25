@@ -19,7 +19,7 @@ export const useDeleteTask = ({
 
   const deleteTask = useMutation(
     trpc.tasks.delete.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_data, variables) => {
         toast.success("Task deleted successfully");
         queryClient.invalidateQueries(
           trpc.tasks.getMany.queryFilter({ workspaceId }),
@@ -32,6 +32,25 @@ export const useDeleteTask = ({
         queryClient.invalidateQueries(
           trpc.projects.getProjectAnalytics.queryOptions({ projectId }),
         );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getTaskFeed.queryOptions({
+            taskId: variables.taskId,
+          }),
+        );
+
         router.push(
           `/dashboard/workspaces/${workspaceId}/projects/${projectId}`,
         );

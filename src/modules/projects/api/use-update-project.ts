@@ -20,6 +20,17 @@ export const useUpdateProject = () => {
         queryClient.invalidateQueries({
           queryKey: trpc.projects.getOne.queryKey({ projectId: data.id }),
         });
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId: data.workspaceId,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId: data.id,
+          }),
+        );
         toast.success("Project updated successfully");
         router.push(
           `/dashboard/workspaces/${data.workspaceId}/projects/${data.id}`,

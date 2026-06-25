@@ -26,6 +26,24 @@ export const useCreateTask = (workspaceId: string) => {
           }),
         });
 
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId: data.id,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId: data.projectId,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getTaskFeed.queryOptions({
+            taskId: data.id,
+          }),
+        );
+
         toast.success("Task created successfully");
         router.push(
           `/dashboard/workspaces/${workspaceId}/projects/${data.projectId}`,

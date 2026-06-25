@@ -45,7 +45,7 @@ export const useUpdateTask = ({
 
         return { previous, taskId: variables.taskId };
       },
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         // Sync server response into getOne cache
         queryClient.setQueryData(
           trpc.tasks.getOne.queryKey({ taskId: data.id }),
@@ -63,6 +63,24 @@ export const useUpdateTask = ({
         });
         queryClient.invalidateQueries(
           trpc.projects.getProjectAnalytics.queryOptions({ projectId }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getWorkspaceFeed.queryOptions({
+            workspaceId,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getProjectFeed.queryOptions({
+            projectId,
+          }),
+        );
+
+        queryClient.invalidateQueries(
+          trpc.activity.getTaskFeed.queryOptions({
+            taskId: variables.taskId,
+          }),
         );
 
         toast.success("Task updated successfully");
