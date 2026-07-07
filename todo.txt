@@ -1,4 +1,3 @@
-- Delete, edit comment
 - Send notification via email for task, file assignee, when comment from client is created. 
 - Approve button functionaly
-- invalidate activity queries
+- storage e.g starter plan  10 gb

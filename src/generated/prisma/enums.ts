@@ -11,11 +11,22 @@
 
 export const Plan = {
   STARTER: 'STARTER',
-  PRO: 'PRO',
-  STUDIO: 'STUDIO'
+  AGENCY: 'AGENCY',
+  ENTERPRISE: 'ENTERPRISE'
 } as const
 
 export type Plan = (typeof Plan)[keyof typeof Plan]
+
+
+export const SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELED: 'CANCELED',
+  PAST_DUE: 'PAST_DUE',
+  UNPAID: 'UNPAID',
+  TRIALING: 'TRIALING'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
 
 
 export const WorkspaceRole = {
