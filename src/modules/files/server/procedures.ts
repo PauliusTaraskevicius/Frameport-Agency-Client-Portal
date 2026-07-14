@@ -16,6 +16,7 @@ import {
   resolveRolePermissions,
   requireTeamMember,
 } from "@/lib/permissions";
+import { checkPlanLimit } from "@/lib/subscription";
 
 export const filesRouter = createTRPCRouter({
   submitForApproval: protectedProcedure
@@ -74,7 +75,10 @@ export const filesRouter = createTRPCRouter({
         entityId: approval.fileVersion!.file.id,
         workspaceId: project.workspaceId,
         projectId: project.id,
-        metadata: { status: input.status, fileName: approval.fileVersion!.file.name },
+        metadata: {
+          status: input.status,
+          fileName: approval.fileVersion!.file.name,
+        },
       });
 
       return updated;
@@ -115,7 +119,10 @@ export const filesRouter = createTRPCRouter({
       });
 
       if (!fileVersion) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "File version not found" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "File version not found",
+        });
       }
 
       const approval = await prisma.approval.create({
@@ -418,7 +425,8 @@ export const filesRouter = createTRPCRouter({
         },
       });
 
-      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      const isAuthor =
+        comment.authorId === member?.id || comment.clientId === client?.id;
       if (!isAuthor) throw new TRPCError({ code: "FORBIDDEN" });
 
       // Cascade on parentId handles reply deletion
@@ -452,7 +460,8 @@ export const filesRouter = createTRPCRouter({
         },
       });
 
-      const isAuthor = comment.authorId === member?.id || comment.clientId === client?.id;
+      const isAuthor =
+        comment.authorId === member?.id || comment.clientId === client?.id;
       if (!isAuthor) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
@@ -555,6 +564,7 @@ export const filesRouter = createTRPCRouter({
     .input(
       z.object({
         projectId: z.string().min(1),
+        workspaceId: z.string().min(1),
         files: z
           .array(
             z.object({
@@ -581,6 +591,22 @@ export const filesRouter = createTRPCRouter({
 
       const role = await resolveRolePermissions(ctx, project.workspaceId);
       requireTeamMember(role);
+
+      const limitCheck = await checkPlanLimit(input.workspaceId, "storage");
+      const newFileSize = input.files.reduce(
+        (acc, f) => acc + (f.size ?? 0),
+        0,
+      );
+
+      if (
+        limitCheck.limit !== null &&
+        limitCheck.current + newFileSize > limitCheck.limit
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `Storage limit would be exceeded. Upgrade for more storage.`,
+        });
+      }
 
       const files = await prisma.$transaction(
         input.files.map((f) =>
