@@ -11,6 +11,8 @@ import {
   requireTeamMember,
 } from "@/lib/permissions";
 
+import { checkPlanLimit } from "@/lib/subscription";
+
 import z from "zod";
 
 export const projectsRouter = createTRPCRouter({
@@ -29,6 +31,15 @@ export const projectsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const role = await resolveRolePermissions(ctx, input.workspaceId);
       requireTeamMember(role);
+
+      const limitCheck = await checkPlanLimit(input.workspaceId, "projects");
+
+      if (!limitCheck.allowed) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `Project limit reached. Upgrade to create more projects(${limitCheck.current}/${limitCheck.limit})`,
+        });
+      }
 
       try {
         const project = await prisma.project.create({

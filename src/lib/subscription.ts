@@ -55,10 +55,10 @@ export async function checkPlanLimit(
   if (type === "projects") {
     return {
       allowed:
-        limits.maxTeamMembers === null ||
-        workspace._count.members < limits.maxTeamMembers,
-      current: workspace._count.members,
-      limit: limits.maxTeamMembers,
+        limits.maxProjects === null ||
+        workspace._count.projects < limits.maxProjects,
+      current: workspace._count.projects,
+      limit: limits.maxProjects,
       plan: workspace.plan,
     };
   }

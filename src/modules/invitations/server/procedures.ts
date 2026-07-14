@@ -12,6 +12,7 @@ import { sendInvitationEmail } from "../utils";
 import { InvitationStatus } from "../types";
 import { MemberRole } from "@/modules/members/types";
 import { logActivity } from "@/lib/activity";
+import { checkPlanLimit } from "@/lib/subscription";
 
 export const invitationRouter = createTRPCRouter({
   create: protectedProcedure
@@ -71,6 +72,15 @@ export const invitationRouter = createTRPCRouter({
             message: "This user is already a member of the workspace",
           });
         }
+      }
+
+      const limitCheck = await checkPlanLimit(input.workspaceId, "members");
+      
+      if (!limitCheck.allowed) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `Team member limit reached. Upgrade to add more members (${limitCheck.current}/${limitCheck.limit}).`,
+        });
       }
 
       const invitation = await prisma.invitation.create({
