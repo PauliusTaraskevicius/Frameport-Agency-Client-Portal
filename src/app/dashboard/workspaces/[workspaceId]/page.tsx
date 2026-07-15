@@ -1,3 +1,4 @@
+import { PlanCard } from "@/modules/billing/ui/components/PlanCard";
 import InvitationButton from "@/modules/invitations/ui/components/InvitationButton";
 import { ClientWorkspaceIdPage } from "@/modules/workspaces/ui/components/ClientWorkspaceIdPage";
 
@@ -15,6 +16,7 @@ const WorkspaceIdPage = async () => {
     <>
       <InvitationButton />
       <ClientWorkspaceIdPage />
+      
     </>
   );
 };
