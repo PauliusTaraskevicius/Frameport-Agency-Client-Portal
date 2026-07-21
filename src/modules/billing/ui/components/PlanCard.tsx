@@ -54,11 +54,15 @@ export const PlanCard = ({
       </CardContent>
       <CardFooter>
         {currentPlan ? (
-          <Button variant="outline" className="w-full" onClick={onManage}>
+          <Button
+            variant="outline"
+            className="w-full cursor-pointer"
+            onClick={onManage}
+          >
             Manage Subscription
           </Button>
         ) : (
-          <Button className="w-full" onClick={onSelect}>
+          <Button className="w-full cursor-pointer" onClick={onSelect}>
             Upgrade
           </Button>
         )}

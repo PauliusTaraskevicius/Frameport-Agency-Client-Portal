@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { caller } from "@/trpc/server";
 import { UpdateWorkspaceForm } from "@/modules/workspaces/ui/components/UpdateWorkspaceForm";
+import { ClientSettingsTabs } from "@/modules/settings/ui/components/ClientSettingsTabs";
 
 import { redirect } from "next/navigation";
 import { PageError } from "@/components/PageError";
@@ -22,19 +23,15 @@ const WorkspaceIdSettingsPage = async ({
 
   const { workspaceId } = await params;
 
-  const initialValues = await caller.workspaces.getOne({
-    id: workspaceId,
-  });
+  const workspace = await caller.workspaces.getOne({ id: workspaceId });
 
-  if (!initialValues) {
-    return <PageError message="Project not found." />;
+  if (!workspace) {
+    return <PageError message="Workspace not found." />;
   }
 
   return (
     <div className="flex w-full items-center justify-center">
-      <div className="w-full max-w-2xl p-4">
-        <UpdateWorkspaceForm initialValues={initialValues} />
-      </div>
+      <ClientSettingsTabs workspace={workspace} />
     </div>
   );
 };

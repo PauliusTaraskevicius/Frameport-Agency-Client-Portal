@@ -83,8 +83,8 @@ export const billingRouter = createTRPCRouter({
         mode: "subscription",
         payment_method_types: ["card"],
         line_items: [{ price: input.priceId, quantity: 1 }],
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/workspaces/${input.workspaceId}/settings/billing?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/workspaces/${input.workspaceId}/settings/billing?canceled=true`,
+        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/workspaces/${input.workspaceId}/settings?tab=billing&success=true`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/workspaces/${input.workspaceId}/settings?tab=billing&canceled=true`,
       });
 
       return { url: session.url };
@@ -117,7 +117,7 @@ export const billingRouter = createTRPCRouter({
 
       const session = await stripe.billingPortal.sessions.create({
         customer: workspace.stripeCustomerId,
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/workspaces/${input.workspaceId}/settings/billing`,
+        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/workspaces/${input.workspaceId}/settings?tab=billing`,
       });
 
       return { url: session.url };

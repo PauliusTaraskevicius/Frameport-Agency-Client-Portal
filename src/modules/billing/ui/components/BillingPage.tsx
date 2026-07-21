@@ -28,7 +28,7 @@ export const BillingPage = ({ workspaceId }: BillingPageProps) => {
         </div>
       )}
 
-      <div className="md: grid grid-cols-3 gap-6">
+      <div className="md:grid grid-cols-3 gap-6">
         {plans?.map((plan) => (
           <PlanCard
             key={plan.key}
