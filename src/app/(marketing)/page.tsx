@@ -1,3 +1,4 @@
+import { LandingPageNavbar } from "@/components/LandingPageNavbar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -9,5 +10,9 @@ export default async function Home() {
     redirect("/dashboard");
   }
 
-  return <div>HOMEPAGE</div>;
+  return (
+    <div className="flex flex-col justify-center">
+      <div>HomePAGE</div>
+    </div>
+  );
 }
