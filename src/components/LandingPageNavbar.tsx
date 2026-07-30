@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { MobileLandingNavbar } from "./MobileLandingNavbar";
 
 const routes = [
   {
@@ -30,15 +31,15 @@ export const LandingPageNavbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 mx-auto hidden w-full max-w-screen-xl justify-center p-8 backdrop-blur-md md:flex">
+    <nav className="sticky top-0 z-50 mx-auto flex w-full max-w-screen-xl justify-center p-8 backdrop-blur-md">
       <div className="flex w-full justify-between">
-        <div>
+        <div className="flex items-center">
           <Link href="/">
             <Image src="/logo.svg" height={150} width={150} alt="Logo" />
           </Link>
         </div>
         <div className="flex items-center justify-center">
-          <ul className="flex items-center justify-center gap-6">
+          <ul className="hidden items-center justify-center gap-6 md:flex">
             {routes.map((route) => {
               const isActive = pathname === route.href;
 
@@ -51,7 +52,7 @@ export const LandingPageNavbar = () => {
                       isActive && "font-semibold",
                     )}
                   >
-                    <li className="cursor-pointer text-[13px]">
+                    <li className="cursor-pointer text-[13px] tracking-wide">
                       {route.label}
                     </li>
                   </button>
@@ -59,24 +60,27 @@ export const LandingPageNavbar = () => {
               );
             })}
           </ul>
-          <div className="px-5">
+          <div className="hidden px-5 md:block">
             <hr className="h-[16px] w-px bg-black" />
           </div>
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center  gap-2">
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer rounded-full text-[13px]"
+              className="cursor-pointer rounded-full text-[13px] tracking-wide"
             >
               <Link href="/sign-in">Log in</Link>
             </Button>
             <Button
               variant="default"
               size="sm"
-              className="cursor-pointer rounded-full text-[13px]"
+              className="cursor-pointer rounded-full text-[13px] tracking-wide"
             >
               <Link href="/sign-up">Sign up</Link>
             </Button>
+            <div className="flex items-center md:hidden">
+              <MobileLandingNavbar />{" "}
+            </div>
           </div>
         </div>
       </div>
