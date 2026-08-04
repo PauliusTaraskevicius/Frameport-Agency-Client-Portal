@@ -10,8 +10,11 @@ export default function LandingPageLayout({
 }: LandingPageLayoutProps) {
   return (
     <div className="flex w-full flex-col items-center justify-center">
-      <LandingPageNavbar />
-      {children}
+      <div className="mx-auto flex w-full max-w-screen-xl flex-col">
+        <LandingPageNavbar />
+
+        {children}
+      </div>
     </div>
   );
 }
