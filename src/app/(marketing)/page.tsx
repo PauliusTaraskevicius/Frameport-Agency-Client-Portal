@@ -1,3 +1,4 @@
+import { LandingPageBanner } from "@/components/LandingPageBanner";
 import { LandingPageNavbar } from "@/components/LandingPageNavbar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -11,8 +12,8 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col justify-center">
-      <div>HomePAGE</div>
+    <div className="flex w-full flex-col">
+      <LandingPageBanner />
     </div>
   );
 }
