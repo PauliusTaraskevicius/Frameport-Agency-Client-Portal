@@ -1,5 +1,9 @@
 import { LandingPageBanner } from "@/components/LandingPageBanner";
-import { LandingPageNavbar } from "@/components/LandingPageNavbar";
+import { LandingPageCTA } from "@/components/LandingPageCTA";
+import { LandingPageFeatures } from "@/components/LandingPageFeatures";
+import { LandingPageFooter } from "@/components/LandingPageFooter";
+import { LandingPageTestimonials } from "@/components/LandingPageTestimonials";
+import { LandingPageValueProps } from "@/components/LandingPageValueProps";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -12,8 +16,13 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex w-full flex-col">
+    <main className="flex w-full flex-col">
       <LandingPageBanner />
-    </div>
+      <LandingPageValueProps />
+      <LandingPageFeatures />
+      <LandingPageTestimonials />
+      <LandingPageCTA />
+      <LandingPageFooter />
+    </main>
   );
 }

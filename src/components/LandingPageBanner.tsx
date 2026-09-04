@@ -44,9 +44,9 @@ export const LandingPageBanner = () => {
             <Link href="/contact">Contact sales</Link>
           </Button>
         </div>
-        {/* Dashboard Image — fixed width, anchored right, left side clips on resize */}
+
         <div className="relative mt-16 w-full overflow-hidden md:mt-24">
-          {/* justify-end pins the image to the right; on desktop it can be centered if preferred */}
+
           <div className="flex justify-start md:justify-center">
             <div className="w-[1200px] shrink-0 md:w-[1200px]">
               <Image
