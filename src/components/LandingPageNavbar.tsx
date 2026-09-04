@@ -31,8 +31,8 @@ export const LandingPageNavbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50  justify-center p-8 backdrop-blur-md">
-      <div className="flex w-full justify-between">
+    <nav className="sticky top-0 z-50 w-full justify-center px-6 py-8 backdrop-blur-md md:px-8">
+      <div className="mx-auto flex w-full max-w-7xl justify-between">
         <div className="flex items-center">
           <Link href="/">
             <Image src="/logo.svg" height={150} width={150} alt="Logo" />
