@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useGetPresignedUrls } from "../../api/use-get-presigned-urls";
 import { useSaveFiles } from "../../api/use-save-files";
+import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 
 interface FileItem {
   file: File;
@@ -29,6 +30,7 @@ interface FileUploadProps {
 
 export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
   const [files, setFiles] = useState<FileItem[]>([]);
+  const workspaceId = useWorkspaceId();
 
   const getPresignedUrls = useGetPresignedUrls();
 
@@ -182,7 +184,7 @@ export const FileUpload = ({ projectId, onSuccess }: FileUploadProps) => {
     // Step 3: save metadata to DB
     if (uploaded.length) {
       try {
-        await saveFiles.mutateAsync({ projectId, files: uploaded });
+        await saveFiles.mutateAsync({ projectId, workspaceId, files: uploaded });
         toast.success(`${uploaded.length} file(s) uploaded`);
         setFiles((prev) => prev.filter((f) => f.status !== "done"));
         onSuccess?.();

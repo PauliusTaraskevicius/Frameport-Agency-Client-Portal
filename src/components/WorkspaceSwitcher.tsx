@@ -35,7 +35,7 @@ export const WorkspaceSwitcher = () => {
   return (
     <div className="flex flex-col gap-y-2">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-neutral-500 uppercase">Workspaces</p>
+        <p className="text-xs text-muted-foreground uppercase">Workspaces</p>
         <Button
           disabled={isClient}
           variant="ghost"
@@ -43,11 +43,11 @@ export const WorkspaceSwitcher = () => {
           onClick={isClient ? undefined : open}
           className="cursor-pointer"
         >
-          <RiAddCircleFill className="size-5 cursor-pointer text-neutral-500 transition hover:opacity-75" />
+          <RiAddCircleFill className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />
         </Button>
       </div>
       <Select onValueChange={onSelect} value={workspaceId}>
-        <SelectTrigger className="w-full bg-neutral-200 p-1 font-medium">
+        <SelectTrigger className="w-full bg-accent p-1 font-medium">
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
         <SelectContent>

@@ -3,6 +3,10 @@
 import { UserButton } from "@clerk/nextjs";
 import { MobileSidebar } from "./MobileSidebar";
 import { usePathname } from "next/navigation";
+import { useCreateInvitationModal } from "@/modules/invitations/hooks/use-create-invitation-modal";
+import useGetRole from "@/modules/workspaces/api/use-get-role";
+import { UserPlus } from "lucide-react";
+import { useWorkspaceId } from "@/modules/workspaces/hooks/use-workspace-id";
 
 const pathnameMap = {
   tasks: {
@@ -20,6 +24,32 @@ const defaultMap = {
   description: "Monitor all of your projects and tasks here",
 };
 
+const NavbarUserButton = () => {
+  const workspaceId = useWorkspaceId();
+  const { open: openInvitation } = useCreateInvitationModal();
+  const roleQuery = useGetRole({
+    workspaceId: workspaceId ?? "",
+    enabled: Boolean(workspaceId),
+  });
+
+  const showInviteItem =
+    Boolean(workspaceId) && !roleQuery.isPending && !roleQuery.data?.isClient;
+
+  return (
+    <UserButton>
+      {showInviteItem && (
+        <UserButton.MenuItems>
+          <UserButton.Action
+            label="Invite Client"
+            labelIcon={<UserPlus size={16} />}
+            onClick={() => openInvitation()}
+          />
+        </UserButton.MenuItems>
+      )}
+    </UserButton>
+  );
+};
+
 export const Navbar = () => {
   const pathname = usePathname();
   const pathnameParts = pathname.split("/");
@@ -35,7 +65,7 @@ export const Navbar = () => {
       </div>
       <MobileSidebar />
       <div className="items-end">
-        <UserButton />
+        <NavbarUserButton />
       </div>
     </nav>
   );

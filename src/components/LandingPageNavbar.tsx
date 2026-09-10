@@ -35,7 +35,7 @@ export const LandingPageNavbar = () => {
       <div className="mx-auto flex w-full max-w-7xl justify-between">
         <div className="flex items-center">
           <Link href="/">
-            <Image src="/logo.svg" height={150} width={150} alt="Logo" />
+            <Image src="/frameport_logo.png" height={150} width={150} alt="Logo" />
           </Link>
         </div>
         <div className="flex items-center justify-center">

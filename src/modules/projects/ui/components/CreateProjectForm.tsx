@@ -213,7 +213,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
 
       if (uploaded.length > 0) {
         try {
-          await saveFiles.mutateAsync({ projectId, files: uploaded });
+          await saveFiles.mutateAsync({ projectId, workspaceId, files: uploaded });
         } catch {
           toast.error("Files uploaded but failed to save records");
         }
