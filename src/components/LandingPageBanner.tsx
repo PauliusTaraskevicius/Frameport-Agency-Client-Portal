@@ -8,20 +8,20 @@ export const LandingPageBanner = () => {
       {/* Subtle background gradient mesh */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0.03),transparent_50%)]" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-screen-xl flex-col items-start px-8">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start px-6 md:px-8">
         {/* Headline */}
-        <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance text-black md:text-6xl lg:text-7xl">
-          <span className="bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 bg-clip-text text-transparent">
+        <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance text-foreground md:text-6xl lg:text-7xl">
+          <span className="">
             Work with clients, not around them.
           </span>
           <br />
-          <span className="text-neutral-400">
+          <span className="text-muted-foreground">
             Keep every project moving forward.
           </span>
         </h1>
 
         {/* Subheadline */}
-        <p className="mt-6 max-w-2xl text-lg text-balance text-neutral-500 md:text-xl">
+        <p className="mt-6 max-w-2xl text-lg text-balance text-muted-foreground md:text-xl">
           Purpose-built for planning and building products. Designed for the AI
           era.
         </p>
@@ -31,7 +31,7 @@ export const LandingPageBanner = () => {
           <Button
             asChild
             size="lg"
-            className="rounded-full bg-black px-8 text-sm font-medium text-white hover:bg-neutral-800"
+            className="rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             <Link href="/sign-up">Get started</Link>
           </Button>
@@ -39,7 +39,7 @@ export const LandingPageBanner = () => {
             asChild
             variant="outline"
             size="lg"
-            className="rounded-full border-neutral-300 px-8 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
+            className="rounded-full border-input px-8 text-sm font-medium text-foreground hover:bg-accent"
           >
             <Link href="/contact">Contact sales</Link>
           </Button>
@@ -50,10 +50,10 @@ export const LandingPageBanner = () => {
           <div className="flex justify-start md:justify-center">
             <div className="w-[1200px] shrink-0 md:w-[1200px]">
               <Image
-                src="/dashboard_image.jpg"
+                src="/dashboard_image1.jpg"
                 alt="Frameport Dashboard"
-                width={1920}
-                height={1080}
+                width={1897}
+                height={754}
                 className="h-auto w-full"
                 priority
               />

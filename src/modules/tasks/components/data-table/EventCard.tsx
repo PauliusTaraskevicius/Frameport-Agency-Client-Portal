@@ -64,7 +64,7 @@ export const EventCard = ({
             <p>{title}</p>
             <div className="flex items-center gap-x-1">
               <p>{assignee?.user.name}</p>
-              <div className="size-1 rounded-full bg-neutral-300" />
+              <div className="size-1 rounded-full bg-border" />
               <ProjectAvatar name={project.name} />
             </div>
           </div>

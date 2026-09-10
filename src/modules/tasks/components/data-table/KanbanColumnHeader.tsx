@@ -36,7 +36,7 @@ export const KanbanColumnHeader = ({
       <div className="flex items-center gap-x-2">
         {icon}
         <h2 className="text-sm font-medium">{formatStatus(board)}</h2>
-        <div className="flex size-5 items-center justify-center rounded-md bg-neutral-200 text-xs font-medium text-neutral-700">
+        <div className="flex size-5 items-center justify-center rounded-md bg-muted text-xs font-medium text-secondary-foreground">
           {taskCount}
         </div>
       </div>
@@ -47,7 +47,7 @@ export const KanbanColumnHeader = ({
         className="size-5"
         disabled={isClient}
       >
-        <PlusIcon className="size-4 text-neutral-500" />
+        <PlusIcon className="size-4 text-muted-foreground" />
       </Button>
     </div>
   );

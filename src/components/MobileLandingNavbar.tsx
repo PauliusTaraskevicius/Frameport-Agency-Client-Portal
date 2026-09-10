@@ -49,7 +49,7 @@ export const MobileLandingNavbar = () => {
   return (
     <Drawer direction="left" open={open} onOpenChange={setOpen}>
       <DrawerTrigger aria-label="Open navigation menu">
-        <TbMenu className="size-6 cursor-pointer text-black" />
+        <TbMenu className="size-6 cursor-pointer text-foreground" />
       </DrawerTrigger>
       <DrawerContent>
         <VisuallyHidden>
@@ -71,7 +71,7 @@ export const MobileLandingNavbar = () => {
             </div>
             <div className="left-0 w-full absolute top-0">
               <div className="flex items-center justify-between">
-                <Image src="/logo.svg" width={150} height={150} alt="logo" />
+                <Image src="/frameport_logo.png" width={150} height={150} alt="logo" />
 
                 <DrawerClose className="cursor-pointer" asChild>
                   <Button
@@ -79,7 +79,7 @@ export const MobileLandingNavbar = () => {
                     className="cursor-pointer"
                     size="icon"
                   >
-                    <IoIosClose className="size-7 text-black" />
+                    <IoIosClose className="size-7 text-foreground" />
                   </Button>
                 </DrawerClose>
               </div>

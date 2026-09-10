@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { TooltipProvider } from "@/components/ui/tooltip";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -29,6 +29,18 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
+        variables: {
+          colorPrimary: "#203AFB",
+          colorPrimaryForeground: "#ffffff",
+          colorBackground: "#ffffff",
+          colorForeground: "#030A18",
+          colorMutedForeground: "#545E7E",
+          colorInputBackground: "#ffffff",
+          colorInputForeground: "#030A18",
+          colorNeutral: "#0A1428",
+          fontFamily: "var(--font-manrope), sans-serif",
+          borderRadius: "0.625rem",
+        },
         elements: {
           card: {
             boxShadow: "none",
@@ -95,7 +107,7 @@ export default function RootLayout({
       <TRPCReactProvider>
         <html lang="en" suppressHydrationWarning>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+            className={`${manrope.variable} ${geistMono.variable} min-h-screen antialiased`}
             suppressHydrationWarning
           >
             <NuqsAdapter>

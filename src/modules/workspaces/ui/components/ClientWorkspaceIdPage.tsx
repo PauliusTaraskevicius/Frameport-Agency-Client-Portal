@@ -140,7 +140,7 @@ export const TaskList = ({ tasks, total }: TaskListProps) => {
             className="cursor-pointer"
             disabled={isClient}
           >
-            <PlusIcon className="size-4 text-neutral-400" />
+            <PlusIcon className="size-4 text-muted-foreground" />
           </Button>
         </div>
         <DottedSeparator className="my-4" />
@@ -155,7 +155,7 @@ export const TaskList = ({ tasks, total }: TaskListProps) => {
                     <p className="truncate text-lg font-medium">{task.title}</p>
                     <div className="flex items-center gap-x-2">
                       <p>{task.project?.name}</p>
-                      <div className="size-1 rounded-full bg-neutral-300" />
+                      <div className="size-1 rounded-full bg-border" />
                       <div className="text-muted-foreground flex items-center text-sm">
                         <CalendarIcon className="mr-1 size-3" />
                         <span className="truncate">
@@ -204,7 +204,7 @@ export const ProjectList = ({ projects, total }: ProjectListProps) => {
             disabled={isClient}
             className="cursor-pointer"
           >
-            <PlusIcon className="size-4 text-neutral-400" />
+            <PlusIcon className="size-4 text-muted-foreground" />
           </Button>
         </div>
         <DottedSeparator className="my-4" />
@@ -262,7 +262,7 @@ export const MembersList = ({ members, total }: MembersListProps) => {
             className="cursor-pointer"
           >
             <Link href={`/dashboard/workspaces/${workspaceId}/members`}>
-              <SettingsIcon className="size-4 text-neutral-400" />
+              <SettingsIcon className="size-4 text-muted-foreground" />
             </Link>
           </Button>
         </div>

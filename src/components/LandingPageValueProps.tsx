@@ -21,13 +21,13 @@ const values = [
 
 export const LandingPageValueProps = () => {
   return (
-    <section className="w-full border-y border-neutral-200 bg-neutral-50 py-24 md:py-32">
+    <section className="w-full border-y border-border bg-muted py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <div className="max-w-2xl">
-          <p className="text-sm font-medium text-neutral-500">
+          <p className="text-sm font-medium text-muted-foreground">
             A better way to work together
           </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-black md:text-5xl">
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground md:text-5xl">
             The system behind your best client relationships.
           </h2>
         </div>
@@ -36,18 +36,18 @@ export const LandingPageValueProps = () => {
           {values.map((value) => (
             <article
               key={value.figure}
-              className="rounded-2xl border border-neutral-200 bg-white p-7 md:p-8"
-            >
-              <p className="text-xs font-semibold tracking-[0.2em] text-neutral-400 uppercase">
+              className="rounded-2xl border border-border bg-card p-7 md:p-8"
+          >
+              <p className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
                   {value.figure}
                 </div>
               </p>
-              <h3 className="mt-6 text-xl font-semibold text-black">
+              <h3 className="mt-6 text-xl font-semibold text-foreground">
                 {value.title}
               </h3>
-              <p className="mt-3 text-sm leading-6 text-neutral-500">
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
                 {value.description}
               </p>
             </article>

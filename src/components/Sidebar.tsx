@@ -7,10 +7,10 @@ import { Projects } from "@/modules/projects/ui/components/Projects";
 
 export const Sidebar = () => {
   return (
-    <aside className="h-full w-full bg-neutral-100 p-4">
+    <aside className="h-full w-full bg-sidebar p-4">
       <div className="flex items-center gap-2">
         <Link href="/">
-          <Image src="/logo.svg" alt="logo" width={164} height={48} />
+          <Image src="/frameport_logo.png" alt="logo" width={164} height={48} />
         </Link>
       </div>
       <DottedSeparator className="my-4" />

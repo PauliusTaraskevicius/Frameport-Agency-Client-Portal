@@ -1,5 +1,3 @@
-import { PlanCard } from "@/modules/billing/ui/components/PlanCard";
-import InvitationButton from "@/modules/invitations/ui/components/InvitationButton";
 import { ClientWorkspaceIdPage } from "@/modules/workspaces/ui/components/ClientWorkspaceIdPage";
 
 import { auth } from "@clerk/nextjs/server";
@@ -14,7 +12,7 @@ const WorkspaceIdPage = async () => {
 
   return (
     <>
-      <InvitationButton />
+
       <ClientWorkspaceIdPage />
       
     </>
